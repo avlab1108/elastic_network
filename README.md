@@ -1,3 +1,3 @@
-# ElasticNetworks
+# elastic_network
 
-ElasticNetworks repository contains code for modeling different processes in elastic networks.
+elastic_network repository contains code for modeling different processes in elastic networks.
