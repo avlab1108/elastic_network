@@ -28,15 +28,15 @@ const result_type& force_generator::generate()
   //Frand=(rand(3*Nuz,1)-ones(3*Nuz,1)/2);%случайная сила
   //Frand=(Frand*Rand_norm)/norm(Frand);%нормируем случайную силу на Rand_norm
 
-  double norm = 0.0;
+  double n = 0.0;
   for(std::size_t i = 0; i < count_; ++i)
   {
     result_[i] = random_point() - point(0.5, 0.5, 0.5);
-    norm += (std::abs(result_[i][0]) + std::abs(result_[i][1]) + std::abs(result_[i][2]));
+    n += norm(result_[i]);
   }
   for(std::size_t i = 0; i < count_; ++i)
   {
-    result_[i] *= fs_/norm;
+    result_[i] *= fs_/n;
   }
   return result_;
 }
