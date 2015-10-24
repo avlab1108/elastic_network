@@ -19,6 +19,8 @@ public:
   const point_type& node_position(const std::size_t node) const;
   void set_node_position(const std::size_t node, const point_type& p);
 
+  bool are_connected(const std::size_t node1, const std::size_t node2);
+
 private:
   std::vector<point_type> nodes_;
   boost::dynamic_bitset<> links_;
