@@ -117,3 +117,5 @@ ifdef TARGET
 $(TARGET) : $(TARGET_DEPS)
 	$(TARGET_CMD)
 endif
+
+-include $(OBJ_DIR)/*.d

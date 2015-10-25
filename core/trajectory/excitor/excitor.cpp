@@ -1,6 +1,8 @@
 #include "excitor.h"
-
 #include "force_generator.h"
+#include "result_observer.h"
+
+#include <boost/numeric/odeint.hpp>
 
 excitor::excitor(const network& net, const double fs, const std::size_t time, const std::vector<std::size_t>& nodes) :
   net_(net),
@@ -13,4 +15,7 @@ excitor::excitor(const network& net, const double fs, const std::size_t time, co
 
 void excitor::run()
 {
+  network_dynamics::state_type initial_state = net_.nodes();
+  result_observer writer(std::cout);
+  boost::numeric::odeint::integrate(net_dynamics_, initial_state, 0.0, static_cast<double>(time_), 1.0, writer);
 }
