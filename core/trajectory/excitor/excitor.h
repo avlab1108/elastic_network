@@ -9,6 +9,7 @@ public:
 
 private:
   network net_;
+  network_dynamics net_dynamics_;
   const double fs_;
   const std::size_t time_;
   const std::vector<std::size_t> nodes_;
