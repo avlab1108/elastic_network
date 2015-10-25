@@ -1,8 +1,4 @@
-SUBDIRS=io network settings trajectory
+#BUILD_DIRS = io network settings trajectory last
+BUILD_DIRS = network settings trajectory last
 
-.PHONY : compile clean
-
-compile clean:
-	@for dir in $(SUBDIRS); do\
-		$(MAKE) -C $$dir $@;\
-	done
+include ../mkfiles/defaults.mk

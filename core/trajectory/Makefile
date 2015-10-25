@@ -1,8 +1,3 @@
-SUBDIRS=excitor relaxer
+BUILD_DIRS = excitor relaxer
 
-.PHONY : compile clean
-
-compile clean:
-	@for dir in $(SUBDIRS); do\
-		$(MAKE) -C $$dir $@;\
-	done
+include ../../mkfiles/defaults.mk

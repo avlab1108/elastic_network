@@ -1,9 +1,11 @@
-IFLAGS=-I../../network
+COMPILE_TARGETS = $(TARGET_DEPS)
+LIB_TARGETS 		= $(TARGET)
 
-TARGET_NAME=relaxer.a
-TARGET_CMD=$(AR)
+TARGET				= $(OBJ_DIR)/relaxer.a
 
-SOURCES=$(wildcard *.cpp)
-OBJS=$(patsubst %.cpp, $(OBJ_DIR)/%.o, $(SOURCES))
+TARGET_SRC_C	= $(wildcard *.cpp)
+TARGET_DEPS  	= $(patsubst %.cpp,$(OBJ_DIR)/%.o,$(TARGET_SRC_C))
+TARGET_CMD  	= $(AR_CMD) || $(DIE)
+TARGET_CLEAN 	= $(TARGET) $(TARGET_DEPS) $(OBJ_DIR)/*.d
 
-include ../../../defaults.mk
+include ../../../mkfiles/defaults.mk
