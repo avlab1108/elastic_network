@@ -16,4 +16,5 @@ void result_observer::operator()(const state_type& x, const double t) const
       out_ << " ";
     }
   }
+  out_ << std::endl;
 }

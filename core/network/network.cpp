@@ -10,7 +10,8 @@ void network::add_link(const std::size_t node1, const std::size_t node2)
 {
   const std::size_t max = std::max(node1, node2);
   const std::size_t min = std::min(node1, node2);
-  links_.set(min*nodes_.size() - (min-1)*min/2 + max - min);
+  const std::size_t index = min*(min-1)/2 + min*(max-min) + (min > 0 ? (min-1)*(nodes_.size() - max) : 0);
+  links_.set(index);
 }
 
 const std::vector<point_type>& network::nodes() const
@@ -32,5 +33,6 @@ bool network::are_connected(const std::size_t node1, const std::size_t node2)
 {
   const std::size_t max = std::max(node1, node2);
   const std::size_t min = std::min(node1, node2);
-  return links_[min*nodes_.size() - (min-1)*min/2 + max - min];
+  const std::size_t index = min*(min-1)/2 + min*(max-min) + (min > 0 ? (min-1)*(nodes_.size() - max) : 0);
+  return links_[index];
 }
