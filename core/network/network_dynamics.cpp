@@ -1,6 +1,9 @@
 #include "network_dynamics.h"
 
-network_dynamics::network_dynamics()
+#include <cmath>
+
+network_dynamics::network_dynamics(const network& net) :
+  net_(net)
 {
 }
 
@@ -20,7 +23,7 @@ void network_dynamics::operator() (const state_type& x, state_type& dxdt, const 
     for(std::size_t j = 0; j < x.size(); ++j)
     {
       double dist_i_j = distance(x[i], x[j]);
-      double dist_i_0 = distance(x[i], net_.node(i));
+      double dist_i_0 = distance(x[i], net_.node_position(i));
       bool a_i_j = net_.are_connected(i, j);
       // x_i
       dxdt[i][0] += a_i_j*(x[i][0] - x[j][0])*(dist_i_j - dist_i_0)/dist_i_j;

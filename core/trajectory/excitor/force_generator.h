@@ -2,18 +2,21 @@
 
 #include <point.h>
 
+#include <vector>
+
 class force_generator
 {
 public:
-  typedef point<double, 3> force_type;
-  typedef std::vector<force_type> result_type;
+  typedef point_type force_type;
+  typedef std::vector<std::size_t> nodes_type;
+  typedef std::vector<std::pair<std::size_t, force_type>> result_type;
 
-  force_generator(const double fs, const std::size_t count);
+  force_generator(const double fs, const nodes_type& nodes);
 
   const result_type& generate();
 
 private:
   const double fs_;
-  const std::size_t count_;
+  const nodes_type nodes_;
   result_type result_;
 };

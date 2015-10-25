@@ -10,7 +10,7 @@ void network::add_link(const std::size_t node1, const std::size_t node2)
 {
   const std::size_t max = std::max(node1, node2);
   const std::size_t min = std::min(node1, node2);
-  links_[min*nodes_.size() - (min-1)*min/2 + max - min].set();
+  links_.set(min*nodes_.size() - (min-1)*min/2 + max - min);
 }
 
 const std::vector<point_type>& network::nodes() const
@@ -25,7 +25,7 @@ const point_type& network::node_position(const std::size_t node) const
 
 void network::set_node_position(const std::size_t node, const point_type& p)
 {
-  nodes_[node] = position;
+  nodes_[node] = p;
 }
 
 bool network::are_connected(const std::size_t node1, const std::size_t node2)

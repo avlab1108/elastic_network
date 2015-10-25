@@ -1,6 +1,8 @@
 #pragma once
 
 #include <boost/operators.hpp>
+
+#include <cmath>
 #include <ostream>
 
 template<class T, const std::size_t Dim>
@@ -18,7 +20,7 @@ public:
   {
     for(std::size_t i = 0; i < dim; ++i)
     {
-      coordinartes_[i] = T();
+      coordinates_[i] = T();
     }
   }
 
@@ -32,15 +34,15 @@ public:
 
   point(const value_type x, const value_type y, const value_type z)
   {
-    if(Dim> 0)
+    if(dim> 0)
     {
       coordinates_[0] = x;
     }
-    if(Dim> 1)
+    if(dim> 1)
     {
       coordinates_[1] = y;
     }
-    if(Dim> 2)
+    if(dim> 2)
     {
       coordinates_[2] = z;
     }
@@ -118,7 +120,7 @@ template<class T, std::size_t Dim>
 point<T, Dim> operator-(const point<T, Dim>& p)
 {
   point<T, Dim> tmp;
-  for(std::size_t i = 0; i < dim; ++i)
+  for(std::size_t i = 0; i < Dim; ++i)
   {
     tmp[i] = -p[i];
   }
@@ -129,7 +131,7 @@ template<class T, std::size_t Dim>
 T scalar_prod(const point<T, Dim>& p1,const point<T, Dim>& p2)
 {
   T tmp = 0.0;
-  for(std::size_t i = 0; i < dim; ++i)
+  for(std::size_t i = 0; i < Dim; ++i)
   {
     tmp += p1[i] * p2[i];
   }
@@ -145,17 +147,17 @@ T norm(const point<T, Dim>& p)
 template<class T, std::size_t Dim>
 T abs(const point<T, Dim>& p)
 {
-  return sqrt(norm(p));
+  return std::sqrt(norm(p));
 }
 
 template<class T, std::size_t Dim>
 std::ostream& operator<<(std::ostream& out, const point<T, Dim>& p)
 {
-  if(Dim> 0)
+  if(Dim > 0)
   {
     out << p[0];
   }
-  for(std::size_t i = 1; i < dim; ++i)
+  for(std::size_t i = 1; i < Dim; ++i)
   {
     out << " " << p[i];
   }

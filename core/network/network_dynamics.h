@@ -1,6 +1,9 @@
 #pragma once
 
-#include <point.h>
+#include "network.h"
+#include "point.h"
+
+#include <vector>
 
 class network_dynamics
 {
