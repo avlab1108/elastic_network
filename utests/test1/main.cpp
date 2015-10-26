@@ -4,21 +4,19 @@
 
 int main()
 {
-  network net(64);
+  network net(10);
   srand(0);
-  for(std::size_t i = 0; i < 1000; ++i)
+  for(std::size_t i = 0; i < net.size(); ++i)
   {
-    std::size_t n1 = std::rand() % 64;
-    std::size_t n2 = std::rand() % 64;
-    while(n2 == n1)
-    {
-      n2 = std::rand() % 64;
-    }
-    net.add_link(n1, n2);
+    net.set_node_position(i, 20*random_point());
   }
-  double fs = 5.0;
-  std::size_t time = 20;
+  const double fs = 0.2;
+  const std::size_t time = 10000;
+  const double l0 = 3;
+  net.setup_links(l0);
   std::vector<std::size_t> nodes;
+  nodes.push_back(1);
+  nodes.push_back(2);
   excitor x(net, fs, time, nodes);
   x.run();
   return 0;

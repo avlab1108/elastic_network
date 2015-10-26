@@ -15,7 +15,8 @@ excitor::excitor(const network& net, const double fs, const std::size_t time, co
 
 void excitor::run()
 {
-  network_dynamics::state_type initial_state = net_.nodes();
+  network_dynamics::state_type initial_state = net_.node_positions();
+  boost::numeric::odeint::runge_kutta_fehlberg78<network_dynamics::state_type> rkf78;
   result_observer writer(std::cout);
-  boost::numeric::odeint::integrate(net_dynamics_, initial_state, 0.0, static_cast<double>(time_), 1.0, writer);
+  boost::numeric::odeint::integrate_n_steps(rkf78, net_dynamics_, initial_state, 0.0, 1.0, time_, writer);
 }

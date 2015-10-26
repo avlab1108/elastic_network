@@ -13,10 +13,9 @@ public:
 
   force_generator(const double fs, const nodes_type& nodes);
 
-  const result_type& generate();
+  result_type generate();
 
 private:
   const double fs_;
   const nodes_type nodes_;
-  result_type result_;
 };

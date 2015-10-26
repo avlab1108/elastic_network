@@ -7,30 +7,21 @@ network_dynamics::network_dynamics(const network& net) :
 {
 }
 
-namespace
-{
-double distance(const point_type& p1, const point_type& p2)
-{
-  return abs(p1-p2);
-}
-}
-
 void network_dynamics::operator() (const state_type& x, state_type& dxdt, const double /*t*/)
 {
-  for(std::size_t i = 0; i < x.size(); ++i)
+  for(std::size_t i = 0; i < dxdt.size(); ++i)
   {
-    dxdt[i][0] = 0.0;
+    dxdt[i] = point_type(0.0, 0.0, 0.0);
     for(std::size_t j = 0; j < x.size(); ++j)
     {
+      if(i == j)
+      {
+        continue;
+      }
       double dist_i_j = distance(x[i], x[j]);
-      double dist_i_0 = distance(x[i], net_.node_position(i));
+      double dist_i_0_j_0 = distance(net_.node_position(i), net_.node_position(j));
       bool a_i_j = net_.are_connected(i, j);
-      // x_i
-      dxdt[i][0] += a_i_j*(x[i][0] - x[j][0])*(dist_i_j - dist_i_0)/dist_i_j;
-      // y_i
-      dxdt[i][1] += a_i_j*(x[i][1] - x[j][1])*(dist_i_j - dist_i_0)/dist_i_j;
-      // z_i
-      dxdt[i][2] += a_i_j*(x[i][2] - x[j][2])*(dist_i_j - dist_i_0)/dist_i_j;
+      dxdt[i] += static_cast<std::size_t>(a_i_j)*(x[i] - x[j])*(dist_i_j - dist_i_0_j_0)/dist_i_j;
     }
   }
 }

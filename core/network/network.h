@@ -9,17 +9,19 @@
 class network
 {
 public:
-  typedef point<double, 3> point_type;
-
   network(const std::size_t size);
 
   void add_link(const std::size_t node1, const std::size_t node2);
-  const std::vector<point_type>& nodes() const;
+  const std::vector<point_type>& node_positions() const;
 
   const point_type& node_position(const std::size_t node) const;
   void set_node_position(const std::size_t node, const point_type& p);
 
   bool are_connected(const std::size_t node1, const std::size_t node2);
+
+  void setup_links(const double l0);
+
+  std::size_t size() const;
 
 private:
   std::vector<point_type> nodes_;

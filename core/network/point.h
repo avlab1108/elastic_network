@@ -4,6 +4,7 @@
 
 #include <cmath>
 #include <ostream>
+#include <random>
 
 template<class T, const std::size_t Dim>
 class point :
@@ -164,5 +165,21 @@ std::ostream& operator<<(std::ostream& out, const point<T, Dim>& p)
   return out;
 }
 
-typedef point<double, 3> point_type;
+typedef point<long double, 3> point_type;
 
+//TODO MH: fix this
+inline point_type random_point()
+{
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_real_distribution<> dis(0, 1);
+  double x = dis(gen);
+  double y = dis(gen);
+  double z = dis(gen);
+  return point_type(x, y, z);
+}
+
+inline long double distance(const point_type& p1, const point_type& p2)
+{
+  return abs(p1-p2);
+}
