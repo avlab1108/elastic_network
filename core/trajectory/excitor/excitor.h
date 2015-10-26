@@ -8,12 +8,12 @@
 class excitor
 {
 public:
-  excitor(const network& net, const double fs, const std::size_t time, const std::vector<std::size_t>& nodes = std::vector<std::size_t>());
+  excitor(network& net, const double fs, const std::size_t time, const std::vector<std::size_t>& nodes = std::vector<std::size_t>());
 
   virtual void run();
 
 private:
-  network net_;
+  network& net_;
   excitor_dynamics net_dynamics_;
   const double fs_;
   const std::size_t time_;

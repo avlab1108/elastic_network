@@ -1,6 +1,6 @@
 #include <excitor.h>
+#include <relaxer.h>
 #include <cstdlib>
-#include <iostream>
 
 int main()
 {
@@ -11,7 +11,7 @@ int main()
     net.set_node_position(i, 20*random_point());
   }
   const double fs = 0.2;
-  const std::size_t time = 10000;
+  const std::size_t time = 1000;
   const double l0 = 3;
   net.setup_links(l0);
   std::vector<std::size_t> nodes;
@@ -19,5 +19,7 @@ int main()
   nodes.push_back(2);
   excitor x(net, fs, time, nodes);
   x.run();
+  relaxer r(net, 10000);
+  r.run();
   return 0;
 }
