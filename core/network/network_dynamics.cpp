@@ -1,6 +1,7 @@
 #include "network_dynamics.h"
 
 #include <cmath>
+#include <iostream>
 
 network_dynamics::network_dynamics(const network& net) :
   net_(net)

@@ -19,11 +19,12 @@ public:
 
   bool are_connected(const std::size_t node1, const std::size_t node2);
 
-  void setup_links(const double l0);
-
   std::size_t size() const;
 
 private:
   std::vector<point_type> nodes_;
   boost::dynamic_bitset<> links_;
 };
+
+void setup_links(network& net, const double l0);
+

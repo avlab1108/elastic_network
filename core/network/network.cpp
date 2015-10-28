@@ -37,21 +37,21 @@ bool network::are_connected(const std::size_t node1, const std::size_t node2)
   return links_[index];
 }
 
-void network::setup_links(const double l0)
-{
-  for(std::size_t i = 0; i < size(); ++i)
-  {
-    for(std::size_t j = 0; j < size(); ++j)
-    {
-      if(distance(node_position(i), node_position(j)) < l0)
-      {
-        add_link(i, j);
-      }
-    }
-  }
-}
-
 std::size_t network::size() const
 {
   return nodes_.size();
+}
+
+void setup_links(network& net, const double l0)
+{
+  for(std::size_t i = 0; i < net.size(); ++i)
+  {
+    for(std::size_t j = i + 1; j < net.size(); ++j)
+    {
+      if(distance(net.node_position(i), net.node_position(j)) < l0)
+      {
+        net.add_link(i, j);
+      }
+    }
+  }
 }
