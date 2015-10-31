@@ -1,3 +1,3 @@
-BUILD_DIRS = test1
+BUILD_DIRS = network trajectory
 
 include ../mkfiles/defaults.mk

@@ -37,7 +37,9 @@ ifneq "$(strip $(BUILD_DIRS))" ""
 		cd $$CCPWD ;                \
 	done
 endif
+ifneq "$(strip $(CLEAN_TARGETS))" ""
 	$(RM) -r $(CLEAN_TARGETS) $(ALL_TARGETS)
+endif
 
 compile :
 ifneq "$(strip $(BUILD_DIRS))" ""
