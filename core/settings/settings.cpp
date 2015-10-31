@@ -1,7 +1,25 @@
 #include "settings.h"
 
-settings& settings::instance()
+settings::settings()
 {
-  static settings global_settings;
-  return global_settings;
+}
+
+void settings::setFs(const double fs)
+{
+  fs_ = fs;
+}
+
+const double settings::fs() const
+{
+  return fs_;
+}
+
+void settings::setTimeLimit(const std::size_t limit)
+{
+  timeLimit_ = limit;
+}
+
+const std::size_t settings::timeLimit() const
+{
+  return timeLimit_;
 }
