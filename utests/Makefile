@@ -1,3 +1,3 @@
-BUILD_DIRS = network trajectory
+BUILD_DIRS = io network trajectory
 
 include ../mkfiles/defaults.mk

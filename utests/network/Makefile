@@ -1,6 +1,6 @@
 EXEC_TARGETS 		= $(TARGET)
 
-TARGET					= $(OBJ_DIR)/test1.exe
+TARGET					= $(OBJ_DIR)/network.exe
 
 TARGET_SRC_C		= $(wildcard *.cpp)
 TARGET_DEPS  		= $(patsubst %.cpp,$(OBJ_DIR)/%.o,$(TARGET_SRC_C))
