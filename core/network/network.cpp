@@ -14,7 +14,12 @@ void network::add_link(const std::size_t node1, const std::size_t node2)
   links_.set(index);
 }
 
-const std::vector<point_type>& network::node_positions() const
+const network::node_positions_type& network::node_positions() const
+{
+  return nodes_;
+}
+
+network::node_positions_type& network::node_positions()
 {
   return nodes_;
 }

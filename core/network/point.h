@@ -129,7 +129,7 @@ point<T, Dim> operator-(const point<T, Dim>& p)
 }
 
 template<class T, std::size_t Dim>
-T scalar_prod(const point<T, Dim>& p1,const point<T, Dim>& p2)
+T scalar_prod(const point<T, Dim>& p1, const point<T, Dim>& p2)
 {
   T tmp = 0.0;
   for(std::size_t i = 0; i < Dim; ++i)
@@ -172,7 +172,7 @@ inline point_type random_point()
 {
   std::random_device rd;
   std::mt19937 gen(rd());
-  std::uniform_real_distribution<> dis(0, 1);
+  std::uniform_real_distribution<double> dis(0, 1);
   double x = dis(gen);
   double y = dis(gen);
   double z = dis(gen);
