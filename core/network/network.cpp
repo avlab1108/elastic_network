@@ -1,5 +1,9 @@
 #include "network.h"
 
+network::network()
+{
+}
+
 network::network(const std::size_t size) :
   links_(size*(size - 1)/2)
 {
@@ -42,7 +46,12 @@ bool network::are_connected(const std::size_t node1, const std::size_t node2)
   return links_[index];
 }
 
-std::size_t network::size() const
+void network::setSize(const std::size_t size)
+{
+  nodes_.resize(size);
+}
+
+const std::size_t network::size() const
 {
   return nodes_.size();
 }

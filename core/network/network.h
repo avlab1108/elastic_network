@@ -12,6 +12,7 @@ public:
   typedef std::vector<point_type> node_positions_type;
 
 public:
+  network();
   network(const std::size_t size);
 
   void add_link(const std::size_t node1, const std::size_t node2);
@@ -23,7 +24,8 @@ public:
 
   bool are_connected(const std::size_t node1, const std::size_t node2);
 
-  std::size_t size() const;
+  void setSize(const std::size_t size);
+  const std::size_t size() const;
 
 private:
   node_positions_type nodes_;
