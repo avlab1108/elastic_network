@@ -10,7 +10,7 @@ int main()
     net.set_node_position(i, 15*random_point());
   }
   const double fs = 0.2;
-  const std::size_t time = 10000;
+  const std::size_t time = 5;//10000;
   const double l0 = 3;
   setup_links(net, l0);
   std::vector<std::size_t> nodes;

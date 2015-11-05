@@ -1,3 +1,3 @@
-CXXFLAGS += -I../../core/io
+CXXFLAGS += -I../../core/io -I../../core/network -I../../core/settings
 
-LDFLAGS += -L../../core/last/$(OBJ_DIR) -lcore
+LDFLAGS += -L../../core/last/$(OBJ_DIR) -lcore -lyaml-cpp

@@ -23,6 +23,10 @@ default_target : $(ALL_TARGETS)
 
 all : compile lib slib exec
 
+lib : compile
+
+slib : lib
+
 clean ::
 ifneq "$(strip $(BUILD_DIRS))" ""
 	@for sub in $(strip $(BUILD_DIRS)) ; do  \

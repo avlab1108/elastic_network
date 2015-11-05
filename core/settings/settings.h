@@ -10,26 +10,26 @@ class settings
 public:
   settings();
 
-  void setNetwork(const network& net);
+  void set_network(const network& net);
   const network& network_() const;
 
-  void setExcitationTime(const std::size_t time);
-  const std::size_t excitationTime() const;
+  void set_excitation_time(const std::size_t time);
+  const std::size_t excitation_time() const;
 
-  void setTimeLimit(const std::size_t limit);
-  const std::size_t timeLimit() const;
+  void set_time_limit(const std::size_t limit);
+  const std::size_t time_limit() const;
 
-  void setFs(const double fs);
+  void set_fs(const double fs);
   const double fs() const;
 
-  void setSimulationsCount(const std::size_t simCount);
-  const std::size_t simutaionsCount() const;
+  void set_simulations_count(const std::size_t simCount);
+  const std::size_t simulations_count() const;
 
-  void setForceApplicationNodes(const std::vector<std::size_t>& nodes);
-  const std::vector<std::size_t>& forceApplicationNodes() const;
+  void set_force_application_nodes(const std::vector<std::size_t>& nodes);
+  const std::vector<std::size_t>& force_application_nodes() const;
 
-  void setVisualizationNodes(const std::vector<std::size_t>& nodes);
-  const std::vector<std::size_t>& visualizationNodes() const;
+  void set_visualization_nodes(const std::vector<std::size_t>& nodes);
+  const std::vector<std::size_t>& visualization_nodes() const;
 
 private:
   network net_;
