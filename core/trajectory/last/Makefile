@@ -2,7 +2,7 @@ LIB_TARGETS 		= $(TARGET)
 
 TARGET				= $(OBJ_DIR)/trajectory.a
 
-TARGET_DEPS  	= ../result_observer/$(OBJ_DIR)/*.o \
+TARGET_DEPS  	= ../common/$(OBJ_DIR)/*.o \
 								../excitor/$(OBJ_DIR)/*.o \
 								../relaxer/$(OBJ_DIR)/*.o
 

@@ -1,11 +1,10 @@
 #pragma once
 
 #include <network.h>
-#include <network_dynamics.h>
 
-#include <vector>
+#include <trajectory_worker.h>
 
-class relaxer
+class relaxer : public trajectory_worker
 {
 public:
   relaxer(network& net, const network::node_positions_type& initial_positions, const std::size_t max_time);
@@ -13,7 +12,5 @@ public:
   virtual void run();
 
 private:
-  network& net_;
-  network_dynamics net_dynamics_;
   const std::size_t max_time_;
 };

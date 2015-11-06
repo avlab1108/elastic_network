@@ -11,7 +11,10 @@ public:
 
   result_observer(std::ostream& out);
 
-  void operator()(const state_type& x, const double t) const;
+  void operator()(const state_type& x, const double t);
+
+private:
+  virtual void format_state(const state_type& state, const double t);
 
 private:
   std::ostream& out_;

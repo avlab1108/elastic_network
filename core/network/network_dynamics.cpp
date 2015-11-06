@@ -26,7 +26,7 @@ void network_dynamics::operator() (const state_type& r, state_type& drdt, const 
       {
         double dist_i_j = distance(r[i], r[j]);
         double dist_i0_j0 = distance(initial_positions_[i], initial_positions_[j]);
-        drdt[i] += -(r[i] - r[j])*(dist_i_j - dist_i0_j0)/dist_i_j;
+        drdt[i] += -(r[i] - r[j]) - dist_i0_j0/dist_i_j;
       }
     }
   }

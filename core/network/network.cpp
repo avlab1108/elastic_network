@@ -1,5 +1,8 @@
 #include "network.h"
 
+
+#include <iostream>
+
 network::network()
 {
 }
@@ -7,6 +10,7 @@ network::network()
 network::network(const std::size_t size) :
   links_(size*(size - 1)/2)
 {
+  assert(size > 0);
   nodes_.resize(size);
 }
 

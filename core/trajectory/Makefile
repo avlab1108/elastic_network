@@ -1,3 +1,3 @@
-BUILD_DIRS = result_observer excitor relaxer last
+BUILD_DIRS = common excitor relaxer last
 
 include ../../mkfiles/defaults.mk

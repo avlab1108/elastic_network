@@ -3,6 +3,7 @@
 #include "network.h"
 #include "point.h"
 
+#include <memory>
 #include <vector>
 
 class network_dynamics
@@ -18,3 +19,5 @@ private:
   network net_;
   network::node_positions_type initial_positions_;
 };
+
+typedef std::shared_ptr<network_dynamics> network_dynamics_ptr;
