@@ -1,6 +1,7 @@
 #include "from_article.h"
 #include "hierarchical_potential.h"
 
+#include <utils.h>
 #include <excitor.h>
 #include <relaxer.h>
 #include <result_observer.h>
@@ -20,7 +21,7 @@ public:
   {
     for(std::size_t i = 0; i < r.size(); ++i)
     {
-      std::cout << distance(r[i], previous_[i]) << " ";
+      std::cout << utils::distance(r[i], previous_[i]) << " ";
     }
     std::cout << "\n";
     previous_ = r;

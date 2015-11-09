@@ -1,9 +1,8 @@
 #include "network_dynamics.h"
 
+#include <utils.h>
+
 #include <cmath>
-
-
-#include <iostream>
 
 network_dynamics::network_dynamics(const network& net, const network::node_positions_type& initial_positions) :
   net_(net),
@@ -26,8 +25,8 @@ void network_dynamics::calculate(const state_type& r, state_type& drdt, const do
       bool a_i_j = net_.are_connected(i, j);
       if(a_i_j)
       {
-        double dist_i_j = distance(r[i], r[j]);
-        double dist_i0_j0 = distance(initial_positions_[i], initial_positions_[j]);
+        double dist_i_j = utils::distance(r[i], r[j]);
+        double dist_i0_j0 = utils::distance(initial_positions_[i], initial_positions_[j]);
         drdt[i] -= (r[i] - r[j])*(dist_i_j - dist_i0_j0)/dist_i_j;
       }
     }

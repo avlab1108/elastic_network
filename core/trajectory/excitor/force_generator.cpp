@@ -1,5 +1,7 @@
 #include "force_generator.h"
 
+#include <utils.h>
+
 force_generator::force_generator(const double fs, const nodes_type& nodes) :
   fs_(fs),
   nodes_(nodes)
@@ -16,7 +18,7 @@ force_generator::result_type force_generator::generate()
   long double n = 0.0;
   for(std::size_t i = 0; i < nodes_.size(); ++i)
   {
-    result[i] = std::make_pair(nodes_[i], random_point());
+    result[i] = std::make_pair(nodes_[i], utils::random_point());
     n += std::pow(abs(result[i].second), 2);
   }
   const long double d = fs_/std::sqrt(n);

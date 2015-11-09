@@ -1,1 +1,1 @@
-CXXFLAGS += -I../network
+CXXFLAGS += -I../network -I../utils

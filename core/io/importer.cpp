@@ -1,5 +1,7 @@
 #include "importer.h"
 
+#include <utils.h>
+
 #include <yaml-cpp/yaml.h>
 
 namespace YAML
@@ -65,22 +67,23 @@ importer::importer(const std::string& file_path)
 void importer::read_network_from_yaml(const YAML::Node& node)
 {
   const YAML::Node& nodes = node[constants::nodes];
-  network net(nodes.size());
-  for(std::size_t i = 0; i < net.size(); ++i)
+  const std::size_t size = nodes.size();
+  network net(size);
+  for(std::size_t i = 0; i < size; ++i)
   {
     net.set_node_position(i, nodes[i].as<point_type>());
   }
   if(node[constants::l0])
   {
-    setup_links(net, node[constants::l0].as<double>());
+    net.set_cutoff_distance(node[constants::l0].as<double>());
   }
   else
   {
     assert(node[constants::links]);
-    const YAML::Node& linksNode = node[constants::links];
-    for(std::size_t i = 0; i < linksNode.size(); ++i)
+    const YAML::Node& links_node = node[constants::links];
+    for(std::size_t i = 0; i < links_node.size(); ++i)
     {
-      std::pair<std::size_t, std::size_t> link = linksNode[i].as<std::pair<std::size_t, std::size_t>>();
+      std::pair<std::size_t, std::size_t> link = links_node[i].as<std::pair<std::size_t, std::size_t>>();
       net.add_link(link.first - 1, link.second - 1);
     }
   }

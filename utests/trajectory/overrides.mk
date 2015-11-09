@@ -1,6 +1,3 @@
-CXXFLAGS += -I../../core/trajectory/excitor
-CXXFLAGS += -I../../core/trajectory/relaxer
-CXXFLAGS += -I../../core/trajectory/common
-CXXFLAGS += -I../../core/network
+CXXFLAGS += -I../../core/trajectory/excitor -I../../core/trajectory/relaxer -I../../core/trajectory/common -I../../core/network -I ../../core/utils
 
 LDFLAGS += -L../../core/last/$(OBJ_DIR) -lcore -lyaml-cpp

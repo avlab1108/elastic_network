@@ -8,10 +8,10 @@ int main()
   srand(0);
   for(std::size_t i = 0; i < net.size(); ++i)
   {
-    net.set_node_position(i, 15*random_point());
+    net.set_node_position(i, 15*utils::random_point());
   }
   const double l0 = 10;
-  setup_links(net, l0);
+  net.set_cutoff_distance(l0);
   for(std::size_t i = 0; i < net.size(); ++i)
   {
     for(std::size_t j = 0; j < net.size(); ++j)
@@ -20,7 +20,7 @@ int main()
       {
         continue;
       }
-      long double d = distance(net.node_position(i), net.node_position(j));
+      long double d = utils::distance(net.node_position(i), net.node_position(j));
       std::cout << d << std::endl;
       if(d < l0)
       {

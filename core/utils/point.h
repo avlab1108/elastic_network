@@ -166,20 +166,3 @@ std::ostream& operator<<(std::ostream& out, const point<T, Dim>& p)
 }
 
 typedef point<long double, 3> point_type;
-
-//TODO MH: fix this
-inline point_type random_point()
-{
-  std::random_device rd;
-  std::mt19937 gen(rd());
-  std::uniform_real_distribution<double> dis(-0.5, 0.5);
-  double x = dis(gen);
-  double y = dis(gen);
-  double z = dis(gen);
-  return point_type(x, y, z);
-}
-
-inline long double distance(const point_type& p1, const point_type& p2)
-{
-  return abs(p1-p2);
-}
