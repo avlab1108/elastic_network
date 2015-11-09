@@ -4,7 +4,6 @@
 
 #include <cmath>
 #include <ostream>
-#include <random>
 
 template<class T, const std::size_t Dim>
 class point :
