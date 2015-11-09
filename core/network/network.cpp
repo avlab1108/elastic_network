@@ -1,8 +1,5 @@
 #include "network.h"
 
-
-#include <iostream>
-
 network::network()
 {
 }
@@ -12,6 +9,23 @@ network::network(const std::size_t size) :
 {
   assert(size > 0);
   nodes_.resize(size);
+}
+
+network::network(const node_positions_type& node_positions, const long double l0) :
+  nodes_(node_positions),
+  links_(nodes_.size() * (nodes_.size() - 1)/2)
+{
+  setup_links(*this, l0);
+}
+
+network::network(const node_positions_type& node_positions, const links_type& links) :
+  nodes_(node_positions),
+  links_(nodes_.size() * (nodes_.size() - 1)/2)
+{
+  for(std::size_t i = 0; i < links.size(); ++i)
+  {
+    add_link(links[i].first, links[i].second);
+  }
 }
 
 void network::add_link(const std::size_t node1, const std::size_t node2)
@@ -60,7 +74,7 @@ const std::size_t network::size() const
   return nodes_.size();
 }
 
-void setup_links(network& net, const double l0)
+void setup_links(network& net, const long double l0)
 {
   for(std::size_t i = 0; i < net.size(); ++i)
   {

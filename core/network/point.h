@@ -172,7 +172,7 @@ inline point_type random_point()
 {
   std::random_device rd;
   std::mt19937 gen(rd());
-  std::uniform_real_distribution<double> dis(0, 1);
+  std::uniform_real_distribution<double> dis(-0.5, 0.5);
   double x = dis(gen);
   double y = dis(gen);
   double z = dis(gen);

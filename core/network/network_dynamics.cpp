@@ -1,6 +1,8 @@
 #include "network_dynamics.h"
 
 #include <cmath>
+
+
 #include <iostream>
 
 network_dynamics::network_dynamics(const network& net, const network::node_positions_type& initial_positions) :
@@ -9,7 +11,7 @@ network_dynamics::network_dynamics(const network& net, const network::node_posit
 {
 }
 
-void network_dynamics::operator() (const state_type& r, state_type& drdt, const double /*t*/)
+void network_dynamics::calculate(const state_type& r, state_type& drdt, const double t)
 {
   assert(drdt.size() == net_.size());
   for(std::size_t i = 0; i < drdt.size(); ++i)
@@ -26,8 +28,28 @@ void network_dynamics::operator() (const state_type& r, state_type& drdt, const 
       {
         double dist_i_j = distance(r[i], r[j]);
         double dist_i0_j0 = distance(initial_positions_[i], initial_positions_[j]);
-        drdt[i] += -(r[i] - r[j]) - dist_i0_j0/dist_i_j;
+        drdt[i] -= (r[i] - r[j])*(dist_i_j - dist_i0_j0)/dist_i_j;
       }
     }
   }
+}
+
+void network_dynamics::prepare_for_step()
+{
+}
+
+network_dynamics_wrapper::network_dynamics_wrapper(const std::shared_ptr<network_dynamics>& dynamics) :
+  dynamics_(dynamics)
+{
+  assert(dynamics_);
+}
+
+void network_dynamics_wrapper::operator() (const state_type& r, state_type& drdt, const double t)
+{
+  dynamics_->calculate(r, drdt, t);
+}
+
+void network_dynamics_wrapper::prepare_for_step()
+{
+  dynamics_->prepare_for_step();
 }

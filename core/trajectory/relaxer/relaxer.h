@@ -7,10 +7,11 @@
 class relaxer : public trajectory_worker
 {
 public:
-  relaxer(network& net, const network::node_positions_type& initial_positions, const std::size_t max_time);
+  relaxer(network& net, const network::node_positions_type& initial_positions, const long double step, const std::size_t max_time);
 
-  virtual void run();
+  virtual void run() override;
 
 private:
+  const long double step_;
   const std::size_t max_time_;
 };

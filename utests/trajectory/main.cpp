@@ -1,26 +1,85 @@
+#include "from_article.h"
+#include "hierarchical_potential.h"
+
 #include <excitor.h>
 #include <relaxer.h>
+#include <result_observer.h>
+
 #include <cstdlib>
+#include <memory>
+
+class comparer : public result_observer
+{
+public:
+  comparer(const state_type& r) :
+    previous_(r)
+  {
+  }
+
+  virtual void process(const state_type& r, const double t) override
+  {
+    for(std::size_t i = 0; i < r.size(); ++i)
+    {
+      std::cout << distance(r[i], previous_[i]) << " ";
+    }
+    std::cout << "\n";
+    previous_ = r;
+  }
+ 
+  void reset(const state_type& r)
+  {
+    previous_ = r;
+  }
+
+private:
+  state_type previous_;
+};
+
+void test_from_article()
+{
+  network net(node_positions, links);
+  std::vector<std::size_t> nodes;
+  nodes.push_back(32);
+  nodes.push_back(40);
+  nodes.push_back(41);
+  network::node_positions_type initial = net.node_positions();
+  //std::shared_ptr<result_observer> obs(new stream_dumper(stream_dumper::format_type::gnuplot));
+  std::shared_ptr<comparer> obs(new comparer(initial));
+  excitor x(net, initial, 0.01, 100000, 0.2, nodes);
+  x.set_result_observer(obs);
+  x.run();
+  std::cout << "relaxing" << std::endl;
+  //obs->reset(net.node_positions());
+  //relaxer r(net, initial, 0.01, 10000000);
+  //r.set_result_observer(obs);
+  //r.run();
+}
+
+void test_hierarchical_potential()
+{
+  network net(hp::node_positions, 3);
+  std::vector<std::size_t> nodes;
+  for(std::size_t i = 0; i < hp::node_positions.size(); ++i)
+  {
+    nodes.push_back(i);
+  }
+  network::node_positions_type initial = net.node_positions();
+  std::shared_ptr<result_observer> obs(new stream_dumper(stream_dumper::format_type::gnuplot));
+  const long double dt = 0.002;
+  //std::shared_ptr<comparer> obs(new comparer(initial));
+  excitor x(net, initial, dt, 10000, 0.2, nodes);
+  x.set_result_observer(obs);
+  x.run();
+  //std::cout << "relaxing" << std::endl;
+  //obs->reset(net.node_positions());
+  relaxer r(net, initial, dt, 1000000);
+  r.set_result_observer(obs);
+  r.run();
+}
 
 int main()
 {
-  network net(10);
-  for(std::size_t i = 0; i < net.size(); ++i)
-  {
-    net.set_node_position(i, 15*random_point());
-  }
-  const double fs = 0.2;
-  const std::size_t time = 1;//10000;
-  const double l0 = 3;
-  setup_links(net, l0);
-  std::vector<std::size_t> nodes;
-  nodes.push_back(1);
-  nodes.push_back(5);
-  nodes.push_back(9);
-  network::node_positions_type initial = net.node_positions();
-  excitor x(net, initial, fs, time, nodes);
-  x.run();
-  relaxer r(net, initial, 10);
-  r.run();
+  //test_from_article();
+  test_hierarchical_potential();
   return 0;
 }
