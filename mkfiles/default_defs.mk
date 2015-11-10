@@ -21,7 +21,7 @@ CPLUSPLUS_SLIB  			= $(CXX) -shared
 SLIB_ALL  						= -Wl,--whole-archive
 SLIB_NONE 						= -Wl,--no-whole-archive
 
-CXXFLAGS             	= -std=c++11 -fPIC -Werror -MD -g
+CXXFLAGS             	= -std=c++11 -fPIC -Werror -MD -g -I.
 LDFLAGS              	=
 
 -include overrides.mk

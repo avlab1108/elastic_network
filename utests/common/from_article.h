@@ -3,6 +3,9 @@
 #include <network.h>
 #include <vector>
 
+namespace fa
+{
+
 const network::node_positions_type& node_positions =
 {
   {-3.137324414184,  -12.109642999101, -17.041595796478},
@@ -138,3 +141,4 @@ const std::vector<std::pair<std::size_t, std::size_t>> links =
   {62, 63}
 };
 
+}

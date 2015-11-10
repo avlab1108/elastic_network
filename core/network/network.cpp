@@ -66,6 +66,22 @@ network::node_positions_type& network::node_positions()
   return nodes_;
 }
 
+network::links_type network::links() const
+{
+  links_type res;
+  for(std::size_t i = 0; i < size(); ++i)
+  {
+    for(std::size_t j = i + 1; j < size(); ++j)
+    {
+      if(are_connected(i, j))
+      {
+        res.push_back(std::make_pair(i, j));
+      }
+    }
+  }
+  return res;
+}
+
 const point_type& network::node_position(const std::size_t node) const
 {
   return nodes_[node];
@@ -76,7 +92,7 @@ void network::set_node_position(const std::size_t node, const point_type& p)
   nodes_[node] = p;
 }
 
-bool network::are_connected(const std::size_t node1, const std::size_t node2)
+bool network::are_connected(const std::size_t node1, const std::size_t node2) const
 {
   const std::size_t max = std::max(node1, node2);
   const std::size_t min = std::min(node1, node2);

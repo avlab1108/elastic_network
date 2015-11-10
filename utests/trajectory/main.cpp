@@ -1,5 +1,5 @@
-#include "from_article.h"
-#include "hierarchical_potential.h"
+#include <from_article.h>
+#include <hierarchical_potential.h>
 
 #include <utils.h>
 #include <excitor.h>
@@ -38,7 +38,7 @@ private:
 
 void test_from_article()
 {
-  network net(node_positions, links);
+  network net(fa::node_positions, fa::links);
   std::vector<std::size_t> nodes;
   nodes.push_back(32);
   nodes.push_back(40);
