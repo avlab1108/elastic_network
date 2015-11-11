@@ -3,7 +3,10 @@
 class task_manager
 {
 public:
-  task_manager();
+  static task_manager& instance();
 
   void distribute_tasks();
+
+private:
+  task_manager();
 };

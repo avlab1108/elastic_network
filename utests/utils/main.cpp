@@ -10,6 +10,7 @@ int main()
   utils::dump_adjacency_list(net1, "./hierarchical_potential.txt");
 
   network net2(fa::node_positions, fa::links);
+  utils::dump_adjacency_list(net2, "./from_article.txt");
 
   return 0;
 }

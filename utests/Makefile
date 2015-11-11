@@ -1,3 +1,3 @@
-BUILD_DIRS = io network trajectory
+BUILD_DIRS = io network trajectory task_manager
 
 include ../mkfiles/defaults.mk
