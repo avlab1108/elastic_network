@@ -1,4 +1,4 @@
-#include "importer.h"
+#include "user_settings_importer.h"
 
 #include <utils.h>
 
@@ -33,7 +33,7 @@ struct convert<point_type>
 };
 }
 
-importer::importer(const std::string& file_path)
+user_settings_importer::user_settings_importer(const std::string& file_path)
 {
   YAML::Node node = YAML::LoadFile(file_path);
   if(node[constants::fs])
@@ -41,11 +41,28 @@ importer::importer(const std::string& file_path)
     settings_.set_fs(node[constants::fs].as<double>());
   }
 
+  if(node[constants::time_step])
+  {
+    settings_.set_time_step(node[constants::time_step].as<double>());
+  }
+
+  if(node[constants::time_limit])
+  {
+    settings_.set_time_limit(node[constants::time_limit].as<size_t>());
+  }
+
+  if(node[constants::excitation_time])
+  {
+    settings_.set_excitation_time(node[constants::excitation_time].as<std::size_t>());
+  }
+
+  //TODO: read nodes from file
+
   if(node[constants::nodes])
   {
     if((node[constants::links] && node[constants::l0]) ||
       (!node[constants::links] && !node[constants::l0]) ||
-      node[constants::networkFilePath])
+      node[constants::network_file_path])
     {
       throw std::runtime_error("Invalid structure of file.");
     }
@@ -57,14 +74,19 @@ importer::importer(const std::string& file_path)
   }
   else
   {
-    if(node[constants::networkFilePath])
+    if(node[constants::network_file_path])
     {
-      import_network_from_external_file(node[constants::networkFilePath].as<std::string>());
+      import_network_from_external_file(node[constants::network_file_path].as<std::string>());
     }
   }
 }
 
-void importer::read_network_from_yaml(const YAML::Node& node)
+const user_settings& user_settings_importer::get_settings() const
+{
+  return settings_;
+}
+
+void user_settings_importer::read_network_from_yaml(const YAML::Node& node)
 {
   const YAML::Node& nodes = node[constants::nodes];
   const std::size_t size = nodes.size();
@@ -90,7 +112,7 @@ void importer::read_network_from_yaml(const YAML::Node& node)
   settings_.set_network(net);
 }
 
-void importer::import_network_from_external_file(const std::string& file_path)
+void user_settings_importer::import_network_from_external_file(const std::string& file_path)
 {
   std::size_t dot = file_path.find_last_of(".");
   const std::string& ext = file_path.substr(dot + 1);
@@ -104,16 +126,16 @@ void importer::import_network_from_external_file(const std::string& file_path)
   }
   else
   {
-    throw std::runtime_error("Invalid file type provided as " + constants::networkFilePath);
+    throw std::runtime_error("Invalid file type provided as " + constants::network_file_path);
   }
 }
 
-void importer::import_network_from_yaml_file(const std::string& file_path)
+void user_settings_importer::import_network_from_yaml_file(const std::string& file_path)
 {
   YAML::Node node = YAML::LoadFile(file_path);
   read_network_from_yaml(node);
 }
 
-void importer::import_network_from_csv_file(const std::string& file_path)
+void user_settings_importer::import_network_from_csv_file(const std::string& file_path)
 {
 }

@@ -1,0 +1,4 @@
+resultsDirPattern: !!str results
+trajectoryDirPattern: !!str trajectory
+excitationFileNamePattern: !!str excitation_
+relaxationFileNamePattern: !!str relaxation_

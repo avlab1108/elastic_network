@@ -5,10 +5,10 @@
 #include <cstdlib>
 #include <vector>
 
-class settings
+class user_settings
 {
 public:
-  settings();
+  user_settings();
 
   void set_network(const network& net);
   const network& network_() const;
@@ -18,6 +18,9 @@ public:
 
   void set_time_limit(const std::size_t limit);
   const std::size_t time_limit() const;
+
+  void set_time_step(const double step);
+  const double time_step() const;
 
   void set_fs(const double fs);
   const double fs() const;
@@ -35,6 +38,7 @@ private:
   network net_;
   std::size_t excitationTime_;
   std::size_t timeLimit_;
+  double time_step_;
   double fs_;
   std::size_t simulationsCount_;
   std::vector<std::size_t> forceApplicationNodes_;

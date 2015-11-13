@@ -1,6 +1,6 @@
 EXEC_TARGETS 		= $(TARGET)
 
-TARGET					= $(OBJ_DIR)/trajectory.exe
+TARGET					= $(OBJ_DIR)/task_manager.exe
 
 TARGET_SRC_C		= $(wildcard *.cpp)
 TARGET_DEPS  		= $(patsubst %.cpp,$(OBJ_DIR)/%.o,$(TARGET_SRC_C))
