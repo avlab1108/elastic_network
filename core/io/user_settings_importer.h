@@ -14,6 +14,7 @@ const std::string links = "links";
 const std::string time_step = "timeStep";
 const std::string time_limit = "timeLimit";
 const std::string excitation_time = "timeIni";
+const std::string simulations_count = "runNum";
 const std::string force_application_nodes = "activeNodes";
 const std::string visualization_nodes = "visualizationNodes";
 }

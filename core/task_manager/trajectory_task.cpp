@@ -29,14 +29,14 @@ void trajectory_process::execute()
     return;
   }
   const user_settings& sets = config_.get_user_settings();
-  network net = sets.network_();
-  network::node_positions_type state = net.node_positions();
+  network net = sets.get_network();
+  network::node_positions_type state = net.get_node_positions();
   std::shared_ptr<result_observer> obs(new stream_dumper(stream_dumper::format_type::raw, &fout));
   LOG(logger::info, std::string("Started execution for id \"") + std::to_string(run_id_) + "\" with following parameters:\n \
-      \ttime step: " + std::to_string(sets.time_step()) + ", \n\
-      \texcitation time: " + std::to_string(sets.excitation_time()) + ", \n\
-      \tforce summary module: " + std::to_string(sets.fs()));
-  excitor x(net, state, sets.time_step(), sets.excitation_time(), sets.fs()); 
+      \ttime step: " + std::to_string(sets.get_time_step()) + ", \n\
+      \texcitation time: " + std::to_string(sets.get_excitation_time()) + ", \n\
+      \tforce summary module: " + std::to_string(sets.get_fs()));
+  excitor x(net, state, sets.get_time_step(), sets.get_excitation_time(), sets.get_fs()); 
   x.set_result_observer(obs);
   std::clock_t begin = clock();
   x.run();
@@ -44,8 +44,8 @@ void trajectory_process::execute()
   LOG(logger::info, std::string("Finished execution for id \"") + std::to_string(run_id_) + "\". Elapsed CPU time: " + std::to_string(static_cast<double>(end-begin)/CLOCKS_PER_SEC) + " seconds.");
 }
 
-trajectory_task::trajectory_task(const std::string& user_config_path, const std::vector<std::size_t>& run_ids) :
-  config_(user_config_path),
+trajectory_task::trajectory_task(const config& config, const std::vector<std::size_t>& run_ids) :
+  config_(config),
   run_ids_(run_ids)
 {
   for(std::size_t i = 0; i < run_ids_.size(); ++i)

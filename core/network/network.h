@@ -20,21 +20,21 @@ public:
   network(const node_positions_type& node_positions, const links_type& links);
 
   void set_cutoff_distance(const long double l0);
-  const long double cutoff_distance() const;
+  const long double get_cutoff_distance() const;
 
   void add_link(const std::size_t node1, const std::size_t node2);
-  const node_positions_type& node_positions() const;
-  node_positions_type& node_positions();
+  const node_positions_type& get_node_positions() const;
+  node_positions_type& get_node_positions();
 
-  links_type links() const;
+  links_type get_links() const;
 
-  const point_type& node_position(const std::size_t node) const;
+  const point_type& get_node_position(const std::size_t node) const;
   void set_node_position(const std::size_t node, const point_type& p);
 
   bool are_connected(const std::size_t node1, const std::size_t node2) const;
 
   void set_size(const std::size_t size);
-  const std::size_t size() const;
+  const std::size_t get_size() const;
 
 private:
   node_positions_type nodes_;

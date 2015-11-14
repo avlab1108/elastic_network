@@ -1,4 +1,4 @@
-#include <task_manager.h>
+#include <mpi_process_manager.h>
 #include <trajectory_task.h>
 #include <utils.h>
 #include <user_settings_importer.h>
@@ -7,12 +7,12 @@
 #include <cstdlib>
 #include <memory>
 
-int main()
+int main(int argc, char** argv)
 {
-  task_manager& manager = task_manager::instance();
+  //config c("./config.yaml");
+  //trajectory_process task1(12, c);
+  //task1.execute();
 
-  config c("./config.yaml");
-  trajectory_process task1(12, c);
-  task1.execute();
-  return 0;
+  mpi_process_manager& m = mpi_process_manager::instance(argc, argv);
+  return m.execute();
 }

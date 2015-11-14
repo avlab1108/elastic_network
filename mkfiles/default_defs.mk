@@ -24,7 +24,7 @@ SLIB_ALL  						= -Wl,--whole-archive
 SLIB_NONE 						= -Wl,--no-whole-archive
 
 BOOST_INCLUDE					= -I/home/minas/tasks/graph_new/boost/install/include
-BOOST_LIBS						= -L/home/minas/tasks/graph_new/boost/install/lib -lboost_system -lboost_serialization -lboost_mpi -lboost_filesystem
+BOOST_LIBS						= -L/home/minas/tasks/graph_new/boost/install/lib -lboost_system -lboost_serialization -lboost_mpi -lboost_filesystem -lboost_program_options
 
 CXXFLAGS             	= -std=c++11 -fPIC -Werror -MD -g -I. $(BOOST_INCLUDE)
 LDFLAGS              	= $(BOOST_LIBS)

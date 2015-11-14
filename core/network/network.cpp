@@ -31,11 +31,11 @@ network::network(const node_positions_type& node_positions, const links_type& li
 void network::set_cutoff_distance(const long double l0)
 {
   cutoff_distance_ = l0;
-  for(std::size_t i = 0; i < size(); ++i)
+  for(std::size_t i = 0; i < get_size(); ++i)
   {
-    for(std::size_t j = i + 1; j < size(); ++j)
+    for(std::size_t j = i + 1; j < get_size(); ++j)
     {
-      if(utils::distance(node_position(i), node_position(j)) < l0)
+      if(utils::distance(get_node_position(i), get_node_position(j)) < l0)
       {
         add_link(i, j);
       }
@@ -43,7 +43,7 @@ void network::set_cutoff_distance(const long double l0)
   }
 }
 
-const long double network::cutoff_distance() const
+const long double network::get_cutoff_distance() const
 {
   return cutoff_distance_;
 }
@@ -56,22 +56,22 @@ void network::add_link(const std::size_t node1, const std::size_t node2)
   links_.set(index);
 }
 
-const network::node_positions_type& network::node_positions() const
+const network::node_positions_type& network::get_node_positions() const
 {
   return nodes_;
 }
 
-network::node_positions_type& network::node_positions()
+network::node_positions_type& network::get_node_positions()
 {
   return nodes_;
 }
 
-network::links_type network::links() const
+network::links_type network::get_links() const
 {
   links_type res;
-  for(std::size_t i = 0; i < size(); ++i)
+  for(std::size_t i = 0; i < get_size(); ++i)
   {
-    for(std::size_t j = i + 1; j < size(); ++j)
+    for(std::size_t j = i + 1; j < get_size(); ++j)
     {
       if(are_connected(i, j))
       {
@@ -82,7 +82,7 @@ network::links_type network::links() const
   return res;
 }
 
-const point_type& network::node_position(const std::size_t node) const
+const point_type& network::get_node_position(const std::size_t node) const
 {
   return nodes_[node];
 }
@@ -105,7 +105,7 @@ void network::set_size(const std::size_t size)
   nodes_.resize(size);
 }
 
-const std::size_t network::size() const
+const std::size_t network::get_size() const
 {
   return nodes_.size();
 }

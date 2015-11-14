@@ -12,11 +12,11 @@ network_dynamics::network_dynamics(const network& net, const network::node_posit
 
 void network_dynamics::calculate(const state_type& r, state_type& drdt, const double t)
 {
-  assert(drdt.size() == net_.size());
+  assert(drdt.size() == net_.get_size());
   for(std::size_t i = 0; i < drdt.size(); ++i)
   {
     drdt[i] = point_type(0.0, 0.0, 0.0);
-    for(std::size_t j = 0; j < net_.size(); ++j)
+    for(std::size_t j = 0; j < net_.get_size(); ++j)
     {
       if(i == j)
       {

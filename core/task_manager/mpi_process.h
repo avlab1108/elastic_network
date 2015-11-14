@@ -4,33 +4,40 @@
 
 #include <boost/mpi.hpp>
 
+class command_line
+{
+public:
+  command_line(int argc, char** argv);
+  std::string get_user_settings_path() const;
+  std::string get_global_settings_path() const;
+
+private:
+  std::string user_settings_path_;
+  std::string global_settings_path_;
+};
+
 class mpi_process
 {
 public:
-  mpi_process(int argc, char* argv[]);
-  virtual void execute() = 0;
+  mpi_process(int argc, char** argv);
+  virtual int execute() = 0;
 
 protected:
-  boost::mpi::environment env_;
+  command_line command_line_;
   boost::mpi::communicator world_;
+  config config_;
 };
 
 class main_mpi_process : public mpi_process
 {
 public:
-  main_mpi_process(int argc, char* argv[]);
-  virtual void execute() override;
+  main_mpi_process(int argc, char** argv);
+  virtual int execute() override;
 };
 
 class worker_mpi_process : public mpi_process
 {
 public:
-  worker_mpi_process(int argc, char* argv[]);
-  virtual void execute() override;
-
-private:
-  std::string retrieve_user_setting_path(int argc, char* argv[]);
-
-private:
-  config config_;
+  worker_mpi_process(int argc, char** argv);
+  virtual int execute() override;
 };

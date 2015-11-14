@@ -1,6 +1,7 @@
 #include "user_settings_importer.h"
 
 #include <utils.h>
+#include <logging.h>
 
 #include <yaml-cpp/yaml.h>
 
@@ -35,7 +36,16 @@ struct convert<point_type>
 
 user_settings_importer::user_settings_importer(const std::string& file_path)
 {
-  YAML::Node node = YAML::LoadFile(file_path);
+  YAML::Node node;
+  try
+  {
+    node = YAML::LoadFile(file_path);
+  }
+  catch(YAML::Exception& e)
+  {
+    LOG(logger::error, std::string("Failed to load user settings file from \"") + file_path + "\".\n\tError: " + e.what());
+    return;
+  }
   if(node[constants::fs])
   {
     settings_.set_fs(node[constants::fs].as<double>());
@@ -54,6 +64,11 @@ user_settings_importer::user_settings_importer(const std::string& file_path)
   if(node[constants::excitation_time])
   {
     settings_.set_excitation_time(node[constants::excitation_time].as<std::size_t>());
+  }
+
+  if(node[constants::simulations_count])
+  {
+    settings_.set_simulations_count(node[constants::simulations_count].as<std::size_t>());
   }
 
   //TODO: read nodes from file

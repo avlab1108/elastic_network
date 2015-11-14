@@ -6,21 +6,21 @@ int main()
 {
   network net(10);
   srand(0);
-  for(std::size_t i = 0; i < net.size(); ++i)
+  for(std::size_t i = 0; i < net.get_size(); ++i)
   {
     net.set_node_position(i, 15*utils::random_point());
   }
   const double l0 = 10;
   net.set_cutoff_distance(l0);
-  for(std::size_t i = 0; i < net.size(); ++i)
+  for(std::size_t i = 0; i < net.get_size(); ++i)
   {
-    for(std::size_t j = 0; j < net.size(); ++j)
+    for(std::size_t j = 0; j < net.get_size(); ++j)
     {
       if(i == j)
       {
         continue;
       }
-      long double d = utils::distance(net.node_position(i), net.node_position(j));
+      long double d = utils::distance(net.get_node_position(i), net.get_node_position(j));
       std::cout << d << std::endl;
       if(d < l0)
       {

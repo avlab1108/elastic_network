@@ -43,7 +43,7 @@ void test_from_article()
   nodes.push_back(32);
   nodes.push_back(40);
   nodes.push_back(41);
-  network::node_positions_type initial = net.node_positions();
+  network::node_positions_type initial = net.get_node_positions();
   //std::shared_ptr<result_observer> obs(new stream_dumper(stream_dumper::format_type::gnuplot));
   std::shared_ptr<comparer> obs(new comparer(initial));
   excitor x(net, initial, 0.01, 100000, 0.2, nodes);
@@ -64,7 +64,7 @@ void test_hierarchical_potential()
   {
     nodes.push_back(i);
   }
-  network::node_positions_type initial = net.node_positions();
+  network::node_positions_type initial = net.get_node_positions();
   std::shared_ptr<result_observer> obs(new stream_dumper(stream_dumper::format_type::gnuplot));
   const long double dt = 0.002;
   //std::shared_ptr<comparer> obs(new comparer(initial));

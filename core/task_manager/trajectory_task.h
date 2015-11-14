@@ -20,7 +20,7 @@ private:
 class trajectory_task : public task
 {
 public:
-  trajectory_task(const std::string& user_config_path, const std::vector<std::size_t>& run_ids);
+  trajectory_task(const config& conf, const std::vector<std::size_t>& run_ids);
 
 private:
   const std::vector<std::size_t> run_ids_;
