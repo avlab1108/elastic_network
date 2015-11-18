@@ -92,32 +92,17 @@ node_chooser::node_chooser(const network& net) :
   arma::vec e1 = vectors.col(index - 1);
   arma::vec e2 = vectors.col(index);
 
-  std::vector<std::vector<long double>> initial_distances;
-  initial_distances.resize(net_.get_size());
-  for(std::size_t i = 0; i < net_.get_size(); ++i)
-  {
-    initial_distances[i].resize(net_.get_size());
-    for(std::size_t j = 0; j < net_.get_size(); ++j)
-    {
-      initial_distances[i][j] = utils::distance(net_.get_node_position(i), net_.get_node_position(j));
-    }
-  }
-
   double max_change = 0.0;
   std::size_t node1 = 0, node2 = 0;
   #pragma omp parallel for
   for(std::size_t i = 0; i < net_.get_size(); ++i)
   {
     const point_type& p1 = net_.get_node_position(i);
-    point_type e1_i{e1(i), e1(i+1), e1(i+2)};
+    point_type e1_i{e1(3*i), e1(3*i+1), e1(3*i+2)};
     #pragma omp parallel for
-    for(std::size_t j = 0; j < net_.get_size(); ++j)
+    for(std::size_t j = i+1; j < net_.get_size(); ++j)
     {
-      if(j == i)
-      {
-        continue;
-      }
-      point_type e1_j{e1(j), e1(j+1), e1(j+2)};
+      point_type e1_j{e1(3*j), e1(3*j+1), e1(3*j+2)};
       const point_type& p2 = net_.get_node_position(j);
       double rel = std::abs(scalar_prod(e1_i - e1_j, p1 - p2)/abs(p1 - p2));
       if(rel > max_change)
@@ -128,7 +113,7 @@ node_chooser::node_chooser(const network& net) :
       }
     }
   }
-  std::cout << node1 << " " << node2 << std::endl;
+  std::cout << node1 << " " << node2 << " " << max_change << std::endl;
 }
 
 const node_chooser::node_numbers_type& node_chooser::choose() const
