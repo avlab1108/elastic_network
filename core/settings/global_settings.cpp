@@ -2,9 +2,9 @@
 
 global_settings::global_settings() :
   results_dir_(), //TODO: add hardcoded default values
-  trajectory_output_dir_(),
-  excitation_output_dir_(),
-  relaxation_output_dir_()
+  generation_dir_(),
+  excitation_file_name_(),
+  relaxation_file_name_()
 {
 }
 
@@ -18,32 +18,32 @@ const std::string& global_settings::get_results_dir() const
   return results_dir_;
 }
 
-void global_settings::set_trajectory_output_dir(const std::string& dir)
+void global_settings::set_generation_dir(const std::string& dir)
 {
-  trajectory_output_dir_ = dir;
+  generation_dir_ = dir;
 }
 
-const std::string& global_settings::get_trajectory_output_directory() const
+const std::string& global_settings::get_generation_dir() const
 {
-  return trajectory_output_dir_;
+  return generation_dir_;
 }
 
-void global_settings::set_excitation_output_file(const std::string& dir)
+void global_settings::set_excitation_file_name(const std::string& file_name)
 {
-  excitation_output_dir_ = dir;
+  excitation_file_name_ = file_name;
 }
 
-const std::string& global_settings::get_excitation_output_file() const
+const std::string& global_settings::get_excitation_file_name() const
 {
-  return excitation_output_dir_;
+  return excitation_file_name_;
 }
 
-void global_settings::set_relaxation_output_file(const std::string& dir)
+void global_settings::set_relaxation_file_name(const std::string& file_name)
 {
-  relaxation_output_dir_ = dir;
+  relaxation_file_name_ = file_name;
 }
 
-const std::string& global_settings::get_relaxation_output_file() const
+const std::string& global_settings::get_relaxation_file_name() const
 {
-  return relaxation_output_dir_;
+  return relaxation_file_name_;
 }

@@ -5,9 +5,8 @@ export RM
 
 RM 										= /bin/rm -f
 
-#COMPILER_LOCATION 		= /usr
+COMPILER_LOCATION 		= /usr
 #CXX_NAME							= c++
-COMPILER_LOCATION 		= /home/minas/tasks/graph_new/mpich/install
 CXX_NAME							= mpic++
 
 CXX_SPECIFIC_FLAGS   	= -pipe -pedantic -Wall -Werror
@@ -23,10 +22,10 @@ CPLUSPLUS_SLIB  			= $(CXX) -shared
 SLIB_ALL  						= -Wl,--whole-archive
 SLIB_NONE 						= -Wl,--no-whole-archive
 
-BOOST_INCLUDE					= -I/home/minas/tasks/graph_new/boost/install/include
-BOOST_LIBS						= -L/home/minas/tasks/graph_new/boost/install/lib -lboost_system -lboost_serialization -lboost_mpi -lboost_filesystem -lboost_program_options
+BOOST_INCLUDE					= -I/home/minas/third_party/boost/install/include
+BOOST_LIBS						= -L/home/minas/third_party/boost/install/lib -lboost_system -lboost_serialization -lboost_mpi -lboost_filesystem -lboost_program_options
 
-CXXFLAGS             	= -std=c++11 -fPIC -Werror -MD -g -I. $(BOOST_INCLUDE)
+CXXFLAGS             	= -std=c++11 -fPIC -Werror -MD -O3 -fopenmp -I. $(BOOST_INCLUDE)
 LDFLAGS              	= $(BOOST_LIBS)
 
 -include overrides.mk

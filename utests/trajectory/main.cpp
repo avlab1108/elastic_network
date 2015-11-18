@@ -69,13 +69,16 @@ void test_hierarchical_potential()
   const long double dt = 0.002;
   //std::shared_ptr<comparer> obs(new comparer(initial));
   excitor x(net, initial, dt, 10000, 0.2, nodes);
-  x.set_result_observer(obs);
+  //x.set_result_observer(obs);
+  clock_t t1 = clock();
   x.run();
   //std::cout << "relaxing" << std::endl;
   //obs->reset(net.node_positions());
   relaxer r(net, initial, dt, 1000000);
-  r.set_result_observer(obs);
+  //r.set_result_observer(obs);
   r.run();
+  clock_t t2 = clock();
+  std::cout << (double)(t2-t1)/CLOCKS_PER_SEC << std::endl;
 }
 
 int main()

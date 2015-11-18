@@ -131,11 +131,11 @@ void user_settings_importer::import_network_from_external_file(const std::string
 {
   std::size_t dot = file_path.find_last_of(".");
   const std::string& ext = file_path.substr(dot + 1);
-  if(".yml" == ext || ".yaml" == ext)
+  if("yml" == ext || "yaml" == ext)
   {
     import_network_from_yaml_file(file_path);
   }
-  else if(".csv" == ext || ".dat" == ext || ".txt" == ext)
+  else if("csv" == ext || "dat" == ext || "txt" == ext)
   {
     import_network_from_csv_file(file_path);
   }

@@ -6,9 +6,9 @@
 namespace constants
 {
 const std::string results_dir = "resultsDirPattern";
-const std::string trajectory_output_dir = "trajectoryDirPattern";
-const std::string excitation_output_file = "excitationFileNamePattern";
-const std::string relaxation_output_file = "relaxationFileNamePattern";
+const std::string generation_dir = "generationDirPattern";
+const std::string excitation_file_name = "excitationFileNamePattern";
+const std::string relaxation_file_name = "relaxationFileNamePattern";
 }
 
 namespace YAML

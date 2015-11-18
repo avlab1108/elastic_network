@@ -4,8 +4,8 @@
 
 mpi_process_manager& mpi_process_manager::instance(int argc, char** argv)
 {
-  static mpi_process_manager m(argc, argv);
-  return m;
+  static mpi_process_manager mgr(argc, argv);
+  return mgr;
 }
 
 int mpi_process_manager::execute()

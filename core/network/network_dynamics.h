@@ -19,6 +19,7 @@ public:
 private:
   network net_;
   network::node_positions_type initial_positions_;
+  std::vector<std::vector<long double>> initial_distances_;
 };
 
 class network_dynamics_wrapper

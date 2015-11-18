@@ -50,6 +50,10 @@ const long double network::get_cutoff_distance() const
 
 void network::add_link(const std::size_t node1, const std::size_t node2)
 {
+  if(node1 == node2)
+  {
+    return;
+  }
   const std::size_t max = std::max(node1, node2);
   const std::size_t min = std::min(node1, node2);
   const std::size_t index = min*(min-1)/2 + min*(max-min) + (min > 0 ? (min-1)*(nodes_.size() - max) : 0);
@@ -94,6 +98,10 @@ void network::set_node_position(const std::size_t node, const point_type& p)
 
 bool network::are_connected(const std::size_t node1, const std::size_t node2) const
 {
+  if(node1 == node2)
+  {
+    return false;
+  }
   const std::size_t max = std::max(node1, node2);
   const std::size_t min = std::min(node1, node2);
   const std::size_t index = min*(min-1)/2 + min*(max-min) + (min > 0 ? (min-1)*(nodes_.size() - max) : 0);

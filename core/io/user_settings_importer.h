@@ -7,7 +7,7 @@
 namespace constants
 {
 const std::string fs = "Fs";
-const std::string network_file_path = "graphFile";
+const std::string network_file_path = "networkFile";
 const std::string l0 = "L0";
 const std::string nodes = "nodes";
 const std::string links = "links";

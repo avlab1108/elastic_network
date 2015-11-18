@@ -33,6 +33,12 @@ class main_mpi_process : public mpi_process
 public:
   main_mpi_process(int argc, char** argv);
   virtual int execute() override;
+
+private:
+  void create_results_dir();
+
+private:
+  std::string results_dir_;
 };
 
 class worker_mpi_process : public mpi_process

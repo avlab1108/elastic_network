@@ -18,17 +18,17 @@ global_settings_importer::global_settings_importer(const std::string& file_path)
   {
     settings_.set_results_dir(node[constants::results_dir].as<std::string>());
   }
-  if(node[constants::trajectory_output_dir])
+  if(node[constants::generation_dir])
   {
-    settings_.set_trajectory_output_dir(node[constants::trajectory_output_dir].as<std::string>());
+    settings_.set_generation_dir(node[constants::generation_dir].as<std::string>());
   }
-  if(node[constants::excitation_output_file])
+  if(node[constants::excitation_file_name])
   {
-    settings_.set_excitation_output_file(node[constants::excitation_output_file].as<std::string>());
+    settings_.set_excitation_file_name(node[constants::excitation_file_name].as<std::string>());
   }
-  if(node[constants::relaxation_output_file])
+  if(node[constants::relaxation_file_name])
   {
-    settings_.set_relaxation_output_file(node[constants::relaxation_output_file].as<std::string>());
+    settings_.set_relaxation_file_name(node[constants::relaxation_file_name].as<std::string>());
   }
 }
 

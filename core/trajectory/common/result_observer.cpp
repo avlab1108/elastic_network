@@ -41,7 +41,7 @@ void stream_dumper::format_for_gnuplot(const state_type& r, const double t)
 {
   for(std::size_t i = 0; i < r.size(); ++i)
   {
-    std::cout << std::setw(15) << std::left << r[i][0] << std::setw(15) << std::left << r[i][1] << std::setw(15) << r[i][2];
+    *out_ << std::setw(15) << std::left << r[i][0] << std::setw(15) << std::left << r[i][1] << std::setw(15) << r[i][2];
     *out_ << std::endl;
   }
   *out_ << '\n' << std::endl;
