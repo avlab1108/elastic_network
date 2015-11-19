@@ -5,10 +5,12 @@
 
 namespace constants
 {
-const std::string results_dir = "resultsDirPattern";
-const std::string generation_dir = "generationDirPattern";
-const std::string excitation_file_name = "excitationFileNamePattern";
-const std::string relaxation_file_name = "relaxationFileNamePattern";
+const std::string results_dir = "resultsDir";
+const std::string generation_dir = "generationDir";
+const std::string excitation_file_name = "excitationFileName";
+const std::string relaxation_file_name = "relaxationFileName";
+const std::string trajectory_file_name = "trajectoryFileName";
+const std::string dump_step = "dumpStep";
 }
 
 namespace YAML

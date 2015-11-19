@@ -1,4 +1,6 @@
-resultsDirPattern: !!str results
-generationDirPattern: !!str generation
-excitationFileNamePattern: !!str excitation
-relaxationFileNamePattern: !!str relaxation
+resultsDir: !!str results
+generationDir: !!str generation
+excitationFileName: !!str excitation
+relaxationFileName: !!str relaxation
+trajectoryFileName: !!str trajectory
+dumpStep: 10

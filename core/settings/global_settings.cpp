@@ -47,3 +47,23 @@ const std::string& global_settings::get_relaxation_file_name() const
 {
   return relaxation_file_name_;
 }
+
+void global_settings::set_trajectory_file_name(const std::string& file_name)
+{
+  trajectory_file_name_ = file_name;
+}
+
+const std::string& global_settings::get_trajectory_file_name() const
+{
+  return trajectory_file_name_;
+}
+
+void global_settings::set_dump_step(const std::size_t step)
+{
+  dump_step_ = step;
+}
+
+const std::size_t global_settings::get_dump_step() const
+{
+  return dump_step_;
+}

@@ -36,9 +36,9 @@ node_chooser::node_chooser(const network& net) :
 
         unsigned a_i_j = net_.are_connected(i, j) ? 1 : 0;
 
-        m(3*i,   3*j)     = a_i_j * x_i_j * x_i_j;
-        m(3*i,   3*j+1)   = a_i_j * x_i_j * y_i_j;
-        m(3*i,   3*j+2)   = a_i_j * x_i_j * z_i_j;
+        m(3*i,   3*j)   = a_i_j * x_i_j * x_i_j;
+        m(3*i,   3*j+1) = a_i_j * x_i_j * y_i_j;
+        m(3*i,   3*j+2) = a_i_j * x_i_j * z_i_j;
 
         m(3*i+1, 3*j)   = a_i_j * y_i_j * x_i_j;
         m(3*i+1, 3*j+1) = a_i_j * y_i_j * y_i_j;
@@ -63,9 +63,9 @@ node_chooser::node_chooser(const network& net) :
 
           unsigned a_i_k = net_.are_connected(i, k) ? 1 : 0;
 
-          m(3*i,   3*k)     += a_i_k * x_i_k * x_i_k;
-          m(3*i,   3*k+1)   += a_i_k * x_i_k * y_i_k;
-          m(3*i,   3*k+2)   += a_i_k * x_i_k * z_i_k;
+          m(3*i,   3*k)   += a_i_k * x_i_k * x_i_k;
+          m(3*i,   3*k+1) += a_i_k * x_i_k * y_i_k;
+          m(3*i,   3*k+2) += a_i_k * x_i_k * z_i_k;
 
           m(3*i+1, 3*k)   += a_i_k * y_i_k * x_i_k;
           m(3*i+1, 3*k+1) += a_i_k * y_i_k * y_i_k;
@@ -113,7 +113,28 @@ node_chooser::node_chooser(const network& net) :
       }
     }
   }
-  std::cout << node1 << " " << node2 << " " << max_change << std::endl;
+  node_numbers_.push_back(node1);
+  node_numbers_.push_back(node2);
+  std::cout << "1-> " << node1 << " 2-> " << node2 << " max-> " << max_change << std::endl;
+
+  max_change = 0.0;
+  std::size_t node3 = 0;
+  const point_type& p1 = net_.get_node_position(node1);
+  point_type e2_i{e2(3*node1), e2(3*node1+1), e2(3*node1+2)};
+  #pragma omp parallel for
+  for(std::size_t j = 0; j < net_.get_size(); ++j)
+  {
+    point_type e2_j{e2(3*j), e2(3*j+1), e2(3*j+2)};
+    const point_type& p2 = net_.get_node_position(j);
+    double rel = std::abs(scalar_prod(e2_i - e2_j, p1 - p2)/abs(p1 - p2));
+    if(rel > max_change)
+    {
+      node3 = j;
+      max_change = rel;
+    }
+  }
+  node_numbers_.push_back(node3);
+  std::cout << "3-> " << node3 << " max-> " << max_change << std::endl;
 }
 
 const node_chooser::node_numbers_type& node_chooser::choose() const

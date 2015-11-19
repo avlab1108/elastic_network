@@ -1,7 +1,9 @@
 #pragma once
 
 #include <network_dynamics.h>
+#include <node_chooser.h>
 
+#include <list>
 #include <iostream>
 
 class result_observer
@@ -23,8 +25,7 @@ public:
     gnuplot
   };
 
-  stream_dumper(format_type format = format_type::empty, std::ostream* out = &std::cout);
-
+  stream_dumper(format_type format = format_type::empty, std::ostream& out = std::cout);
   virtual void process(const state_type& r, const double t) override;
 
 private:
@@ -33,7 +34,42 @@ private:
 
 protected:
   format_type format_;
-  std::ostream* out_;
+  std::ostream& out_;
+};
+
+class trajectory_dumper : public result_observer
+{
+public:
+  trajectory_dumper(std::ostream& out, const network::node_positions_type& initial_positions, const node_chooser::node_numbers_type& nodes, const std::size_t step);
+  virtual void process(const state_type& r, const double t) override;
+
+private:
+  std::ostream& out_;
+  network::node_positions_type initial_positions_;
+  node_chooser::node_numbers_type nodes_;
+  std::size_t step_;
+};
+
+class stability_checker : public result_observer
+{
+public:
+  stability_checker(const network::node_positions_type& initial_positions, const node_chooser::node_numbers_type& nodes);
+  virtual void process(const state_type& r, const double t) override;
+
+private:
+  network::node_positions_type initial_positions_;
+  node_chooser::node_numbers_type nodes_;
+};
+
+class composite_result_observer : public result_observer
+{
+public:
+  composite_result_observer();
+  virtual void process(const state_type& r, const double t) override;
+  void add_result_observer(const std::shared_ptr<result_observer>& observer);
+
+private:
+  std::list<std::shared_ptr<result_observer>> observers_;
 };
 
 class result_observer_wrapper

@@ -30,6 +30,14 @@ global_settings_importer::global_settings_importer(const std::string& file_path)
   {
     settings_.set_relaxation_file_name(node[constants::relaxation_file_name].as<std::string>());
   }
+  if(node[constants::trajectory_file_name])
+  {
+    settings_.set_trajectory_file_name(node[constants::trajectory_file_name].as<std::string>());
+  }
+  if(node[constants::dump_step])
+  {
+    settings_.set_dump_step(node[constants::dump_step].as<std::size_t>());
+  }
 }
 
 const global_settings& global_settings_importer::get_settings() const
