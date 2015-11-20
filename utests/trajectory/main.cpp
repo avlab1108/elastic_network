@@ -75,7 +75,7 @@ void test_hierarchical_potential()
   }
   node_chooser chooser(net);
   std::shared_ptr<trajectory_dumper> traj_obs(new trajectory_dumper(tout, initial, chooser.choose(), 10));
-  const long double dt = 0.002;
+  const double dt = 0.002;
   //std::shared_ptr<comparer> obs(new comparer(initial));
   excitor x(net, initial, dt, 10000, 0.2, nodes);
   //x.set_result_observer(obs);

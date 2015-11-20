@@ -16,11 +16,11 @@ public:
 public:
   network();
   network(const std::size_t size);
-  network(const node_positions_type& node_positions, const long double l0);
+  network(const node_positions_type& node_positions, const double l0);
   network(const node_positions_type& node_positions, const links_type& links);
 
-  void set_cutoff_distance(const long double l0);
-  const long double get_cutoff_distance() const;
+  void set_cutoff_distance(const double l0);
+  const double get_cutoff_distance() const;
 
   void add_link(const std::size_t node1, const std::size_t node2);
   const node_positions_type& get_node_positions() const;
@@ -39,5 +39,5 @@ public:
 private:
   node_positions_type nodes_;
   boost::dynamic_bitset<> links_;
-  long double cutoff_distance_;
+  double cutoff_distance_;
 };

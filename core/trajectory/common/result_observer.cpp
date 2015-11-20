@@ -58,7 +58,7 @@ trajectory_dumper::trajectory_dumper(std::ostream& out, const network::node_posi
 void trajectory_dumper::process(const state_type& r, const double t)
 {
   static std::size_t counter = 0;
-  if(0 == counter++ % step_) // ???
+  if(0 == counter++ % step_)
   {
     std::size_t i1 = nodes_[0];
     std::size_t i2 = nodes_[1];
@@ -68,12 +68,12 @@ void trajectory_dumper::process(const state_type& r, const double t)
     double initial_dist = utils::distance(initial_positions_[i1], initial_positions_[i2]);
     double val1 = (current_dist-initial_dist)/initial_dist;
 
-    current_dist = utils::distance(r[i2], r[i3]);
-    initial_dist = utils::distance(initial_positions_[i2], initial_positions_[i3]);
-    double val2 = (current_dist-initial_dist)/initial_dist;
-
     current_dist = utils::distance(r[i1], r[i3]);
     initial_dist = utils::distance(initial_positions_[i1], initial_positions_[i3]);
+    double val2 = (current_dist-initial_dist)/initial_dist;
+
+    current_dist = utils::distance(r[i2], r[i3]);
+    initial_dist = utils::distance(initial_positions_[i2], initial_positions_[i3]);
     double val3 = (current_dist-initial_dist)/initial_dist;
 
     out_ << val1 << " " << val2 << " " << val3 << std::endl;

@@ -20,7 +20,7 @@ int main()
       {
         continue;
       }
-      long double d = utils::distance(net.get_node_position(i), net.get_node_position(j));
+      double d = utils::distance(net.get_node_position(i), net.get_node_position(j));
       std::cout << d << std::endl;
       if(d < l0)
       {

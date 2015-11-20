@@ -11,7 +11,7 @@ network::network(const std::size_t size) :
   nodes_.resize(size);
 }
 
-network::network(const node_positions_type& node_positions, const long double l0) :
+network::network(const node_positions_type& node_positions, const double l0) :
   nodes_(node_positions),
   links_(nodes_.size() * (nodes_.size() - 1)/2)
 {
@@ -28,7 +28,7 @@ network::network(const node_positions_type& node_positions, const links_type& li
   }
 }
 
-void network::set_cutoff_distance(const long double l0)
+void network::set_cutoff_distance(const double l0)
 {
   cutoff_distance_ = l0;
   for(std::size_t i = 0; i < get_size(); ++i)
@@ -43,7 +43,7 @@ void network::set_cutoff_distance(const long double l0)
   }
 }
 
-const long double network::get_cutoff_distance() const
+const double network::get_cutoff_distance() const
 {
   return cutoff_distance_;
 }

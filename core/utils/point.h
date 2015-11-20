@@ -164,4 +164,4 @@ std::ostream& operator<<(std::ostream& out, const point<T, Dim>& p)
   return out;
 }
 
-typedef point<long double, 3> point_type;
+typedef point<double, 3> point_type;

@@ -20,7 +20,7 @@ point_type random_point()
   return point_type(x, y, z);
 }
 
-long double distance(const point_type& p1, const point_type& p2)
+double distance(const point_type& p1, const point_type& p2)
 {
   return abs(p1-p2);
 }
