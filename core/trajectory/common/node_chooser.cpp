@@ -2,18 +2,6 @@
 
 #include <armadillo>
 
-namespace
-{
-
-double projection(const point_type& r1, const point_type& r2, const point_type& r1_0, const point_type& r2_0)
-{
-  double d = utils::distance(r1, r2);
-  double d0 = utils::distance(r1_0, r2_0);
-  return (d - d0) / d0;
-}
-
-}
-
 node_chooser::node_chooser(const network& net) :
   net_(net)
 {
