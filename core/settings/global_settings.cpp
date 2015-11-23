@@ -1,10 +1,12 @@
 #include "global_settings.h"
 
 global_settings::global_settings() :
-  results_dir_(), //TODO: add hardcoded default values
-  generation_dir_(),
-  excitation_file_name_(),
-  relaxation_file_name_()
+  results_dir_("results"),
+  generation_dir_("generation"),
+  excitation_file_name_("excitation"),
+  relaxation_file_name_("relaxation"),
+  trajectory_file_name_("trajectory"),
+  dump_step_(1)
 {
 }
 

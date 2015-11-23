@@ -52,7 +52,7 @@ void trajectory_process::execute()
       \texcitation time: " + std::to_string(sets.get_excitation_time()) + ", \n\
       \tforce summary module: " + std::to_string(sets.get_fs()));
   excitor x(net, initial_state, sets.get_time_step(), sets.get_excitation_time(), sets.get_fs()); 
-  //x.set_result_observer(obs);
+  x.set_result_observer(obs);
   std::clock_t begin = clock();
   x.run();
 
@@ -76,9 +76,9 @@ void trajectory_process::execute()
   std::shared_ptr<result_observer> robs(new stream_dumper(stream_dumper::format_type::raw, rout));
   std::shared_ptr<composite_result_observer> comp(new composite_result_observer());
   std::shared_ptr<stability_checker> stab_checker(new stability_checker(initial_state, nodes));
-  //comp->add_result_observer(robs);
+  comp->add_result_observer(robs);
   comp->add_result_observer(traj_dumper);
-  //comp->add_result_observer(stab_checker);
+  comp->add_result_observer(stab_checker);
   relaxer r(net, initial_state, sets.get_time_step(), sets.get_time_limit());
   r.set_result_observer(comp);
   r.run();

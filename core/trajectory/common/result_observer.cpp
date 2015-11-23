@@ -88,6 +88,15 @@ stability_checker::stability_checker(const network::node_positions_type& initial
 
 void stability_checker::process(const state_type& r, const double t)
 {
+  std::size_t i1 = nodes_[0];
+  std::size_t i2 = nodes_[1];
+  std::size_t i3 = nodes_[2];
+  if(utils::distance(initial_positions_[i1], r[i1]) < 0.00001 &&
+    utils::distance(initial_positions_[i2], r[i2]) < 0.00001 &&
+    utils::distance(initial_positions_[i3], r[i3]) < 0.00001)
+  {
+    throw std::exception();
+  }
 }
 
 composite_result_observer::composite_result_observer()

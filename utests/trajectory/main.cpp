@@ -42,20 +42,35 @@ void test_from_article()
 {
   network net(fa::node_positions, fa::links);
   std::vector<std::size_t> nodes;
-  nodes.push_back(32);
-  nodes.push_back(40);
-  nodes.push_back(41);
+  for(std::size_t i = 0; i < net.get_size(); ++i)
+  {
+    nodes.push_back(i);
+  }
   network::node_positions_type initial = net.get_node_positions();
+  std::ofstream tout("./trajectory.txt");
+  if(!tout.is_open())
+  {
+    return;
+  }
+  node_chooser chooser(net);
+  std::shared_ptr<trajectory_dumper> traj_obs(new trajectory_dumper(tout, initial, chooser.choose(), 10));
+  std::shared_ptr<stability_checker> stab(new stability_checker(initial, chooser.choose()));
+  std::shared_ptr<composite_result_observer> obs(new composite_result_observer());
+  obs->add_result_observer(traj_obs);
+  obs->add_result_observer(stab);
   //std::shared_ptr<result_observer> obs(new stream_dumper(stream_dumper::format_type::gnuplot));
-  std::shared_ptr<comparer> obs(new comparer(initial));
-  excitor x(net, initial, 0.01, 100000, 0.2, nodes);
-  x.set_result_observer(obs);
+  //std::shared_ptr<comparer> obs(new comparer(initial));
+  excitor x(net, initial, 0.002, 10000, 0.2, nodes);
+  //x.set_result_observer(obs);
+  clock_t t1 = clock();
   x.run();
-  std::cout << "relaxing" << std::endl;
+  //std::cout << "relaxing" << std::endl;
   //obs->reset(net.node_positions());
-  //relaxer r(net, initial, 0.01, 10000000);
-  //r.set_result_observer(obs);
-  //r.run();
+  relaxer r(net, initial, 0.002, 1000000);
+  r.set_result_observer(obs);
+  r.run();
+  clock_t t2 = clock();
+  std::cout << (double)(t2-t1)/CLOCKS_PER_SEC << std::endl;
 }
 
 void test_hierarchical_potential()
@@ -73,8 +88,12 @@ void test_hierarchical_potential()
   {
     return;
   }
-  node_chooser chooser(net);
-  std::shared_ptr<trajectory_dumper> traj_obs(new trajectory_dumper(tout, initial, chooser.choose(), 10));
+  //node_chooser chooser(net);
+  //std::shared_ptr<trajectory_dumper> traj_obs(new trajectory_dumper(tout, initial, chooser.choose(), 10));
+  //std::shared_ptr<stability_checker> stab(new stability_checker(initial, chooser.choose()));
+  std::shared_ptr<composite_result_observer> obs(new composite_result_observer());
+  //obs->add_result_observer(traj_obs);
+  //obs->add_result_observer(stab);
   const double dt = 0.002;
   //std::shared_ptr<comparer> obs(new comparer(initial));
   excitor x(net, initial, dt, 10000, 0.2, nodes);
@@ -83,8 +102,8 @@ void test_hierarchical_potential()
   x.run();
   //std::cout << "relaxing" << std::endl;
   //obs->reset(net.node_positions());
-  relaxer r(net, initial, dt, 100000);
-  r.set_result_observer(traj_obs);
+  relaxer r(net, initial, dt, 1000000);
+  r.set_result_observer(obs);
   r.run();
   clock_t t2 = clock();
   std::cout << (double)(t2-t1)/CLOCKS_PER_SEC << std::endl;
@@ -92,7 +111,7 @@ void test_hierarchical_potential()
 
 int main()
 {
-  //test_from_article();
-  test_hierarchical_potential();
+  test_from_article();
+  //test_hierarchical_potential();
   return 0;
 }
