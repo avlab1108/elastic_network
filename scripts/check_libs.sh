@@ -18,6 +18,31 @@ function check_gcc {
   fi
 }
 
+function check_mpi {
+  echo "#include <mpi.h>" > test_mpi_cpp.cpp
+  echo "int main() {}" >> test_mpi_cpp.cpp
+  mpic++ test_mpi_cpp.cpp -o test_mpi
+  result=$?
+  rm -f test_mpi_cpp.cpp
+  if [ $result -ne 0 ]; then
+    echo "Cannot find usable mpic++."
+    rm -f test_mpi_cpp.cpp
+    exit 1
+  else
+    echo "Found usable mpic++."
+  fi
+  mpirun -np 2 ./test_mpi
+  result=$?
+  if [ $result -ne 0 ]; then
+    echo "Cannot find usable mpirun."
+    rm -f test_mpi
+    exit 1
+  else
+    echo "Found usable mpirun."
+  fi
+  rm -f test_mpi
+}
+
 function check_boost {
   include_dir_name="BOOST_INCLUDE_DIR"
   include_dir=`grep "$include_dir_name\s*=" $scriptpath/../mkfiles/default_defs.mk | sed -e "s/$include_dir_name\s*=\s*\-I\(.*\)/\1/"`
@@ -103,6 +128,10 @@ function check_yaml {
 
 echo "Checking GCC..."
 check_gcc
+
+echo ""
+echo "Checking MPI..."
+check_mpi
 
 echo ""
 echo "Checking boost..."
