@@ -48,14 +48,15 @@ void test_from_article()
   network::node_positions_type initial = net.get_node_positions();
   //std::shared_ptr<result_observer> obs(new stream_dumper(stream_dumper::format_type::gnuplot));
   std::shared_ptr<comparer> obs(new comparer(initial));
-  excitor x(net, initial, 0.01, 100000, 0.2, nodes);
+  double dt = 0.01;
+  excitor x(net, initial, dt, 100000, 0.2, nodes);
   x.set_result_observer(obs);
   x.run();
   std::cout << "relaxing" << std::endl;
   //obs->reset(net.node_positions());
-  //relaxer r(net, initial, 0.01, 10000000);
-  //r.set_result_observer(obs);
-  //r.run();
+  relaxer r(net, initial, dt, 10000000);
+  r.set_result_observer(obs);
+  r.run();
 }
 
 void test_hierarchical_potential()

@@ -31,10 +31,10 @@ public:
   const user_settings& get_settings() const;
   
 private:
-  void read_network_from_yaml(const YAML::Node& node);
   void import_network_from_external_file(const std::string& file_path);
-  void import_network_from_yaml_file(const std::string& file_path);
-  void import_network_from_csv_file(const std::string& file_path);
+  network read_network_from_yaml(const YAML::Node& node);
+  network read_network_from_yaml_file(const std::string& file_path);
+  network read_network_from_csv_file(const std::string& file_path);
 
 private:
   user_settings settings_;

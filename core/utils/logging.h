@@ -22,6 +22,7 @@ public:
 private:
   logger(const std::string& file_name);
   logger(const logger& l) = delete;
+  ~logger();
   logger& operator=(const logger& l) = delete;
 
 private:

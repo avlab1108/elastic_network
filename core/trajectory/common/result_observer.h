@@ -2,6 +2,7 @@
 
 #include <network_dynamics.h>
 #include <node_chooser.h>
+#include "thread_pool.h"
 
 #include <list>
 #include <iostream>
@@ -72,6 +73,17 @@ private:
   std::list<std::shared_ptr<result_observer>> observers_;
 };
 
+class bg_thread_handler
+{
+public:
+  bg_thread_handler();
+  ~bg_thread_handler();
+  void add_future(std::future<void>&& f);
+
+private:
+  std::vector<std::future<void>> bg_threads_;
+};
+
 class result_observer_wrapper
 {
 public:
@@ -85,4 +97,5 @@ public:
 private:
   std::shared_ptr<result_observer> observer_;
   network_dynamics_wrapper dynamics_;
+  std::shared_ptr<bg_thread_handler> bg_handler_;
 };

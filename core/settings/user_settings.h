@@ -5,6 +5,8 @@
 #include <cstdlib>
 #include <vector>
 
+#include <iostream>
+
 class user_settings
 {
 public:
@@ -44,3 +46,5 @@ private:
   std::vector<std::size_t> force_application_nodes_;
   std::vector<std::size_t> visualization_nodes_;
 };
+
+std::ostream& operator<<(std::ostream& out, const user_settings& s);

@@ -2,6 +2,7 @@
 #include "trajectory_task.h"
 
 #include <logging.h>
+#include <thread_pool.h>
 
 #include <boost/program_options.hpp>
 #include <boost/mpi/nonblocking.hpp>
@@ -62,6 +63,12 @@ mpi_process::mpi_process(int argc, char** argv) :
   command_line_(argc, argv),
   config_(command_line_.get_user_settings_path(), command_line_.get_global_settings_path())
 {
+  thread_pool::instantiate();
+}
+
+mpi_process::~mpi_process()
+{
+  thread_pool::destroy();
 }
 
 main_mpi_process::main_mpi_process(int argc, char** argv) :
@@ -75,7 +82,7 @@ int main_mpi_process::execute()
   create_results_dir();
   const std::size_t sim_num = config_.get_user_settings().get_simulations_count();
   const int mpi_size = world_.size() - 1;
-  int single_task_size = sim_num/mpi_size;
+  int single_task_size = sim_num/(0 == mpi_size ? 1 : mpi_size);
   int remainder = sim_num - single_task_size * mpi_size;
   int current = 0;
   std::vector<boost::mpi::request> requests;

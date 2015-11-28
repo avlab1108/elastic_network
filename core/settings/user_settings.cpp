@@ -87,3 +87,15 @@ const std::vector<std::size_t>& user_settings::get_visualization_nodes() const
 {
   return visualization_nodes_;
 }
+
+std::ostream& operator<<(std::ostream& out, const user_settings& s)
+{
+  out << "Network size: " << s.get_network().get_size() << std::endl;
+  out << "Network link count: " << s.get_network().get_links().size() << std::endl;
+  out << "Fs: " << s.get_fs() << std::endl;
+  out << "Sim count: " << s.get_simulations_count() << std::endl;
+  out << "Excitation time: " << s.get_excitation_time() << std::endl;
+  out << "Time limit: " << s.get_time_limit() << std::endl;
+  out << "Time step: " << s.get_time_step() << std::endl;
+  return out;
+}
