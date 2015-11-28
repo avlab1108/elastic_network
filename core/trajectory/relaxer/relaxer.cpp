@@ -16,15 +16,15 @@ relaxer::relaxer(network& net, const network::node_positions_type& initial_posit
 void relaxer::run()
 {
   namespace odeint = boost::numeric::odeint;
-  typedef odeint::runge_kutta_fehlberg78<network_dynamics::state_type, double, network_dynamics::state_type, double, odeint::openmp_range_algebra> error_stepper_type;
+  typedef odeint::runge_kutta_dopri5<network_dynamics::state_type, double, network_dynamics::state_type, double, odeint::openmp_range_algebra> error_stepper_type;
   typedef odeint::controlled_runge_kutta<error_stepper_type> controlled_stepper_type;
   controlled_stepper_type controlled_stepper;
   try
   {
     boost::numeric::odeint::integrate_n_steps(controlled_stepper, dynamics_, net_.get_node_positions(), 0.0, step_, max_time_, observer_);
-    LOG(logger::warning, "Relaxation was stopped as the relaxation time exceeded maximal allowed time.");
   }
   catch(const std::exception&)
   {
+    LOG(logger::warning, "Relaxation was stopped as the relaxation time exceeded maximal allowed time.");
   }
 }

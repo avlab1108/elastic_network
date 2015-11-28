@@ -19,13 +19,14 @@ force_generator::result_type force_generator::generate()
   for(std::size_t i = 0; i < nodes_.size(); ++i)
   {
     result[i] = std::make_pair(nodes_[i], utils::random_point());
-    n += std::pow(abs(result[i].second), 2);
+    n += norm(result[i].second);
   }
   const double d = fs_/std::sqrt(n);
   for(std::size_t i = 0; i < nodes_.size(); ++i)
   {
     result[i].second *= d;
   }
+
   return result;
 }
 

@@ -11,9 +11,9 @@ namespace utils
 
 point_type random_point()
 {
-  std::random_device rd;
-  std::mt19937 gen(rd());
-  std::uniform_real_distribution<double> dis(-0.5, 0.5);
+  static std::random_device rd;
+  static std::mt19937 gen(rd());
+  static std::uniform_real_distribution<double> dis(-0.5, 0.5);
   double x = dis(gen);
   double y = dis(gen);
   double z = dis(gen);
