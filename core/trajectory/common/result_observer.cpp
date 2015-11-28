@@ -116,18 +116,40 @@ void composite_result_observer::add_result_observer(const std::shared_ptr<result
   observers_.push_back(observer);
 }
 
+bg_thread_handler::bg_thread_handler()
+{
+}
+
+bg_thread_handler::~bg_thread_handler()
+{
+  for(auto&& res : bg_threads_)
+  {
+    res.get();
+  }
+}
+
+void bg_thread_handler::add_future(std::future<void>&& f)
+{
+  bg_threads_.emplace_back(std::move(f));
+}
+
 result_observer_wrapper::result_observer_wrapper(const network_dynamics_wrapper& dynamics) :
-  dynamics_(dynamics)
+  dynamics_(dynamics),
+  bg_handler_(new bg_thread_handler())
 {
 }
 
 void result_observer_wrapper::operator()(const state_type& r, const double t)
 {
-  dynamics_.prepare_for_step();
-  if(observer_)
-  {
-    observer_->process(r, t);
-  }
+  bg_handler_->add_future(thread_pool::instance().enqueue(
+    [&r, &t, this]
+    {
+      dynamics_.prepare_for_step();
+      if(observer_)
+      {
+        observer_->process(r, t);
+      }
+    }));
 }
 
 void result_observer_wrapper::set_result_observer(const std::shared_ptr<result_observer>& observer)

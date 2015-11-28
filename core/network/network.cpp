@@ -22,15 +22,11 @@ network::network(const node_positions_type& node_positions, const links_type& li
   nodes_(node_positions),
   links_(nodes_.size() * (nodes_.size() - 1)/2)
 {
-  for(std::size_t i = 0; i < links.size(); ++i)
-  {
-    add_link(links[i].first, links[i].second);
-  }
+  set_links(links);
 }
 
 void network::set_cutoff_distance(const double l0)
 {
-  cutoff_distance_ = l0;
   for(std::size_t i = 0; i < get_size(); ++i)
   {
     for(std::size_t j = i + 1; j < get_size(); ++j)
@@ -43,10 +39,6 @@ void network::set_cutoff_distance(const double l0)
   }
 }
 
-const double network::get_cutoff_distance() const
-{
-  return cutoff_distance_;
-}
 
 void network::add_link(const std::size_t node1, const std::size_t node2)
 {
@@ -68,6 +60,18 @@ const network::node_positions_type& network::get_node_positions() const
 network::node_positions_type& network::get_node_positions()
 {
   return nodes_;
+}
+
+void network::set_links(const links_type& links)
+{
+  for(std::size_t i = 0; i < links.size(); ++i)
+  {
+    if(links[i].first > get_size() || links[i].second > get_size())
+    {
+      continue;
+    }
+    add_link(links[i].first, links[i].second);
+  }
 }
 
 network::links_type network::get_links() const

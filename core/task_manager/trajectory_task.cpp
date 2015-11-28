@@ -51,7 +51,8 @@ void trajectory_process::execute()
       \ttime step: " + std::to_string(sets.get_time_step()) + ", \n\
       \texcitation time: " + std::to_string(sets.get_excitation_time()) + ", \n\
       \tforce summary module: " + std::to_string(sets.get_fs()));
-  excitor x(net, initial_state, sets.get_time_step(), sets.get_excitation_time(), sets.get_fs()); 
+  const std::vector<std::size_t>& force_application_nodes = sets.get_force_application_nodes();
+  excitor x(net, initial_state, sets.get_time_step(), sets.get_excitation_time(), sets.get_fs(), force_application_nodes); 
   x.set_result_observer(obs);
   std::clock_t begin = clock();
   x.run();
@@ -70,8 +71,12 @@ void trajectory_process::execute()
     LOG(logger::error, std::string("Failed to open output file \"") + trajectory_output_file + "\". Silently stopping execution for id \"" + std::to_string(run_id_) + "\".");
     return;
   }
-  node_chooser chooser(sets.get_network());
-  const node_chooser::node_numbers_type& nodes = chooser.choose();
+  node_chooser::node_numbers_type nodes = sets.get_visualization_nodes();
+  if(nodes.empty())
+  {
+    node_chooser chooser(sets.get_network());
+    nodes = chooser.choose();
+  }
   std::shared_ptr<trajectory_dumper> traj_dumper(new trajectory_dumper(tout, initial_state, nodes, gs.get_dump_step()));
   std::shared_ptr<result_observer> robs(new stream_dumper(stream_dumper::format_type::raw, rout));
   std::shared_ptr<composite_result_observer> comp(new composite_result_observer());

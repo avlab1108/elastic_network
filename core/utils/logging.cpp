@@ -11,7 +11,7 @@ std::map<logger::severity, std::string> severity_helper =
   {logger::info, "Info"},
   {logger::warning, "Warning"},
   {logger::error, "Error"},
-  {logger::warning, "Critical"}
+  {logger::critical, "Critical"}
 };
 }
 
@@ -22,6 +22,11 @@ logger::logger(const std::string& file_name) :
   {
     std::cerr << "[Warning]: Cannot open log file. Logging will be unavailable." << std::endl;
   }
+}
+
+logger::~logger()
+{
+  log_.close();
 }
 
 logger& logger::instance()

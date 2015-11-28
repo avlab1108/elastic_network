@@ -20,6 +20,7 @@ class mpi_process
 {
 public:
   mpi_process(int argc, char** argv);
+  ~mpi_process();
   virtual int execute() = 0;
 
 protected:
