@@ -81,6 +81,30 @@ user_settings_importer::user_settings_importer(const std::string& file_path)
     settings_.set_simulations_count(node[constants::simulations_count].as<std::size_t>());
   }
 
+  if(node[constants::force_application_nodes])
+  {
+    const YAML::Node& force_node = node[constants::force_application_nodes];
+    std::vector<std::size_t> nodes;
+    for(std::size_t i = 0; i < force_node.size(); ++i)
+    {
+      std::size_t node = force_node[i].as<std::size_t>();
+      nodes.push_back(node);
+    }
+    settings_.set_force_application_nodes(nodes);
+  }
+
+  if(node[constants::visualization_nodes])
+  {
+    const YAML::Node& visualization_node = node[constants::visualization_nodes];
+    std::vector<std::size_t> nodes;
+    for(std::size_t i = 0; i < visualization_node.size(); ++i)
+    {
+      std::size_t node = visualization_node[i].as<std::size_t>();
+      nodes.push_back(node);
+    }
+    settings_.set_visualization_nodes(nodes);
+  }
+
   // Sanity checkings
   if(node[constants::nodes])
   {

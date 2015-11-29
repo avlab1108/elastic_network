@@ -116,13 +116,14 @@ void composite_result_observer::add_result_observer(const std::shared_ptr<result
   observers_.push_back(observer);
 }
 
-bg_thread_handler::bg_thread_handler()
+bg_thread_handler::bg_thread_handler() :
+  pool_(10)
 {
 }
 
 bg_thread_handler::~bg_thread_handler()
 {
-  for(auto&& res : bg_threads_)
+  for(auto&& res : futures_)
   {
     res.get();
   }
@@ -130,7 +131,7 @@ bg_thread_handler::~bg_thread_handler()
 
 void bg_thread_handler::add_future(std::future<void>&& f)
 {
-  bg_threads_.emplace_back(std::move(f));
+  futures_.emplace_back(std::move(f));
 }
 
 result_observer_wrapper::result_observer_wrapper(const network_dynamics_wrapper& dynamics) :
@@ -141,15 +142,15 @@ result_observer_wrapper::result_observer_wrapper(const network_dynamics_wrapper&
 
 void result_observer_wrapper::operator()(const state_type& r, const double t)
 {
-  bg_handler_->add_future(thread_pool::instance().enqueue(
-    [&r, &t, this]
-    {
+  //bg_handler_->add_future(std::async(std::launch::async,
+  //  [&r, t, this]
+  //  {
       dynamics_.prepare_for_step();
       if(observer_)
       {
         observer_->process(r, t);
       }
-    }));
+  //  }));
 }
 
 void result_observer_wrapper::set_result_observer(const std::shared_ptr<result_observer>& observer)

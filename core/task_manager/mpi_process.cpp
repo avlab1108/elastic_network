@@ -2,7 +2,6 @@
 #include "trajectory_task.h"
 
 #include <logging.h>
-#include <thread_pool.h>
 
 #include <boost/program_options.hpp>
 #include <boost/mpi/nonblocking.hpp>
@@ -63,12 +62,10 @@ mpi_process::mpi_process(int argc, char** argv) :
   command_line_(argc, argv),
   config_(command_line_.get_user_settings_path(), command_line_.get_global_settings_path())
 {
-  thread_pool::instantiate();
 }
 
 mpi_process::~mpi_process()
 {
-  thread_pool::destroy();
 }
 
 main_mpi_process::main_mpi_process(int argc, char** argv) :

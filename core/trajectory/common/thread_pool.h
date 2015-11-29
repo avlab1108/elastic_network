@@ -12,20 +12,14 @@
 
 class thread_pool
 {
-private:
+public:
   thread_pool(const size_t);
   ~thread_pool();
-
-public:
-  static void instantiate();
-  static thread_pool& instance();
-  static void destroy();
 
   template<class F, class... Args>
   auto enqueue(F&& f, Args&&... args) -> std::future<typename std::result_of<F(Args...)>::type>;
 
 private:
-  static thread_pool* instance_;
   // need to keep track of threads so we can join them
   std::vector<std::thread> workers_;
   // the task queue
@@ -42,19 +36,15 @@ template<class F, class... Args>
 auto thread_pool::enqueue(F&& f, Args&&... args) -> std::future<typename std::result_of<F(Args...)>::type>
 {
   using return_type = typename std::result_of<F(Args...)>::type;
-
   auto task = std::make_shared<std::packaged_task<return_type()>>(std::bind(std::forward<F>(f), std::forward<Args>(args)...));
-
   std::future<return_type> res = task->get_future();
   {
     std::unique_lock<std::mutex> lock(queue_mutex_);
-
     // don't allow enqueueing after stopping the pool
     if(stop_)
     {
       throw std::runtime_error("enqueue on stopped thread_pool");
     }
-
     tasks_.emplace([task](){(*task)();});
   }
   condition_.notify_one();

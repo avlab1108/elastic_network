@@ -81,7 +81,8 @@ public:
   void add_future(std::future<void>&& f);
 
 private:
-  std::vector<std::future<void>> bg_threads_;
+  thread_pool pool_;
+  std::vector<std::future<void>> futures_;
 };
 
 class result_observer_wrapper
@@ -95,7 +96,7 @@ public:
   void set_result_observer(const std::shared_ptr<result_observer>& observer);
 
 private:
-  std::shared_ptr<result_observer> observer_;
   network_dynamics_wrapper dynamics_;
+  std::shared_ptr<result_observer> observer_;
   std::shared_ptr<bg_thread_handler> bg_handler_;
 };
