@@ -123,7 +123,16 @@ user_settings_importer::user_settings_importer(const std::string& file_path)
   }
   else if(node[constants::network_file_path])
   {
-    import_network_from_external_file(node[constants::network_file_path].as<std::string>());
+    std::string absolute_path = node[constants::network_file_path].as<std::string>();
+    if(!absolute_path.empty())
+    {
+      if(absolute_path[0] != '/')
+      {
+        //This is relative path, need to attach current YAML file's directory to path
+        absolute_path.insert(0,  file_path.substr(0, file_path.find_last_of("/") + 1));
+      }
+      import_network_from_external_file(absolute_path);
+    }
   }
 
   if(node[constants::l0])
@@ -188,7 +197,16 @@ network user_settings_importer::read_network_from_yaml(const YAML::Node& node)
 
 network user_settings_importer::read_network_from_yaml_file(const std::string& file_path)
 {
-  YAML::Node node = YAML::LoadFile(file_path);
+  YAML::Node node;
+  try
+  {
+    node = YAML::LoadFile(file_path);
+  }
+  catch(YAML::Exception& e)
+  {
+    LOG(logger::critical, std::string("Failed to load network from \"") + file_path + "\".\n\tError: " + e.what());
+    throw;
+  }
   return read_network_from_yaml(node);
 }
 

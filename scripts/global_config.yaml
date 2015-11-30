@@ -1,6 +1,8 @@
 resultsDir: !!str results
 generationDir: !!str generation
-excitationFileName: !!str excitation
-relaxationFileName: !!str relaxation
-trajectoryFileName: !!str trajectory
+excitationFileName: !!str excitation.txt
+relaxationFileName: !!str relaxation.txt
+trajectoryFileName: !!str trajectory.txt
+eigensFileName: !!str eigens.txt
+nodesFileName: !!str nodes.txt
 dumpStep: 10
