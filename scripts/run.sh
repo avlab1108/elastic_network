@@ -1,6 +1,6 @@
 #!/bin/bash
 
-script=`realpath $0`
+script=`readlink -e $0`
 scriptpath=`dirname $script`
 
 num_proc=1
