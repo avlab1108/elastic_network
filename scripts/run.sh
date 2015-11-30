@@ -41,6 +41,7 @@ do
   esac
 done
 
+#TODO: need to extract from mkfiles/default_defs.mk
 export LD_LIBRARY_PATH=/home/minas/third_party/boost/install/lib:$scriptpath/../core/last/obj
 
 if (( $eigens == 1 )); then

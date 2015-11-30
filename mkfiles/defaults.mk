@@ -27,6 +27,8 @@ lib : compile
 
 slib : lib
 
+exec : slib
+
 clean ::
 ifneq "$(strip $(BUILD_DIRS))" ""
 	@for sub in $(strip $(BUILD_DIRS)) ; do \
