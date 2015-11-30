@@ -1,20 +1,9 @@
 #pragma once
 
 #include <config.h>
+#include <command_line.h>
 
 #include <boost/mpi.hpp>
-
-class command_line
-{
-public:
-  command_line(int argc, char** argv);
-  std::string get_user_settings_path() const;
-  std::string get_global_settings_path() const;
-
-private:
-  std::string user_settings_path_;
-  std::string global_settings_path_;
-};
 
 class mpi_process
 {

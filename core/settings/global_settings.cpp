@@ -3,9 +3,11 @@
 global_settings::global_settings() :
   results_dir_("results"),
   generation_dir_("generation"),
-  excitation_file_name_("excitation"),
-  relaxation_file_name_("relaxation"),
-  trajectory_file_name_("trajectory"),
+  excitation_file_name_("excitation.txt"),
+  relaxation_file_name_("relaxation.txt"),
+  trajectory_file_name_("trajectory.txt"),
+  eigens_file_name_("eigens.txt"),
+  nodes_file_name_("nodes.txt"),
   dump_step_(1)
 {
 }
@@ -58,6 +60,26 @@ void global_settings::set_trajectory_file_name(const std::string& file_name)
 const std::string& global_settings::get_trajectory_file_name() const
 {
   return trajectory_file_name_;
+}
+
+void global_settings::set_eigens_file_name(const std::string& file_name)
+{
+  eigens_file_name_ = file_name;
+}
+
+const std::string& global_settings::get_eigens_file_name() const
+{
+  return eigens_file_name_;
+}
+
+void global_settings::set_nodes_file_name(const std::string& file_name)
+{
+  nodes_file_name_ = file_name;
+}
+
+const std::string& global_settings::get_nodes_file_name() const
+{
+  return nodes_file_name_;
 }
 
 void global_settings::set_dump_step(const std::size_t step)
