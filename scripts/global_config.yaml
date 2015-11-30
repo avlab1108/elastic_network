@@ -1,0 +1,6 @@
+resultsDir: !!str results
+generationDir: !!str generation
+excitationFileName: !!str excitation
+relaxationFileName: !!str relaxation
+trajectoryFileName: !!str trajectory
+dumpStep: 10

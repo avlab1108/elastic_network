@@ -21,10 +21,13 @@ OPTIONS:
   -e        Calculate eigenvalues/eigenvectors.
   -p        Calculate 3 optimal points.
 
+  -u        User config path.
+  -g        Global config path.
+
 EOF
 }
 
-while getopts ":n:d:u:g:t:e" opt
+while getopts ":n:d:u:g:t:e:p" opt
 do
   case "$opt" in
     n) num_proc=$OPTARG;;
@@ -41,12 +44,12 @@ done
 export LD_LIBRARY_PATH=/home/minas/third_party/boost/install/lib:$scriptpath/../core/last/obj
 
 if (( $eigens == 1 )); then
-  ../exec/eigens_spectra/obj/eigens.exe -u $user_config -g $global_config
+  $scriptpath/../exec/eigen_spectra/obj/eigens.exe -u $user_config -g $global_config
   exit
 fi
 
 if (( $points == 1 )); then
-  ../exec/optimal_points/obj/optimal_points.exe -u $user_config -g $global_config
+  $scriptpath/../exec/optimal_nodes/obj/optimal_nodes.exe -u $user_config -g $global_config
   exit
 fi
 
@@ -54,7 +57,7 @@ ls_command="ls -d */ | sed -e 's/\/$//'"
 
 dirs_before=`eval $ls_command`
 
-comm="$scriptpath/obj/trajectory.exe \
+comm="$scriptpath/../trajectory/obj/trajectory.exe \
     -u $user_config \
     -g $global_config"
 

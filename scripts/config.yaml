@@ -1,0 +1,7 @@
+runNum: 10 #число симуляций
+timeStep: 0.02 #шаг времени
+timeIni: 100 #время подготовки стартового состояния
+Fs: 0.2 #нормировка суммы сил при возбуждении
+timeLimit: 1000 #максимальное число шагов моделирования 
+L0: 3
+networkFile: !!str /home/minas/elastic_network/utests/common/hier_potential.yaml
