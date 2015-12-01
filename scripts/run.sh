@@ -54,6 +54,54 @@ if (( $points == 1 )); then
   exit
 fi
 
+function row_to_label()
+{
+  case $1 in
+    "1") return 12;;
+    "2") return 13;;
+    "3") return 23;;
+    *) return 0;;
+  esac
+}
+
+function setup_plotter_impl()
+{
+  output_file=$1
+  row_to_label $2
+  x_label=$?
+  row_to_label $3
+  y_label=$?
+  > plotter.gnu
+  echo "set terminal png enhanced size 1280, 1024" >> plotter.gnu
+  echo "set output \"$output_file\"" >> plotter.gnu
+  echo "set style data lines" >> plotter.gnu
+  echo "set style line 5 lt rgb \"blue\" lw 1 pt 6" >> plotter.gnu
+  echo "set grid x" >> plotter.gnu
+  echo "set grid y" >> plotter.gnu
+  echo "set xlabel \"{/Symbol D}u_{$x_label}/u_{$x_label}^{(0)}\"" >> plotter.gnu
+  echo "set ylabel \"{/Symbol D}u_{$y_label}/u_{$y_label}^{(0)}\"" >> plotter.gnu
+  echo "set label at 0,0,0 \"\" point pointtype 7 pointsize 1 lc rgb \"red\" front" >> plotter.gnu
+}
+
+function setup_2d_plotter()
+{
+  trajectories=$1
+  setup_plotter_impl $2 $3 $4
+  echo "plot for [file in \"$trajectories\"] file using $3:$4 with lines notitle ls 5" >> plotter.gnu
+  gnuplot plotter.gnu
+}
+
+function setup_3d_plotter()
+{
+  trajectories=$1
+  setup_plotter_impl $2 1 2
+  row_to_label 3
+  z_label=$?
+  echo "set grid z" >> plotter.gnu
+  echo "set zlabel \"{/Symbol D}u_{$z_label}/u_{$z_label}^{(0)}\"" >> plotter.gnu
+  echo "splot for [file in \"$trajectories\"] file using 1:2:3 with lines notitle ls 5" >> plotter.gnu
+  gnuplot plotter.gnu
+}
 
 if (( $trajectory == 1 )); then
 
@@ -74,65 +122,13 @@ if (( $trajectory == 1 )); then
 
   if (( $result == 0 )); then
     dirs_after=`eval $ls_command`
-
     results_dir=`diff <(echo "$dirs_before") <(echo "$dirs_after") | grep "^>" | sed -e "s/^>\s*//" | grep "results_*"`
-
-    trajectory_files=`find $results_dir -name "trajectory" | tr '\n' ' '`
-
+    trajectory_files=`find $results_dir -name "trajectory.txt" | tr '\n' ' '`
     touch plotter.gnu
-    echo "set terminal png enhanced size 1280, 1024" >> plotter.gnu
-    echo "set output \"$results_dir/trajectory.png\"" >> plotter.gnu
-    echo "set style data lines" >> plotter.gnu
-    echo "set grid x" >> plotter.gnu
-    echo "set grid y" >> plotter.gnu
-    echo "set grid z" >> plotter.gnu
-    echo 'set xlabel "{/Symbol D}u_{12}/u_{12}^{(0)}"' >> plotter.gnu
-    echo 'set ylabel "{/Symbol D}u_{13}/u_{13}^{(0)}"' >> plotter.gnu
-    echo 'set zlabel "{/Symbol D}u_{23}/u_{23}^{(0)}"' >> plotter.gnu
-    echo "set style line 5 lt rgb \"blue\" lw 1 pt 6" >> plotter.gnu
-    echo "splot for [file in \"$trajectory_files\"] file using 1:2:3 with lines notitle ls 5" >> plotter.gnu
-    echo "set label at 0,0,0 \"\" point pointtype 7 pointsize 1 lc rgb \"red\" front" >> plotter.gnu
-    gnuplot plotter.gnu
-
-    > plotter.gnu
-    echo "set terminal png size 1024, 768" >> plotter.gnu
-    echo "set output \"$results_dir/u12_u13.png\"" >> plotter.gnu
-    echo "set style data lines" >> plotter.gnu
-    echo "set grid x" >> plotter.gnu
-    echo "set grid y" >> plotter.gnu
-    echo 'set xlabel "{/Symbol D}u_{12}/u_{12}^{(0)}"' >> plotter.gnu
-    echo 'set ylabel "{/Symbol D}u_{13}/u_{13}^{(0)}"' >> plotter.gnu
-    echo "set style line 5 lt rgb \"blue\" lw 1 pt 6" >> plotter.gnu
-    echo "plot for [file in \"$trajectory_files\"] file using 1:2 with lines notitle ls 5" >> plotter.gnu
-    echo "set label at 0,0,0 \"\" point pointtype 7 pointsize 1 lc rgb \"red\" front" >> plotter.gnu
-    gnuplot plotter.gnu
-
-    > plotter.gnu
-    echo "set terminal png size 1024, 768" >> plotter.gnu
-    echo "set output \"$results_dir/u12_u23.png\"" >> plotter.gnu
-    echo "set style data lines" >> plotter.gnu
-    echo "set grid x" >> plotter.gnu
-    echo "set grid y" >> plotter.gnu
-    echo 'set xlabel "{/Symbol D}u_{12}/u_{12}^{(0)}"' >> plotter.gnu
-    echo 'set ylabel "{/Symbol D}u_{23}/u_{23}^{(0)}"' >> plotter.gnu
-    echo "set style line 5 lt rgb \"blue\" lw 1 pt 6" >> plotter.gnu
-    echo "plot for [file in \"$trajectory_files\"] file using 1:3 with lines notitle ls 5" >> plotter.gnu
-    echo "set label at 0,0,0 \"\" point pointtype 7 pointsize 1 lc rgb \"red\" front" >> plotter.gnu
-    gnuplot plotter.gnu
-
-    > plotter.gnu
-    echo "set terminal png size 1024, 768" >> plotter.gnu
-    echo "set output \"$results_dir/u13_u23.png\"" >> plotter.gnu
-    echo "set style data lines" >> plotter.gnu
-    echo "set grid x" >> plotter.gnu
-    echo "set grid y" >> plotter.gnu
-    echo 'set xlabel "{/Symbol D}u_{13}/u_{13}^{(0)}"' >> plotter.gnu
-    echo 'set ylabel "{/Symbol D}u_{23}/u_{23}^{(0)}"' >> plotter.gnu
-    echo "set style line 5 lt rgb \"blue\" lw 1 pt 6" >> plotter.gnu
-    echo "plot for [file in \"$trajectory_files\"] file using 2:3 with lines notitle ls 5" >> plotter.gnu
-    echo "set label at 0,0,0 \"\" point pointtype 7 pointsize 1 lc rgb \"red\" front" >> plotter.gnu
-    gnuplot plotter.gnu
-
+    setup_3d_plotter "$trajectory_files" "$results_dir/trajectory.png"
+    setup_2d_plotter "$trajectory_files" "$results_dir/u12_u13.png" 1 2
+    setup_2d_plotter "$trajectory_files" "$results_dir/u12_u23.png" 1 3
+    setup_2d_plotter "$trajectory_files" "$results_dir/u13_u23.png" 2 3
     rm -f plotter.gnu
   fi
 fi
