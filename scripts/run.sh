@@ -124,6 +124,12 @@ if (( $trajectory == 1 )); then
     dirs_after=`eval $ls_command`
     results_dir=`diff <(echo "$dirs_before") <(echo "$dirs_after") | grep "^>" | sed -e "s/^>\s*//" | grep "results_*"`
     trajectory_files=`find $results_dir -name "trajectory.txt" | tr '\n' ' '`
+
+    if [ -z $trajectory ]; then
+      echo "No trajectory files found."
+      exit
+    fi
+
     touch plotter.gnu
     setup_3d_plotter "$trajectory_files" "$results_dir/trajectory.png"
     setup_2d_plotter "$trajectory_files" "$results_dir/u12_u13.png" 1 2
