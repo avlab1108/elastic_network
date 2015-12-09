@@ -13,6 +13,8 @@ include $(SELF_DIR)/default_defs.mk
 include $(SELF_DIR)/default_commands.mk
 include $(SELF_DIR)/default_rules.mk
 
+PARALLEL					=	${PARALLEL_JOBS}
+
 TARGET_LIST       = all compile lib slib exec clean
 
 ALL_TARGETS       = $(TARGET)
@@ -62,7 +64,11 @@ ifneq "$(strip $(BUILD_DIRS))" ""
 	done
 endif
 ifneq "$(strip $(COMPILE_TARGETS))" ""
+ifneq "$(strip $(PARALLEL))" ""
+	$(MAKE) -j$(PARALLEL) $(COMPILE_TARGETS)
+else
 	$(MAKE) $(COMPILE_TARGETS)
+endif
 endif
 
 lib :
