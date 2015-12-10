@@ -22,8 +22,8 @@ ALL_DEP_TARGETS   = $(TARGET_DEPS)
 default_target : $(ALL_TARGETS)
 
 all :
-	$(MAKE) shared
-	$(MAKE) exec
+	@$(MAKE) shared
+	@$(MAKE) exec
 
 shared: compile lib slib
 
