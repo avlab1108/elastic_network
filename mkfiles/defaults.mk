@@ -13,8 +13,6 @@ include $(SELF_DIR)/default_defs.mk
 include $(SELF_DIR)/default_commands.mk
 include $(SELF_DIR)/default_rules.mk
 
-PARALLEL					=	${PARALLEL_JOBS}
-
 TARGET_LIST       = all compile lib slib exec clean
 
 ALL_TARGETS       = $(TARGET)
@@ -23,7 +21,11 @@ ALL_DEP_TARGETS   = $(TARGET_DEPS)
 
 default_target : $(ALL_TARGETS)
 
-all : compile lib slib exec
+all :
+	$(MAKE) shared
+	$(MAKE) exec
+
+shared: compile lib slib
 
 lib : compile
 
@@ -64,11 +66,7 @@ ifneq "$(strip $(BUILD_DIRS))" ""
 	done
 endif
 ifneq "$(strip $(COMPILE_TARGETS))" ""
-ifneq "$(strip $(PARALLEL))" ""
-	$(MAKE) -j$(PARALLEL) $(COMPILE_TARGETS)
-else
 	$(MAKE) $(COMPILE_TARGETS)
-endif
 endif
 
 lib :
