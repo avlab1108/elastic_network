@@ -10,16 +10,9 @@ node_chooser::node_chooser(const network& net) :
   const arma::mat& vectors = es.get_vectors();
   const arma::vec& values = es.get_values();
 
-  //std::cout << "vals " << "\n" << values << std::endl;
-  //arma::vec v = (values + std::abs(2*values(0)))/std::abs(values(0));
-  //for(std::size_t i = 0; i < v.n_elem; ++i)
-  //{
-  //  std::cout << std::log10(v(i)) << std::endl;
-  //}
-
   std::size_t index = 0;
   double min = values(index++);
-  while(std::fabs(min) < 0.00001)
+  while(std::fabs(min) < 0.00001 && index < values.n_elem)
   //while(min < 0.00001)
   {
     min = values(index++);

@@ -52,6 +52,7 @@ void trajectory_process::execute()
       \texcitation time: " + std::to_string(sets.get_excitation_time()) + ", \n\
       \tforce summary module: " + std::to_string(sets.get_fs()));
   const std::vector<std::size_t>& force_application_nodes = sets.get_force_application_nodes();
+  //TODO MH: check for valid indexes
   excitor x(net, initial_state, sets.get_time_step(), sets.get_excitation_time(), sets.get_fs(), force_application_nodes); 
   x.set_result_observer(obs);
   std::clock_t begin = clock();
@@ -76,6 +77,10 @@ void trajectory_process::execute()
   {
     node_chooser chooser(sets.get_network());
     nodes = chooser.choose();
+  }
+  else
+  {
+    //TODO MH: check for valid indexes
   }
   std::shared_ptr<trajectory_dumper> traj_dumper(new trajectory_dumper(tout, initial_state, nodes, gs.get_dump_step()));
   std::shared_ptr<result_observer> robs(new stream_dumper(stream_dumper::format_type::raw, rout));
