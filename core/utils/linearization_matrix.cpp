@@ -7,10 +7,12 @@ linearization_matrix::linearization_matrix(const network& net) :
   m_(3*net.get_size(), 3*net.get_size(), arma::fill::zeros)
 {
   // creating linearization matrix
+  #pragma omp parallel for
   for(std::size_t i = 0; i < net_.get_size(); ++i)
   {
     const point_type& p1 = net_.get_node_position(i);
     // block on diagonal
+    #pragma omp parallel for
     for(std::size_t j = 0; j < net_.get_size(); ++j)
     {
       if(i == j || !net_.are_connected(i, j))
@@ -35,6 +37,7 @@ linearization_matrix::linearization_matrix(const network& net) :
       m_(3*i+2, 3*i+1) += z_i_j * y_i_j;
       m_(3*i+2, 3*i+2) += z_i_j * z_i_j;
     }
+    #pragma omp parallel for
     for(std::size_t j = 0; j < net_.get_size(); ++j)
     {
       if(i == j || !net_.are_connected(i, j))

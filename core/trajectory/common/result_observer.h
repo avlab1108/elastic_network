@@ -7,6 +7,7 @@
 #include <list>
 #include <iostream>
 #include <fstream>
+#include <mutex>
 
 class result_observer
 {
@@ -37,6 +38,7 @@ private:
 protected:
   format_type format_;
   std::ostream& out_;
+  std::mutex out_mutex_;
 };
 
 class file_dumper : public result_observer
@@ -59,6 +61,7 @@ public:
 
 private:
   std::ostream& out_;
+  std::mutex out_mutex_;
   network::node_positions_type initial_positions_;
   node_chooser::node_numbers_type nodes_;
   std::size_t step_;

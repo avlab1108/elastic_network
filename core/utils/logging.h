@@ -1,6 +1,7 @@
 #pragma once
 
 #include <fstream>
+#include <mutex>
 
 class logger
 {
@@ -27,6 +28,7 @@ private:
 
 private:
   std::ofstream log_;
+  std::mutex log_mutex_;
 };
 
 #define LOG(s_, m_) \

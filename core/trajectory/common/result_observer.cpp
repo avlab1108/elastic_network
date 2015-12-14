@@ -30,6 +30,7 @@ void stream_dumper::process(const state_type& r, const double t)
 
 void stream_dumper::format_for_raw(const state_type& r, const double t)
 {
+  std::lock_guard<std::mutex> lock(out_mutex_);
   for(std::size_t i = 0; i < r.size(); ++i)
   {
     out_ << r[i] << std::endl;
@@ -39,6 +40,7 @@ void stream_dumper::format_for_raw(const state_type& r, const double t)
 
 void stream_dumper::format_for_gnuplot(const state_type& r, const double t)
 {
+  std::lock_guard<std::mutex> lock(out_mutex_);
   for(std::size_t i = 0; i < r.size(); ++i)
   {
     out_ << std::setw(15) << std::left << r[i][0] << std::setw(15) << std::left << r[i][1] << std::setw(15) << r[i][2];
@@ -103,6 +105,7 @@ void trajectory_dumper::process(const state_type& r, const double t)
     initial_dist = utils::distance(initial_positions_[i2], initial_positions_[i3]);
     double val3 = (current_dist-initial_dist)/initial_dist;
 
+    std::lock_guard<std::mutex> lock(out_mutex_);
     out_ << val1 << " " << val2 << " " << val3 << std::endl;
   }
 }

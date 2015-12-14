@@ -3,6 +3,7 @@
 #include <iostream>
 #include <map>
 #include <cassert>
+#include <mutex>
 
 namespace
 {
@@ -13,6 +14,7 @@ std::map<logger::severity, std::string> severity_helper =
   {logger::error, "Error"},
   {logger::critical, "Critical"}
 };
+
 }
 
 logger::logger(const std::string& file_name) :
@@ -42,6 +44,7 @@ void logger::append(severity s, const std::string& message)
   {
     auto it = severity_helper.find(s);
     assert(severity_helper.end() != it);
+    std::lock_guard<std::mutex> guard(log_mutex_);
     log_ << "[" << it->second << "]: " << message << std::endl;
   }
 }
