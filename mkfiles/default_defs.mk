@@ -24,8 +24,8 @@ ARMADILLO_INCLUDE_DIR = -I/usr/include
 ARMADILLO_LIB_DIR     = -I/usr/lib
 ARMADILLO_LIB         = -larmadillo
 
-BOOST_INCLUDE_DIR     = -I/home/minas/third_party/boost/install/include
-BOOST_LIB_DIR         = -L/home/minas/third_party/boost/install/lib
+BOOST_INCLUDE_DIR     = -I/usr/local/include
+BOOST_LIB_DIR         = -L/usr/local/lib
 BOOST_LIBS            = -lboost_system -lboost_serialization -lboost_mpi -lboost_filesystem -lboost_program_options
 
 CXXFLAGS              = -std=c++11 -fPIC -Werror -MD -O3 -fopenmp -I. $(BOOST_INCLUDE_DIR) $(YAML_INCLUDE_DIR) $(ARMADILLO_INCLUDE_DIR)
