@@ -35,18 +35,10 @@ void trajectory_process::execute()
 {
   prepare_output_directory();
   const global_settings& gs = config_.get_global_settings();
-  const std::string& output_file = generation_dir_ + "/" + gs.get_excitation_file_name();
-  std::ofstream fout(output_file);
-  if(!fout.is_open())
-  {
-    LOG(logger::error, std::string("Failed to open output file \"") + output_file + "\". Silently stopping execution for id \"" + std::to_string(run_id_) + "\".");
-    return;
-  }
   const user_settings& sets = config_.get_user_settings();
   network net = sets.get_network();
   network::node_positions_type initial_state = net.get_node_positions();
 
-  std::shared_ptr<result_observer> obs(new stream_dumper(stream_dumper::format_type::raw, fout));
   LOG(logger::info, std::string("Started execution for id \"") + std::to_string(run_id_) + "\" with following parameters:\n \
       \ttime step: " + std::to_string(sets.get_time_step()) + ", \n\
       \texcitation time: " + std::to_string(sets.get_excitation_time()) + ", \n\
@@ -54,17 +46,15 @@ void trajectory_process::execute()
   const std::vector<std::size_t>& force_application_nodes = sets.get_force_application_nodes();
   //TODO MH: check for valid indexes
   excitor x(net, initial_state, sets.get_time_step(), sets.get_excitation_time(), sets.get_fs(), force_application_nodes); 
-  x.set_result_observer(obs);
+  if(gs.get_dump_data())
+  {
+    const std::string& excitation_output_file = generation_dir_ + "/" + gs.get_excitation_file_name();
+    std::shared_ptr<result_observer> obs(new file_dumper(excitation_output_file));
+    x.set_result_observer(obs);
+  }
   std::clock_t begin = clock();
   x.run();
 
-  const std::string& relaxation_output_file = generation_dir_ + "/" + gs.get_relaxation_file_name();
-  std::ofstream rout(relaxation_output_file);
-  if(!rout.is_open())
-  {
-    LOG(logger::error, std::string("Failed to open output file \"") + relaxation_output_file + "\". Silently stopping execution for id \"" + std::to_string(run_id_) + "\".");
-    return;
-  }
   const std::string& trajectory_output_file = generation_dir_ + "/" + gs.get_trajectory_file_name();
   std::ofstream tout(trajectory_output_file);
   if(!tout.is_open())
@@ -83,10 +73,14 @@ void trajectory_process::execute()
     //TODO MH: check for valid indexes
   }
   std::shared_ptr<trajectory_dumper> traj_dumper(new trajectory_dumper(tout, initial_state, nodes, gs.get_dump_step()));
-  std::shared_ptr<result_observer> robs(new stream_dumper(stream_dumper::format_type::raw, rout));
   std::shared_ptr<composite_result_observer> comp(new composite_result_observer());
   std::shared_ptr<stability_checker> stab_checker(new stability_checker(initial_state, nodes));
-  comp->add_result_observer(robs);
+  if(gs.get_dump_data())
+  {
+    const std::string& relaxation_output_file = generation_dir_ + "/" + gs.get_relaxation_file_name();
+    std::shared_ptr<result_observer> robs(new file_dumper(relaxation_output_file));
+    comp->add_result_observer(robs);
+  }
   comp->add_result_observer(traj_dumper);
   comp->add_result_observer(stab_checker);
   relaxer r(net, initial_state, sets.get_time_step(), sets.get_time_limit());

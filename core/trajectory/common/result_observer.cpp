@@ -1,4 +1,5 @@
 #include "result_observer.h"
+#include "logging.h"
 
 #include <iomanip>
 
@@ -6,6 +7,10 @@ stream_dumper::stream_dumper(format_type format, std::ostream& out) :
   format_(format),
   out_(out)
 {
+  if(!out_.good())
+  {
+    LOG(logger::error, std::string("Invalid stream handle provided. Output will not be available."));
+  }
 }
 
 void stream_dumper::process(const state_type& r, const double t)
@@ -42,12 +47,39 @@ void stream_dumper::format_for_gnuplot(const state_type& r, const double t)
   out_ << '\n' << std::endl;
 }
 
+file_dumper::file_dumper(const std::string& filepath, stream_dumper::format_type format) :
+  out_(filepath),
+  dumper_(format, out_)
+{
+  if(!out_.is_open())
+  {
+    LOG(logger::error, std::string("Failed to open output file \"") + filepath + "\". Output will not be available.");
+  }
+}
+
+file_dumper::~file_dumper()
+{
+  if(out_.is_open())
+  {
+    out_.close();
+  }
+}
+
+void file_dumper::process(const state_type& r, const double t)
+{
+  dumper_.process(r, t);
+}
+
 trajectory_dumper::trajectory_dumper(std::ostream& out, const network::node_positions_type& initial_positions, const node_chooser::node_numbers_type& nodes, const std::size_t step) :
   out_(out),
   initial_positions_(initial_positions),
   nodes_(nodes),
   step_(step)
 {
+  if(!out_.good())
+  {
+    LOG(logger::error, std::string("Invalid stream handle provided. Output will not be available."));
+  }
 }
 
 void trajectory_dumper::process(const state_type& r, const double t)

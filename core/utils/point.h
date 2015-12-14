@@ -5,6 +5,9 @@
 #include <cmath>
 #include <ostream>
 
+/**
+ * @brief Represents point in N-ary space.
+ */
 template<class T, const std::size_t Dim>
 class point :
   boost::additive1<point<T, Dim>,

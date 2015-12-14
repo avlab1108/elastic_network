@@ -28,6 +28,9 @@ public:
   void set_nodes_file_name(const std::string& file_name);
   const std::string& get_nodes_file_name() const;
 
+  void set_dump_data(const bool dump);
+  const bool get_dump_data() const;
+
   void set_dump_step(const std::size_t step);
   const std::size_t get_dump_step() const;
 
@@ -39,5 +42,6 @@ private:
   std::string trajectory_file_name_;
   std::string eigens_file_name_;
   std::string nodes_file_name_;
+  bool dump_data_;
   std::size_t dump_step_;
 };

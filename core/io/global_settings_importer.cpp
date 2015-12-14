@@ -42,6 +42,10 @@ global_settings_importer::global_settings_importer(const std::string& file_path)
   {
     settings_.set_nodes_file_name(node[constants::nodes_file_name].as<std::string>());
   }
+  if(node[constants::dump_data])
+  {
+    settings_.set_dump_data(node[constants::dump_data].as<bool>());
+  }
   if(node[constants::dump_step])
   {
     settings_.set_dump_step(node[constants::dump_step].as<std::size_t>());

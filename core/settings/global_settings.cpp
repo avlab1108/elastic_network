@@ -8,6 +8,7 @@ global_settings::global_settings() :
   trajectory_file_name_("trajectory.txt"),
   eigens_file_name_("eigens.txt"),
   nodes_file_name_("nodes.txt"),
+  dump_data_(true),
   dump_step_(1)
 {
 }
@@ -80,6 +81,16 @@ void global_settings::set_nodes_file_name(const std::string& file_name)
 const std::string& global_settings::get_nodes_file_name() const
 {
   return nodes_file_name_;
+}
+
+void global_settings::set_dump_data(const bool dump)
+{
+  dump_data_ = dump;
+}
+
+const bool global_settings::get_dump_data() const
+{
+  return dump_data_;
 }
 
 void global_settings::set_dump_step(const std::size_t step)

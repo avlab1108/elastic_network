@@ -6,6 +6,7 @@
 
 #include <list>
 #include <iostream>
+#include <fstream>
 
 class result_observer
 {
@@ -36,6 +37,18 @@ private:
 protected:
   format_type format_;
   std::ostream& out_;
+};
+
+class file_dumper : public result_observer
+{
+public:
+  file_dumper(const std::string& filepath, stream_dumper::format_type format = stream_dumper::format_type::raw);
+  ~file_dumper();
+  virtual void process(const state_type& r, const double t) override;
+
+private:
+  std::ofstream out_;
+  stream_dumper dumper_;
 };
 
 class trajectory_dumper : public result_observer

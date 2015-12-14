@@ -13,7 +13,6 @@ node_chooser::node_chooser(const network& net) :
   std::size_t index = 0;
   double min = values(index++);
   while(std::fabs(min) < 0.00001 && index < values.n_elem)
-  //while(min < 0.00001)
   {
     min = values(index++);
   }
@@ -63,28 +62,64 @@ node_chooser::node_chooser(const network& net) :
       }
     }
   }
-  node_numbers_.push_back(node1);
-  node_numbers_.push_back(node2);
-  std::cout << "1-> " << node1 << " 2-> " << node2 << " max-> " << max_change << std::endl;
 
-  max_change = 0.0;
+  double max_change1 = 0.0;
   std::size_t node3 = 0;
   const point_type& p1 = net_.get_node_position(node1);
-  point_type e2_i{e2(3*node1), e2(3*node1+1), e2(3*node1+2)};
+  point_type e2_1{e2(3*node1), e2(3*node1+1), e2(3*node1+2)};
   #pragma omp parallel for
   for(std::size_t j = 0; j < net_.get_size(); ++j)
   {
+    if(node1 == j)
+    {
+      continue;
+    }
     point_type e2_j{e2(3*j), e2(3*j+1), e2(3*j+2)};
-    const point_type& p2 = net_.get_node_position(j);
-    double rel = std::fabs(scalar_prod(e2_i - e2_j, p1 - p2)/abs(p1 - p2));
-    if(rel > max_change)
+    const point_type& pj = net_.get_node_position(j);
+    double rel = std::fabs(scalar_prod(e2_1 - e2_j, p1 - pj)/abs(p1 - pj));
+    if(rel > max_change1)
     {
       node3 = j;
-      max_change = rel;
+      max_change1 = rel;
     }
   }
-  node_numbers_.push_back(node3);
-  std::cout << "3-> " << node3 << " max-> " << max_change << std::endl;
+
+  double max_change2 = 0.0;
+  std::size_t node4 = 0;
+  const point_type& p2 = net_.get_node_position(node2);
+  point_type e2_2{e2(3*node2), e2(3*node2+1), e2(3*node2+2)};
+  #pragma omp parallel for
+  for(std::size_t j = 0; j < net_.get_size(); ++j)
+  {
+    if(node2 == j)
+    {
+      continue;
+    }
+    point_type e2_j{e2(3*j), e2(3*j+1), e2(3*j+2)};
+    const point_type& pj = net_.get_node_position(j);
+    double rel = std::fabs(scalar_prod(e2_2 - e2_j, p2 - pj)/abs(p2 - pj));
+    if(rel > max_change2)
+    {
+      node4 = j;
+      max_change2 = rel;
+    }
+  }
+
+  if(max_change1 > max_change2)
+  {
+    node_numbers_.push_back(node1);
+    node_numbers_.push_back(node2);
+    node_numbers_.push_back(node3);
+  }
+  else
+  {
+    node_numbers_.push_back(node2);
+    node_numbers_.push_back(node1);
+    node_numbers_.push_back(node4);
+  }
+
+  std::cout << "1-> " << node_numbers_[0] << " 2-> " << node_numbers_[1] << " 3-> " << node_numbers_[2] << std::endl;
+  std::cout << "1-> " << max_change << " 2-> " << max_change1 << " 3-> " << max_change2 << std::endl;
 }
 
 const node_chooser::node_numbers_type& node_chooser::choose() const

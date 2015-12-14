@@ -12,6 +12,7 @@ const std::string relaxation_file_name = "relaxationFileName";
 const std::string trajectory_file_name = "trajectoryFileName";
 const std::string eigens_file_name = "eigensFileName";
 const std::string nodes_file_name = "nodesFileName";
+const std::string dump_data = "dumpData";
 const std::string dump_step = "dumpStep";
 }
 
