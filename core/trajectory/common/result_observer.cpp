@@ -25,14 +25,9 @@ void stream_dumper::process(const state_type& r, const double t)
 
 void stream_dumper::format_for_raw(const state_type& r, const double t)
 {
-  out_ << t << " ";
   for(std::size_t i = 0; i < r.size(); ++i)
   {
-    out_ << r[i];
-    if(i != r.size() - 1)
-    {
-      out_ << " ; ";
-    }
+    out_ << r[i] << std::endl;
   }
   out_ << std::endl;
 }
