@@ -1,5 +1,7 @@
 #pragma once
 
+#include <boost/mpi/environment.hpp>
+
 class mpi_process;
 
 class mpi_process_manager
@@ -21,4 +23,5 @@ private:
 private:
   int argc_;
   char** argv_;
+  boost::mpi::environment env_;
 };

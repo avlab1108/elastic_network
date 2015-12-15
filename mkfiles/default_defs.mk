@@ -3,7 +3,7 @@ RM                     = /bin/rm -f
 COMPILER_LOCATION     = /usr
 CXX_NAME              = mpic++
 
-CXX_SPECIFIC_FLAGS    = -pipe -pedantic -Wall -Werror
+CXX_SPECIFIC_FLAGS    = -pipe -pedantic -Wall
 
 AR                    = /usr/bin/ar
 ARFLAGS               = vcq
@@ -16,19 +16,19 @@ CPLUSPLUS_SLIB        = $(CXX) -shared
 SLIB_ALL              = -Wl,--whole-archive
 SLIB_NONE             = -Wl,--no-whole-archive
 
-YAML_INCLUDE_DIR      = -I/usr/local
-YAML_LIB_DIR          = -I/usr/local/lib
+YAML_INCLUDE_DIR      =
+YAML_LIB_DIR          =
 YAML_LIB              = -lyaml-cpp
 
-ARMADILLO_INCLUDE_DIR = -I/usr/include
-ARMADILLO_LIB_DIR     = -I/usr/lib
+ARMADILLO_INCLUDE_DIR =
+ARMADILLO_LIB_DIR     =
 ARMADILLO_LIB         = -larmadillo
 
-BOOST_INCLUDE_DIR     = -I/usr/local/include
-BOOST_LIB_DIR         = -L/usr/local/lib
+BOOST_INCLUDE_DIR     =
+BOOST_LIB_DIR         =
 BOOST_LIBS            = -lboost_system -lboost_serialization -lboost_mpi -lboost_filesystem -lboost_program_options
 
-CXXFLAGS              = -std=c++11 -fPIC -Werror -MD -O3 -fopenmp -I. $(BOOST_INCLUDE_DIR) $(YAML_INCLUDE_DIR) $(ARMADILLO_INCLUDE_DIR)
+CXXFLAGS              = -std=c++11 -fPIC -Wall -MD -O3 -fopenmp -I. $(BOOST_INCLUDE_DIR) $(YAML_INCLUDE_DIR) $(ARMADILLO_INCLUDE_DIR)
 LDFLAGS               = -fopenmp $(BOOST_LIB_DIR) $(BOOST_LIBS) $(YAML_LIB_DIR) $(YAML_LIB) $(ARMADILLO_LIB_DIR) $(ARMADILLO_LIB)
 
 -include overrides.mk

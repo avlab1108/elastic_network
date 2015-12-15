@@ -49,8 +49,12 @@ node_chooser::node_chooser(const network& net) :
     const point_type& p1 = net_.get_node_position(i);
     point_type e1_i{e1(3*i), e1(3*i+1), e1(3*i+2)};
     #pragma omp parallel for
-    for(std::size_t j = i+1; j < net_.get_size(); ++j)
+    for(std::size_t j = 0; j < net_.get_size(); ++j)
     {
+      if(i == j)
+      {
+        continue;
+      }
       point_type e1_j{e1(3*j), e1(3*j+1), e1(3*j+2)};
       const point_type& p2 = net_.get_node_position(j);
       double rel = std::fabs(scalar_prod(e1_i - e1_j, p1 - p2)/abs(p1 - p2));

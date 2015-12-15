@@ -112,8 +112,15 @@ void trajectory_dumper::process(const state_type& r, const double t)
 
 stability_checker::stability_checker(const network::node_positions_type& initial_positions, const node_chooser::node_numbers_type& nodes) :
   initial_positions_(initial_positions),
-  nodes_(nodes)
+  nodes_(nodes),
+  stabilization_steps_(0)
 {
+  std::size_t i1 = nodes_[0];
+  std::size_t i2 = nodes_[1];
+  std::size_t i3 = nodes_[2];
+  previous_dist1_ = utils::distance(initial_positions_[i1], initial_positions_[i2]);
+  previous_dist2_ = utils::distance(initial_positions_[i1], initial_positions_[i3]);
+  previous_dist3_ = utils::distance(initial_positions_[i2], initial_positions_[i3]);
 }
 
 void stability_checker::process(const state_type& r, const double t)
@@ -124,6 +131,27 @@ void stability_checker::process(const state_type& r, const double t)
   if(utils::distance(initial_positions_[i1], r[i1]) < 0.00001 &&
     utils::distance(initial_positions_[i2], r[i2]) < 0.00001 &&
     utils::distance(initial_positions_[i3], r[i3]) < 0.00001)
+  {
+    throw std::exception();
+  }
+
+  double current_dist1 = utils::distance(r[i1], r[i2]);
+  double current_dist2 = utils::distance(r[i1], r[i3]);
+  double current_dist3 = utils::distance(r[i2], r[i3]);
+  if(std::fabs(current_dist1 - previous_dist1_) < std::numeric_limits<double>::epsilon() &&
+    std::fabs(current_dist2 - previous_dist2_) < std::numeric_limits<double>::epsilon() &&
+    std::fabs(current_dist3 - previous_dist3_) < std::numeric_limits<double>::epsilon())
+  {
+    ++stabilization_steps_;
+  }
+  else
+  {
+    stabilization_steps_ = 0;
+  }
+  previous_dist1_ = current_dist1;
+  previous_dist2_ = current_dist2;
+  previous_dist3_ = current_dist3;
+  if(10000 == stabilization_steps_)
   {
     throw std::exception();
   }

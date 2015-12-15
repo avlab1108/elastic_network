@@ -10,7 +10,6 @@ mpi_process_manager& mpi_process_manager::instance(int argc, char** argv)
 
 int mpi_process_manager::execute()
 {
-  boost::mpi::environment env(argc_, argv_);
   boost::mpi::communicator world;
   mpi_process* process = create_mpi_process(world.rank());
   return process->execute();
@@ -30,6 +29,7 @@ mpi_process* mpi_process_manager::create_mpi_process(int rank)
 
 mpi_process_manager::mpi_process_manager(int argc, char** argv) :
   argc_(argc),
-  argv_(argv)
+  argv_(argv),
+  env_(argc_, argv_)
 {
 }

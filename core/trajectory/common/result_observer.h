@@ -76,6 +76,10 @@ public:
 private:
   network::node_positions_type initial_positions_;
   node_chooser::node_numbers_type nodes_;
+  std::size_t stabilization_steps_;
+  double previous_dist1_;
+  double previous_dist2_;
+  double previous_dist3_;
 };
 
 class composite_result_observer : public result_observer
