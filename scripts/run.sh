@@ -125,7 +125,7 @@ if (( $trajectory == 1 )); then
     results_dir=`diff <(echo "$dirs_before") <(echo "$dirs_after") | grep "^>" | sed -e "s/^>\s*//" | grep "results_*"`
     trajectory_files=`find $results_dir -name "trajectory.txt" | tr '\n' ' '`
 
-    if [ -z $trajectory_files ]; then
+    if [ -z "$trajectory_files" ]; then
       echo "No trajectory files found."
       exit
     fi
