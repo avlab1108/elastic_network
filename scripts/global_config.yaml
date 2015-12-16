@@ -1,8 +1,8 @@
-resultsDir: !!str results
-generationDir: !!str generation
-excitationFileName: !!str excitation.txt
-relaxationFileName: !!str relaxation.txt
-trajectoryFileName: !!str trajectory.txt
-eigensFileName: !!str eigens.txt
-nodesFileName: !!str nodes.txt
+resultsDir: "results"
+generationDir: "generation"
+excitationFileName: "excitation.txt"
+relaxationFileName: "relaxation.txt"
+trajectoryFileName: "trajectory.txt"
+eigensFileName: "eigens.txt"
+nodesFileName: "nodes.txt"
 dumpStep: 10
