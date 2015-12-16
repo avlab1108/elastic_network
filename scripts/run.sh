@@ -42,7 +42,7 @@ do
 done
 
 #TODO: need to extract from mkfiles/default_defs.mk
-export LD_LIBRARY_PATH=/usr/local/lib:$scriptpath/../core/last/obj
+export LD_LIBRARY_PATH=/usr/local/lib:$scriptpath/../core/last/obj:$LD_LIBRARY_PATH
 
 if (( $eigens == 1 )); then
   $scriptpath/../exec/eigen_spectra/obj/eigens.exe -u $user_config -g $global_config

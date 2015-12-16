@@ -46,10 +46,7 @@ void network::add_link(const std::size_t node1, const std::size_t node2)
   {
     return;
   }
-  const std::size_t max = std::max(node1, node2);
-  const std::size_t min = std::min(node1, node2);
-  const std::size_t index = min*(min-1)/2 + min*(max-min) + (min > 0 ? (min-1)*(nodes_.size() - max) : 0);
-  links_.set(index);
+  links_.set(node_pair_to_index(node1, node2));
 }
 
 const network::node_positions_type& network::get_node_positions() const
@@ -106,10 +103,7 @@ bool network::are_connected(const std::size_t node1, const std::size_t node2) co
   {
     return false;
   }
-  const std::size_t max = std::max(node1, node2);
-  const std::size_t min = std::min(node1, node2);
-  const std::size_t index = min*(min-1)/2 + min*(max-min) + (min > 0 ? (min-1)*(nodes_.size() - max) : 0);
-  return links_[index];
+  return links_[node_pair_to_index(node1, node2)];
 }
 
 void network::set_size(const std::size_t size)
@@ -120,4 +114,11 @@ void network::set_size(const std::size_t size)
 const std::size_t network::get_size() const
 {
   return nodes_.size();
+}
+
+const std::size_t network::node_pair_to_index(const std::size_t node1, const std::size_t node2)
+{
+  const std::size_t max = std::max(node1, node2) + 1;
+  const std::size_t min = std::min(node1, node2) + 1;
+  return min*(min-1)/2 + min*(max-min) + (min > 0 ? (min-1)*(nodes_.size() - max) : 0) - 1;
 }

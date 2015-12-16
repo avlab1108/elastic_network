@@ -41,4 +41,23 @@ void dump_adjacency_list(const network& net, const std::string& file_name)
   out.close();
 }
 
+void dump_adjacency_matrix(const network& net, const std::string& file_name)
+{
+  std::ofstream out(file_name);
+  if(!out.is_open())
+  {
+    std::cerr << "Error openning output file \"" << file_name << "\"" << std::endl;
+    return;
+  }
+  for(std::size_t i = 0; i < net.get_size(); ++i)
+  {
+    for(std::size_t j = 0; j < net.get_size(); ++j)
+    {
+      out << (net.are_connected(i, j) ? "1," : "0,");
+    }
+    out << std::endl;
+  }
+  out.close();
+}
+
 }

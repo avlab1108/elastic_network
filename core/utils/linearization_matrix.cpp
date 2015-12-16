@@ -21,21 +21,23 @@ linearization_matrix::linearization_matrix(const network& net) :
       }
       const point_type& p2 = net_.get_node_position(j);
 
-      double x_i_j = p1[0] - p2[0];
-      double y_i_j = p1[1] - p2[1];
-      double z_i_j = p1[2] - p2[2];
+      const double d = std::pow(utils::distance(p1, p2), 2);
 
-      m_(3*i,   3*i)   += x_i_j * x_i_j;
-      m_(3*i,   3*i+1) += x_i_j * y_i_j;
-      m_(3*i,   3*i+2) += x_i_j * z_i_j;
+      const double x_i_j = p1[0] - p2[0];
+      const double y_i_j = p1[1] - p2[1];
+      const double z_i_j = p1[2] - p2[2];
 
-      m_(3*i+1, 3*i)   += y_i_j * x_i_j;
-      m_(3*i+1, 3*i+1) += y_i_j * y_i_j;
-      m_(3*i+1, 3*i+2) += y_i_j * z_i_j;
+      m_(3*i,   3*i)   -= x_i_j * x_i_j / d;
+      m_(3*i,   3*i+1) -= x_i_j * y_i_j / d;
+      m_(3*i,   3*i+2) -= x_i_j * z_i_j / d;
 
-      m_(3*i+2, 3*i)   += z_i_j * x_i_j;
-      m_(3*i+2, 3*i+1) += z_i_j * y_i_j;
-      m_(3*i+2, 3*i+2) += z_i_j * z_i_j;
+      m_(3*i+1, 3*i)   -= y_i_j * x_i_j / d;
+      m_(3*i+1, 3*i+1) -= y_i_j * y_i_j / d;
+      m_(3*i+1, 3*i+2) -= y_i_j * z_i_j / d;
+
+      m_(3*i+2, 3*i)   -= z_i_j * x_i_j / d;
+      m_(3*i+2, 3*i+1) -= z_i_j * y_i_j / d;
+      m_(3*i+2, 3*i+2) -= z_i_j * z_i_j / d;
     }
     #pragma omp parallel for
     for(std::size_t j = 0; j < net_.get_size(); ++j)
@@ -47,23 +49,26 @@ linearization_matrix::linearization_matrix(const network& net) :
       // block not on diagonal
       const point_type& p2 = net_.get_node_position(j);
 
-      double x_i_j = p1[0] - p2[0];
-      double y_i_j = p1[1] - p2[1];
-      double z_i_j = p1[2] - p2[2];
+      const double d = std::pow(utils::distance(p1, p2), 2);
 
-      m_(3*i,   3*j)   = x_i_j * x_i_j;
-      m_(3*i,   3*j+1) = x_i_j * y_i_j;
-      m_(3*i,   3*j+2) = x_i_j * z_i_j;
+      const double x_i_j = p1[0] - p2[0];
+      const double y_i_j = p1[1] - p2[1];
+      const double z_i_j = p1[2] - p2[2];
 
-      m_(3*i+1, 3*j)   = y_i_j * x_i_j;
-      m_(3*i+1, 3*j+1) = y_i_j * y_i_j;
-      m_(3*i+1, 3*j+2) = y_i_j * z_i_j;
+      m_(3*i,   3*j)   = x_i_j * x_i_j / d;
+      m_(3*i,   3*j+1) = x_i_j * y_i_j / d;
+      m_(3*i,   3*j+2) = x_i_j * z_i_j / d;
 
-      m_(3*i+2, 3*j)   = z_i_j * x_i_j;
-      m_(3*i+2, 3*j+1) = z_i_j * y_i_j;
-      m_(3*i+2, 3*j+2) = z_i_j * z_i_j;
+      m_(3*i+1, 3*j)   = y_i_j * x_i_j / d;
+      m_(3*i+1, 3*j+1) = y_i_j * y_i_j / d;
+      m_(3*i+1, 3*j+2) = y_i_j * z_i_j / d;
+
+      m_(3*i+2, 3*j)   = z_i_j * x_i_j / d;
+      m_(3*i+2, 3*j+1) = z_i_j * y_i_j / d;
+      m_(3*i+2, 3*j+2) = z_i_j * z_i_j / d;
     }
   }
+  m_ = -m_;
 }
 
 const arma::mat& linearization_matrix::get_matrix() const

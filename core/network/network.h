@@ -38,6 +38,9 @@ public:
   const std::size_t get_size() const;
 
 private:
+  const std::size_t node_pair_to_index(const std::size_t node1, const std::size_t node2);
+
+private:
   node_positions_type nodes_;
   boost::dynamic_bitset<> links_;
 };
