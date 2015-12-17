@@ -116,7 +116,7 @@ const std::size_t network::get_size() const
   return nodes_.size();
 }
 
-const std::size_t network::node_pair_to_index(const std::size_t node1, const std::size_t node2)
+const std::size_t network::node_pair_to_index(const std::size_t node1, const std::size_t node2) const
 {
   const std::size_t max = std::max(node1, node2) + 1;
   const std::size_t min = std::min(node1, node2) + 1;

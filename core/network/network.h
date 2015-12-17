@@ -38,7 +38,7 @@ public:
   const std::size_t get_size() const;
 
 private:
-  const std::size_t node_pair_to_index(const std::size_t node1, const std::size_t node2);
+  const std::size_t node_pair_to_index(const std::size_t node1, const std::size_t node2) const;
 
 private:
   node_positions_type nodes_;
