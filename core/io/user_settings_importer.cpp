@@ -223,7 +223,7 @@ network user_settings_importer::read_network_from_csv_file(const std::string& fi
   while(std::getline(csv, line))
   {
     std::vector<std::string> parts;
-    boost::split(parts, line, boost::is_any_of(" "), boost::token_compress_on);
+    boost::split(parts, line, boost::is_any_of(" \t"), boost::token_compress_on);
     if(parts.size() < 4)
     {
       LOG(logger::critical, invalid_format);
