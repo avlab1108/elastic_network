@@ -8,8 +8,7 @@
 
 #include <boost/filesystem.hpp>
 
-trajectory_process::trajectory_process(const std::string& results_dir, const std::size_t run_id, const config& conf) :
-  results_dir_(results_dir),
+trajectory_process::trajectory_process(const std::size_t run_id, const config& conf) :
   run_id_(run_id),
   config_(conf)
 {
@@ -18,7 +17,7 @@ trajectory_process::trajectory_process(const std::string& results_dir, const std
 void trajectory_process::prepare_output_directory()
 {
   const global_settings& gs = config_.get_global_settings();
-  const std::string& out_dir = results_dir_ + "/" + gs.get_generation_dir() + "_" + std::to_string(run_id_); 
+  const std::string& out_dir = config_.get_work_directory() + "/" + gs.get_generation_dir() + "_" + std::to_string(run_id_); 
   boost::filesystem::path dir(out_dir);
   if(boost::filesystem::is_directory(dir))
   {
@@ -33,6 +32,7 @@ void trajectory_process::prepare_output_directory()
 
 void trajectory_process::execute()
 {
+  config_.dump();
   prepare_output_directory();
   const global_settings& gs = config_.get_global_settings();
   const user_settings& sets = config_.get_user_settings();
@@ -91,10 +91,10 @@ void trajectory_process::execute()
   LOG(logger::info, std::string("Finished execution for id \"") + std::to_string(run_id_) + "\". Elapsed CPU time: " + std::to_string(static_cast<double>(end-begin)/CLOCKS_PER_SEC) + " seconds.");
 }
 
-trajectory_task::trajectory_task(const std::string& results_dir, const std::vector<std::size_t>& run_ids, const config& conf)
+trajectory_task::trajectory_task(const std::vector<std::size_t>& run_ids, const config& conf)
 {
   for(std::size_t i = 0; i < run_ids.size(); ++i)
   {
-    add_process(std::make_shared<trajectory_process>(results_dir, run_ids[i], conf));
+    add_process(std::make_shared<trajectory_process>(run_ids[i], conf));
   }
 }

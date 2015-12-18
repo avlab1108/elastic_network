@@ -2,6 +2,7 @@
 
 #include <network.h>
 #include <user_settings.h>
+
 #include <yaml-cpp/yaml.h>
 
 namespace constants
@@ -24,10 +25,14 @@ namespace YAML
 class Node;
 }
 
-class user_settings_importer
+class user_settings_io
 {
 public:
-  user_settings_importer(const std::string& file_path);
+  user_settings_io();
+
+  void import_settings(const std::string& file_path);
+  void export_settings(const std::string& ouput_dir);
+
   const user_settings& get_settings() const;
   
 private:
@@ -38,4 +43,6 @@ private:
 
 private:
   user_settings settings_;
+  std::string settings_file_name_;
+  std::string network_file_name_;
 };

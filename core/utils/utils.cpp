@@ -1,6 +1,9 @@
 #include "utils.h"
+#include "logging.h"
 
 #include <network.h>
+
+#include <boost/filesystem.hpp>
 
 #include <iostream>
 #include <fstream>
@@ -58,6 +61,32 @@ void dump_adjacency_matrix(const network& net, const std::string& file_name)
     out << std::endl;
   }
   out.close();
+}
+
+void create_directory(const std::string& dir)
+{
+  boost::filesystem::path path(dir);
+  if(boost::filesystem::is_directory(path))
+  {
+    LOG(logger::info, std::string("Directory \"") + dir + "\" already exists. Trying to use it.");
+  }
+  else if(!boost::filesystem::create_directory(path))
+  {
+    LOG(logger::error, std::string("Failed to create directory\"") + dir + "\".");
+  }
+}
+
+void copy_file(const std::string& source, const std::string& destination)
+{
+  namespace fs = boost::filesystem;
+  std::string file_name = source.substr(source.find_last_of("/"));
+  if(file_name.empty())
+  {
+    file_name = source;
+  }
+  const std::string& out = destination + file_name;
+
+  fs::copy_file(boost::filesystem::path(source), boost::filesystem::path(out), fs::copy_option::overwrite_if_exists);
 }
 
 }

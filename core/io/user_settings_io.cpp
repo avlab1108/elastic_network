@@ -1,10 +1,11 @@
-#include "user_settings_importer.h"
+#include "user_settings_io.h"
 
 #include <utils.h>
 #include <logging.h>
 
 #include <boost/algorithm/string.hpp>
 #include <boost/optional.hpp>
+#include <boost/filesystem.hpp>
 
 #include <yaml-cpp/yaml.h>
 #include <string>
@@ -44,12 +45,17 @@ const std::string invalid_structure = "Invalid structure of user config file.";
 const std::string invalid_file_type = "Invalid file type provided as " + constants::network_file_path + ".";
 const std::string invalid_format    = "Invalid format of network file.";
 
-user_settings_importer::user_settings_importer(const std::string& file_path)
+user_settings_io::user_settings_io()
+{
+}
+ 
+void user_settings_io::import_settings(const std::string& file_path)
 {
   YAML::Node node;
   try
   {
     node = YAML::LoadFile(file_path);
+    settings_file_name_ = file_path;
   }
   catch(YAML::Exception& e)
   {
@@ -129,8 +135,9 @@ user_settings_importer::user_settings_importer(const std::string& file_path)
       if(absolute_path[0] != '/')
       {
         //This is relative path, need to attach current YAML file's directory to path
-        absolute_path.insert(0,  file_path.substr(0, file_path.find_last_of("/") + 1));
+        absolute_path.insert(0, file_path.substr(0, file_path.find_last_of("/") + 1));
       }
+      network_file_name_ = absolute_path;
       import_network_from_external_file(absolute_path);
     }
   }
@@ -145,12 +152,28 @@ user_settings_importer::user_settings_importer(const std::string& file_path)
   std::cout << settings_ << std::endl;
 }
 
-const user_settings& user_settings_importer::get_settings() const
+void user_settings_io::export_settings(const std::string& output_dir)
+{
+  if(!settings_file_name_.empty())
+  {
+    namespace fs = boost::filesystem;
+    std::string config_dir = output_dir + "/config";
+    fs::path out_path(config_dir);
+    fs::create_directory(out_path);
+    utils::copy_file(settings_file_name_, config_dir);
+    if(!network_file_name_.empty())
+    {
+      utils::copy_file(network_file_name_, config_dir);
+    }
+  }
+}
+
+const user_settings& user_settings_io::get_settings() const
 {
   return settings_;
 }
 
-void user_settings_importer::import_network_from_external_file(const std::string& file_path)
+void user_settings_io::import_network_from_external_file(const std::string& file_path)
 {
   std::size_t dot = file_path.find_last_of(".");
   const std::string& ext = file_path.substr(dot + 1);
@@ -169,7 +192,7 @@ void user_settings_importer::import_network_from_external_file(const std::string
   }
 }
 
-network user_settings_importer::read_network_from_yaml(const YAML::Node& node)
+network user_settings_io::read_network_from_yaml(const YAML::Node& node)
 {
   if(!node[constants::nodes])
   {
@@ -195,7 +218,7 @@ network user_settings_importer::read_network_from_yaml(const YAML::Node& node)
   return net;
 }
 
-network user_settings_importer::read_network_from_yaml_file(const std::string& file_path)
+network user_settings_io::read_network_from_yaml_file(const std::string& file_path)
 {
   YAML::Node node;
   try
@@ -210,7 +233,7 @@ network user_settings_importer::read_network_from_yaml_file(const std::string& f
   return read_network_from_yaml(node);
 }
 
-network user_settings_importer::read_network_from_csv_file(const std::string& file_path)
+network user_settings_io::read_network_from_csv_file(const std::string& file_path)
 {
   std::ifstream csv(file_path);
   if(!csv.is_open())
@@ -223,7 +246,7 @@ network user_settings_importer::read_network_from_csv_file(const std::string& fi
   while(std::getline(csv, line))
   {
     std::vector<std::string> parts;
-    boost::split(parts, line, boost::is_any_of(" "), boost::token_compress_on);
+    boost::split(parts, line, boost::is_any_of(" \t"), boost::token_compress_on);
     if(parts.size() < 4)
     {
       LOG(logger::critical, invalid_format);
@@ -248,7 +271,6 @@ network user_settings_importer::read_network_from_csv_file(const std::string& fi
       throw;
     }
   }
-  std::cout << __FUNCTION__ << nodes.size() << std::endl;
   network net(nodes.size());
   for(std::size_t i = 0; i < nodes.size(); ++i)
   {

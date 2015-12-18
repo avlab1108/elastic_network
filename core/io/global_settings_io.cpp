@@ -1,13 +1,21 @@
-#include "global_settings_importer.h"
+#include "global_settings_io.h"
 
 #include <logging.h>
+#include <utils.h>
 
-global_settings_importer::global_settings_importer(const std::string& file_path)
+#include <boost/filesystem.hpp>
+
+global_settings_io::global_settings_io()
+{
+}
+
+void global_settings_io::import_settings(const std::string& file_path)
 {
   YAML::Node node;
   try
   {
     node = YAML::LoadFile(file_path);
+    settings_file_name_ = file_path;
   }
   catch(YAML::Exception& e)
   {
@@ -52,7 +60,19 @@ global_settings_importer::global_settings_importer(const std::string& file_path)
   }
 }
 
-const global_settings& global_settings_importer::get_settings() const
+void global_settings_io::export_settings(const std::string& output_dir)
+{
+  if(!settings_file_name_.empty())
+  {
+    namespace fs = boost::filesystem;
+    std::string config_dir = output_dir + "/config";
+    fs::path out_path(config_dir);
+    fs::create_directory(out_path);
+    utils::copy_file(settings_file_name_, config_dir);
+  }
+}
+
+const global_settings& global_settings_io::get_settings() const
 {
   return settings_;
 }

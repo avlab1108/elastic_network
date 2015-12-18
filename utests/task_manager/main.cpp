@@ -1,8 +1,6 @@
 #include <mpi_process_manager.h>
 #include <trajectory_task.h>
 #include <utils.h>
-#include <user_settings_importer.h>
-#include <user_settings.h>
 
 #include <cstdlib>
 #include <memory>

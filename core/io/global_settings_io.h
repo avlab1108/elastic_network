@@ -21,12 +21,17 @@ namespace YAML
 class Node;
 }
 
-class global_settings_importer
+class global_settings_io
 {
 public:
-  global_settings_importer(const std::string& file_path);
+  global_settings_io();
+
+  void import_settings(const std::string& file_path);
+  void export_settings(const std::string& output_dir);
+
   const global_settings& get_settings() const;
 
 private:
   global_settings settings_;
+  std::string settings_file_name_;
 };
