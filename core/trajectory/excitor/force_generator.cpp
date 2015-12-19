@@ -10,9 +10,6 @@ force_generator::force_generator(const double fs, const nodes_type& nodes) :
 
 force_generator::result_type force_generator::generate()
 {
-  //Frand=(rand(3*Nuz,1)-ones(3*Nuz,1)/2);%случайная сила
-  //Frand=(Frand*Rand_norm)/norm(Frand);%нормируем случайную силу на Rand_norm
-
   result_type result;
   result.resize(nodes_.size());
   double n = 0.0;
