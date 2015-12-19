@@ -1,3 +1,9 @@
+/**
+ * @file result_observer.h
+ * @brief This file contains @a result_observer, @a stream_dumper, @a file_dumper, @a trajectory_dumper, @a stability_checker, @a composite_result_observer and @a result_observer_wrapper classes.
+ * @author Minas Hovhannisyan
+ */
+
 #pragma once
 
 #include <network_dynamics.h>
@@ -9,18 +15,37 @@
 #include <fstream>
 #include <mutex>
 
+/**
+ * @class result_observer
+ * @brief Observes result of each step of numerical integration of network dynamics.
+ */
 class result_observer
 {
 public:
+  /// State of network.
   typedef network_dynamics::state_type state_type;
 
 public:
+  /**
+   * @brief Processes step at defined time point.
+   *
+   * @param r State of network.
+   * @param t Time point.
+   */
   virtual void process(const state_type& r, const double t) = 0;
 };
 
+/**
+ * @class stream_dumper
+ * @brief Dumps results to output stream.
+ */
 class stream_dumper : public result_observer
 {
 public:
+  /**
+   * @enum format_type
+   * @brief Describes supported formats of result dumping.
+   */
   enum class format_type
   {
     empty,
@@ -28,16 +53,44 @@ public:
     gnuplot
   };
 
+  /**
+   * @brief Constructs stream_dumper object with provided format and stream.
+   *
+   * @param format Format of output.
+   * @param out Output stream.
+   */
   stream_dumper(format_type format = format_type::empty, std::ostream& out = std::cout);
+  /**
+   * @brief Implements interface of base class.
+   *        Dumps data to output stream.
+   *
+   * @param r State of network.
+   * @param t Time point.
+   */
   virtual void process(const state_type& r, const double t) override;
 
 private:
+  /**
+   * @brief Formats data for simple textual output.
+   *
+   * @param state State of network.
+   * @param t Time point.
+   */
   void format_for_raw(const state_type& state, const double t);
+  /**
+   * @brief Formats data for output in gnuplot-supported format.
+   *
+   * @param state State of network.
+   * @param t Time point.
+   */
   void format_for_gnuplot(const state_type& state, const double t);
 
 protected:
+  /// Format of output.
   format_type format_;
+  /// Output stream.
   std::ostream& out_;
+  /// Output stream lock.
   std::mutex out_mutex_;
 };
 
