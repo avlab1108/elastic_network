@@ -1,5 +1,7 @@
 #include "network.h"
 
+#include <utils.h>
+
 network::network()
 {
 }

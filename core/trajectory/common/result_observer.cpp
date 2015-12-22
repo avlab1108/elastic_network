@@ -1,5 +1,7 @@
 #include "result_observer.h"
-#include "logging.h"
+
+#include <logging.h>
+#include <utils.h>
 
 #include <iomanip>
 

@@ -1,4 +1,5 @@
 #include "linearization_matrix.h"
+#include "utils.h"
 
 #include <omp.h>
 

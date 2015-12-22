@@ -2,6 +2,7 @@
 #include "trajectory_task.h"
 
 #include <logging.h>
+#include <utils.h>
 
 #include <boost/mpi/nonblocking.hpp>
 #include <boost/filesystem.hpp>

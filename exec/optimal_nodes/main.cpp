@@ -1,6 +1,7 @@
 #include <command_line.h>
 #include <node_chooser.h>
 #include <config.h>
+#include <utils.h>
 
 #include <iostream>
 #include <fstream>
