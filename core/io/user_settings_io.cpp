@@ -59,33 +59,18 @@ void user_settings_io::import_settings(const std::string& file_path)
   }
   catch(YAML::Exception& e)
   {
-    LOG(logger::critical, std::string("Failed to load user settings file from \"") + file_path + "\".\n\tError: " + e.what());
-    throw;
-  }
-  if(node[constants::fs])
-  {
-    settings_.set_fs(node[constants::fs].as<double>());
+    const std::string& error = "Failed to load user settings file from \"" + file_path + "\".\n\tError: " + e.what();
+    LOG(logger::critical, error);
+    throw std::runtime_error(error);
   }
 
-  if(node[constants::time_step])
-  {
-    settings_.set_time_step(node[constants::time_step].as<double>());
-  }
+  /// Check input file structure validity
+  check_input_validity(node);
 
-  if(node[constants::time_limit])
-  {
-    settings_.set_time_limit(node[constants::time_limit].as<size_t>());
-  }
-
-  if(node[constants::excitation_time])
-  {
-    settings_.set_excitation_time(node[constants::excitation_time].as<std::size_t>());
-  }
-
-  if(node[constants::simulations_count])
-  {
-    settings_.set_simulations_count(node[constants::simulations_count].as<std::size_t>());
-  }
+  settings_.set_fs(node[constants::fs].as<double>());
+  settings_.set_excitation_time(node[constants::excitation_time].as<std::size_t>());
+  settings_.set_time_step(node[constants::time_step].as<double>());
+  settings_.set_simulations_count(node[constants::simulations_count].as<std::size_t>());
 
   if(node[constants::force_application_nodes])
   {
@@ -111,23 +96,11 @@ void user_settings_io::import_settings(const std::string& file_path)
     settings_.set_visualization_nodes(nodes);
   }
 
-  // Sanity checkings
-  if(node[constants::nodes])
-  {
-    if((node[constants::links] && node[constants::l0]) ||
-      (!node[constants::links] && !node[constants::l0]) ||
-      node[constants::network_file_path])
-    {
-      LOG(logger::critical, invalid_structure);
-      throw std::runtime_error(invalid_structure);
-    }
-  }
-
   if(node[constants::nodes])
   {
     read_network_from_yaml(node);
   }
-  else if(node[constants::network_file_path])
+  else
   {
     std::string absolute_path = node[constants::network_file_path].as<std::string>();
     if(!absolute_path.empty())
@@ -145,10 +118,12 @@ void user_settings_io::import_settings(const std::string& file_path)
   if(node[constants::l0])
   {
     double cutoff = node[constants::l0].as<double>();
+    settings_.set_cutoff_distance(cutoff);
     network net = settings_.get_network();
     net.set_cutoff_distance(cutoff);
     settings_.set_network(net);
   }
+
   std::cout << settings_ << std::endl;
 }
 
@@ -160,10 +135,96 @@ void user_settings_io::export_settings(const std::string& output_dir)
     std::string config_dir = output_dir + "/config";
     fs::path out_path(config_dir);
     fs::create_directory(out_path);
-    utils::copy_file(settings_file_name_, config_dir);
-    if(!network_file_name_.empty())
+
+    YAML::Emitter out;
+    out << YAML::BeginMap;
+    out << YAML::Key << constants::fs;
+    out << YAML::Value << settings_.get_fs();
+
+    out << YAML::Key << constants::time_step;
+    out << YAML::Value << settings_.get_time_step();
+
+    out << YAML::Key << constants::excitation_time;
+    out << YAML::Value << settings_.get_excitation_time();
+
+    out << YAML::Key << constants::simulations_count;
+    out << YAML::Value << settings_.get_simulations_count();
+
+    out << YAML::Key << constants::visualization_nodes;
+    out << YAML::Value << YAML::BeginSeq;
+    const auto& vis_nodes = settings_.get_visualization_nodes();
+    for(auto it = vis_nodes.begin(); it != vis_nodes.end(); ++it)
     {
-      utils::copy_file(network_file_name_, config_dir);
+      out << *it;
+    }
+    out << YAML::EndSeq;
+
+    if(!settings_.get_force_application_nodes().empty())
+    {
+      out << YAML::Key << constants::force_application_nodes;
+      out << YAML::Value << YAML::BeginSeq;
+      const auto& force_nodes = settings_.get_force_application_nodes();
+      for(auto it = force_nodes.begin(); it != force_nodes.end(); ++it)
+      {
+        out << *it;
+      }
+      out << YAML::EndSeq;
+    }
+
+    if(settings_.get_cutoff_distance())
+    {
+      out << YAML::Key << constants::l0;
+      out << YAML::Value << *settings_.get_cutoff_distance();
+    }
+    if(settings_.get_nodes())
+    {
+      out << YAML::Key << constants::nodes;
+      const std::vector<std::size_t>& nodes = *settings_.get_nodes();
+      out << YAML::Value << YAML::BeginSeq;
+      for(auto it = nodes.begin(); it != nodes.end(); ++it)
+      {
+        out << *it;
+      }
+      out << YAML::EndSeq;
+    }
+    if(settings_.get_links())
+    {
+      out << YAML::Key << constants::links;
+      out << YAML::Value << YAML::BeginSeq;
+      const std::vector<std::pair<std::size_t, std::size_t>>& links = *settings_.get_links();
+      for(auto it = links.begin(); it != links.end(); ++it)
+      {
+        out << YAML::BeginSeq << it->first << it->second << YAML::EndSeq;
+      }
+      out << YAML::EndSeq;
+    }
+
+    if(settings_.get_network_file_path())
+    {
+      out << YAML::Key << constants::network_file_path;
+      /// Output onyl network file name as it will anyway be copied to the same
+      /// directory as user config.
+      std::string file_name = *settings_.get_network_file_path();
+      if(std::string::npos != file_name.find_first_of('/'))
+      {
+        file_name = file_name.substr(file_name.find_last_of('/')+1);
+      }
+      out << YAML::Value << file_name;
+    }
+    out << YAML::EndMap;
+
+    std::ofstream fout(config_dir + "/config.yaml");
+    if(!fout.is_open())
+    {
+      LOG(logger::error, "Cannot create output config file.");
+      return;
+    }
+    fout << out.c_str() << std::endl;
+    fout.close();
+
+    if(settings_.get_network_file_path())
+    {
+      utils::copy_file(*settings_.get_network_file_path(), config_dir);
     }
   }
 }
@@ -171,6 +232,41 @@ void user_settings_io::export_settings(const std::string& output_dir)
 const user_settings& user_settings_io::get_settings() const
 {
   return settings_;
+}
+
+user_settings& user_settings_io::get_settings()
+{
+  return settings_;
+}
+
+void user_settings_io::check_input_validity(const YAML::Node& node) const
+{
+  if(!node[constants::simulations_count] ||
+    !node[constants::excitation_time] ||
+    !node[constants::fs] ||
+    !node[constants::time_step])
+  {
+    LOG(logger::critical, invalid_structure);
+    throw std::runtime_error(invalid_structure);
+  }
+  if(node[constants::nodes])
+  {
+    if((node[constants::links] && node[constants::l0]) ||
+      (!node[constants::links] && !node[constants::l0]) ||
+      node[constants::network_file_path])
+    {
+      LOG(logger::critical, invalid_structure);
+      throw std::runtime_error(invalid_structure);
+    }
+  }
+  else
+  {
+    if(!node[constants::network_file_path])
+    {
+      LOG(logger::critical, invalid_structure);
+      throw std::runtime_error(invalid_structure);
+    }
+  }
 }
 
 void user_settings_io::import_network_from_external_file(const std::string& file_path)
@@ -190,15 +286,11 @@ void user_settings_io::import_network_from_external_file(const std::string& file
     LOG(logger::critical, invalid_file_type);
     throw std::runtime_error(invalid_file_type);
   }
+  settings_.set_network_file_path(file_path);
 }
 
 network user_settings_io::read_network_from_yaml(const YAML::Node& node)
 {
-  if(!node[constants::nodes])
-  {
-    LOG(logger::critical, invalid_format);
-    throw std::runtime_error(invalid_format);
-  }
   const YAML::Node& nodes = node[constants::nodes];
   const std::size_t size = nodes.size();
   network net(size);
@@ -208,12 +300,15 @@ network user_settings_io::read_network_from_yaml(const YAML::Node& node)
   }
   if(node[constants::links])
   {
+    std::vector<std::pair<std::size_t, std::size_t>> links;
     const YAML::Node& links_node = node[constants::links];
     for(std::size_t i = 0; i < links_node.size(); ++i)
     {
       std::pair<std::size_t, std::size_t> link = links_node[i].as<std::pair<std::size_t, std::size_t>>();
+      links.push_back(link);
       net.add_link(link.first - 1, link.second - 1);
     }
+    settings_.set_links(links);
   }
   return net;
 }
@@ -227,8 +322,9 @@ network user_settings_io::read_network_from_yaml_file(const std::string& file_pa
   }
   catch(YAML::Exception& e)
   {
-    LOG(logger::critical, std::string("Failed to load network from \"") + file_path + "\".\n\tError: " + e.what());
-    throw;
+    const std::string& error = "Failed to load network from \"" + file_path + "\".\n\tError: " + e.what();
+    LOG(logger::critical, error);
+    throw std::runtime_error(error);
   }
   return read_network_from_yaml(node);
 }
@@ -268,7 +364,7 @@ network user_settings_io::read_network_from_csv_file(const std::string& file_pat
     {
       //TODO maybe process?
       LOG(logger::critical, invalid_format);
-      throw;
+      throw std::runtime_error(invalid_format);
     }
   }
   network net(nodes.size());

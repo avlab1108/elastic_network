@@ -22,6 +22,11 @@ const user_settings& config::get_user_settings() const
   return user_.get_settings();
 }
 
+user_settings& config::get_user_settings()
+{
+  return user_.get_settings();
+}
+
 std::string config::get_work_directory() const
 {
   std::stringstream dir;

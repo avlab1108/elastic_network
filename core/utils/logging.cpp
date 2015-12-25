@@ -3,7 +3,8 @@
 #include <iostream>
 #include <map>
 #include <cassert>
-#include <mutex>
+
+#include <boost/interprocess/sync/file_lock.hpp>
 
 namespace
 {
@@ -18,7 +19,7 @@ std::map<logger::severity, std::string> severity_helper =
 }
 
 logger::logger(const std::string& file_name) :
-  log_(file_name)
+  log_(file_name, std::ios_base::app)
 {
   if(!log_.good())
   {
@@ -33,7 +34,6 @@ logger::~logger()
 
 logger& logger::instance()
 {
-  //static logger l(global_config::instance()->log_path());
   static logger l("./log.txt");
   return l;
 }
@@ -44,7 +44,7 @@ void logger::append(severity s, const std::string& message)
   {
     auto it = severity_helper.find(s);
     assert(severity_helper.end() != it);
-    std::lock_guard<std::mutex> guard(log_mutex_);
+    boost::interprocess::file_lock flock("./log.txt");
     log_ << "[" << it->second << "]: " << message << std::endl;
   }
 }

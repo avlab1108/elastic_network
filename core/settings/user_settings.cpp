@@ -2,7 +2,6 @@
 
 user_settings::user_settings() :
   excitation_time_(0),
-  time_limit_(0),
   fs_(0),
   simulations_count_(0)
 {
@@ -28,26 +27,6 @@ const std::size_t user_settings::get_excitation_time() const
   return excitation_time_;
 }
 
-void user_settings::set_time_limit(const std::size_t limit)
-{
-  time_limit_ = limit;
-}
-
-const std::size_t user_settings::get_time_limit() const
-{
-  return time_limit_;
-}
-
-void user_settings::set_time_step(const double step)
-{
-  time_step_ = step;
-}
-
-const double user_settings::get_time_step() const
-{
-  return time_step_;
-}
-
 void user_settings::set_fs(const double fs)
 {
   fs_ = fs;
@@ -68,16 +47,6 @@ const std::size_t user_settings::get_simulations_count() const
   return simulations_count_;
 }
 
-void user_settings::set_force_application_nodes(const std::vector<std::size_t>& nodes)
-{
-  force_application_nodes_ = nodes;
-}
-
-const std::vector<std::size_t>& user_settings::get_force_application_nodes() const
-{
-  return force_application_nodes_;
-}
-
 void user_settings::set_visualization_nodes(const std::vector<std::size_t>& nodes)
 {
   visualization_nodes_ = nodes;
@@ -88,6 +57,66 @@ const std::vector<std::size_t>& user_settings::get_visualization_nodes() const
   return visualization_nodes_;
 }
 
+void user_settings::set_time_step(const double step)
+{
+  time_step_ = step;
+}
+
+const double user_settings::get_time_step() const
+{
+  return time_step_;
+}
+
+void user_settings::set_force_application_nodes(const std::vector<std::size_t>& nodes)
+{
+  force_application_nodes_ = nodes;
+}
+
+const std::vector<std::size_t>& user_settings::get_force_application_nodes() const
+{
+  return force_application_nodes_;
+}
+
+void user_settings::set_nodes(const std::vector<std::size_t>& nodes)
+{
+  nodes_ = nodes;
+}
+
+const boost::optional<std::vector<std::size_t>>& user_settings::get_nodes() const
+{
+  return nodes_;
+}
+
+void user_settings::set_links(const std::vector<std::pair<std::size_t, std::size_t>>& links)
+{
+  links_ = links;
+}
+
+const boost::optional<std::vector<std::pair<std::size_t, std::size_t>>>& user_settings::get_links() const
+{
+  return links_;
+}
+
+void user_settings::set_cutoff_distance(const double l0)
+{
+  cutoff_distance_ = l0;
+}
+
+const boost::optional<double>& user_settings::get_cutoff_distance() const
+{
+  return cutoff_distance_;
+}
+
+void user_settings::set_network_file_path(const std::string& path)
+{
+  network_file_path_ = path;
+}
+
+const boost::optional<std::string>& user_settings::get_network_file_path() const
+{
+  return network_file_path_;
+}
+
 std::ostream& operator<<(std::ostream& out, const user_settings& s)
 {
   out << "Network size: " << s.get_network().get_size() << std::endl;
@@ -95,7 +124,5 @@ std::ostream& operator<<(std::ostream& out, const user_settings& s)
   out << "Fs: " << s.get_fs() << std::endl;
   out << "Sim count: " << s.get_simulations_count() << std::endl;
   out << "Excitation time: " << s.get_excitation_time() << std::endl;
-  out << "Time limit: " << s.get_time_limit() << std::endl;
-  out << "Time step: " << s.get_time_step() << std::endl;
   return out;
 }

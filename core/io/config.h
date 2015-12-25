@@ -12,6 +12,7 @@ public:
 
   const global_settings& get_global_settings() const;
   const user_settings& get_user_settings() const;
+  user_settings& get_user_settings();
 
   std::string get_work_directory() const;
 

@@ -14,6 +14,10 @@ public:
 
 private:
   void prepare_output_directory();
+  void pre_excitement();
+  void post_excitement();
+  void pre_relaxation();
+  void post_relaxation();
 
 private:
   std::string generation_dir_;

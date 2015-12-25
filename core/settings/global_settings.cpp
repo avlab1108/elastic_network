@@ -102,3 +102,13 @@ const std::size_t global_settings::get_dump_step() const
 {
   return dump_step_;
 }
+
+void global_settings::set_time_limit(const std::size_t limit)
+{
+  time_limit_ = limit;
+}
+
+const std::size_t global_settings::get_time_limit() const
+{
+  return time_limit_;
+}

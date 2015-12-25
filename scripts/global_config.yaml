@@ -5,4 +5,6 @@ relaxationFileName: "relaxation.txt"
 trajectoryFileName: "trajectory.txt"
 eigensFileName: "eigens.txt"
 nodesFileName: "nodes.txt"
+dumpData: true
 dumpStep: 10
+timeLimit: 10000000 #максимальное число шагов моделирования

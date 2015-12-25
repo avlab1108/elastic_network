@@ -34,6 +34,9 @@ public:
   void set_dump_step(const std::size_t step);
   const std::size_t get_dump_step() const;
 
+  void set_time_limit(const std::size_t limit);
+  const std::size_t get_time_limit() const;
+
 private:
   std::string results_dir_;
   std::string generation_dir_;
@@ -44,4 +47,5 @@ private:
   std::string nodes_file_name_;
   bool dump_data_;
   std::size_t dump_step_;
+  std::size_t time_limit_;
 };

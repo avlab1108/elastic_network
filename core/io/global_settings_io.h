@@ -14,6 +14,7 @@ const std::string eigens_file_name = "eigensFileName";
 const std::string nodes_file_name = "nodesFileName";
 const std::string dump_data = "dumpData";
 const std::string dump_step = "dumpStep";
+const std::string time_limit = "timeLimit";
 }
 
 namespace YAML
@@ -30,6 +31,7 @@ public:
   void export_settings(const std::string& output_dir);
 
   const global_settings& get_settings() const;
+  void check_input_validity(const YAML::Node& node);
 
 private:
   global_settings settings_;
