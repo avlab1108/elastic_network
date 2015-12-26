@@ -5,7 +5,7 @@
 #include <cmath>
 #include <omp.h>
 
-network_dynamics::network_dynamics(const network& net, const network::node_positions_type& initial_positions) :
+network_dynamics::network_dynamics(const network& net, const node_positions_type& initial_positions) :
   net_(net),
   initial_positions_(initial_positions)
 {

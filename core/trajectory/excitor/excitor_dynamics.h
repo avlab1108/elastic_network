@@ -8,7 +8,7 @@
 
 #include "force_generator.h"
 
-#include <point.h>
+#include <common_types.h>
 #include <network_dynamics.h>
 
 /**
@@ -18,19 +18,14 @@
 class excitor_dynamics : public network_dynamics
 {
 public:
-  /// Forces type.
-  typedef std::vector<std::pair<std::size_t, point_type>> forces_type;
-
-public:
   /**
    * @brief Constructs dynamics for provided network with specified initial node positions, summary magnitude of random forces and node indexes, to which random forces will be applied.
    *
    * @param net Network.
    * @param initial_positions Initial positions of nodes.
-   * @param fs Summary magnitude of random forces.
-   * @param nodes Nodes for force application.
+   * @param fspec Forces specification.
    */
-  excitor_dynamics(const network& net, const network::node_positions_type& initial_positions, const double fs, const std::vector<std::size_t>& nodes);
+  excitor_dynamics(const network& net, const node_positions_type& initial_positions, const forces_spec& fspec);
   /**
    * @brief Implementation of base class interface. Calculates state of network with provided arguments.
    *
@@ -45,10 +40,8 @@ public:
   virtual void prepare_for_step() override;
 
 private:
-  /// Summary magnitude of forces.
-  const double fs_;
-  /// Force application nodes.
-  const std::vector<std::size_t> nodes_;
+  /// Forces specification.
+  forces_spec fspec_;
   /// Generated forces.
   forces_type forces_;
   /// Force generator.

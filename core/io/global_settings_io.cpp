@@ -35,6 +35,7 @@ void global_settings_io::import_settings(const std::string& file_path)
   settings_.set_dump_data(node[constants::dump_data].as<bool>());
   settings_.set_dump_step(node[constants::dump_step].as<std::size_t>());
   settings_.set_time_limit(node[constants::time_limit].as<std::size_t>());
+  settings_.set_forces_dynamic(node[constants::forces_dynamic].as<bool>());
 }
 
 void global_settings_io::export_settings(const std::string& output_dir)
@@ -65,7 +66,8 @@ void global_settings_io::check_input_validity(const YAML::Node& node)
     !node[constants::nodes_file_name] ||
     !node[constants::dump_data] ||
     !node[constants::dump_step] ||
-    !node[constants::time_limit])
+    !node[constants::time_limit] ||
+    !node[constants::forces_dynamic])
   {
     throw std::runtime_error(invalid_structure);
   }

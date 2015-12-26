@@ -2,6 +2,7 @@
 
 #include <utils.h>
 #include <logging.h>
+#include <common_types.h>
 
 #include <boost/algorithm/string.hpp>
 #include <boost/optional.hpp>
@@ -338,7 +339,7 @@ network user_settings_io::read_network_from_csv_file(const std::string& file_pat
     throw std::runtime_error(invalid_file_type);
   }
   std::string line;
-  network::node_positions_type nodes;
+  node_positions_type nodes;
   while(std::getline(csv, line))
   {
     std::vector<std::string> parts;

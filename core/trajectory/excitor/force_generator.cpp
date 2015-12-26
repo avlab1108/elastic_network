@@ -2,28 +2,35 @@
 
 #include <utils.h>
 
-force_generator::force_generator(const double fs, const nodes_type& nodes) :
-  fs_(fs),
-  nodes_(nodes)
+force_generator::force_generator(const forces_spec& fspec) :
+  fspec_(fspec)
 {
+  generate_forces();
 }
 
-force_generator::result_type force_generator::generate()
+forces_type force_generator::generate()
 {
-  result_type result;
-  result.resize(nodes_.size());
-  double n = 0.0;
-  for(std::size_t i = 0; i < nodes_.size(); ++i)
+  if(fspec_.dynamic)
   {
-    result[i] = std::make_pair(nodes_[i], utils::random_point());
-    n += norm(result[i].second);
+    generate_forces();
   }
-  const double d = fs_/std::sqrt(n);
-  for(std::size_t i = 0; i < nodes_.size(); ++i)
-  {
-    result[i].second *= d;
-  }
+  return result_;
+}
 
-  return result;
+void force_generator::generate_forces()
+{
+  result_.clear();
+  result_.resize(fspec_.nodes.size());
+  double n = 0.0;
+  for(std::size_t i = 0; i < fspec_.nodes.size(); ++i)
+  {
+    result_[i] = std::make_pair(fspec_.nodes[i], utils::random_point());
+    n += norm(result_[i].second);
+  }
+  const double d = fspec_.fs/std::sqrt(n);
+  for(std::size_t i = 0; i < fspec_.nodes.size(); ++i)
+  {
+    result_[i].second *= d;
+  }
 }
 

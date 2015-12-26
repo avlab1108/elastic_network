@@ -37,6 +37,9 @@ public:
   void set_time_limit(const std::size_t limit);
   const std::size_t get_time_limit() const;
 
+  void set_forces_dynamic(const bool dynamic);
+  const bool get_forces_dynamic() const;
+
 private:
   std::string results_dir_;
   std::string generation_dir_;
@@ -48,4 +51,5 @@ private:
   bool dump_data_;
   std::size_t dump_step_;
   std::size_t time_limit_;
+  bool forces_dynamic_;
 };

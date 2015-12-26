@@ -8,7 +8,7 @@
 
 #include <network_dynamics.h>
 #include <node_chooser.h>
-#include "thread_pool.h"
+#include <common_types.h>
 
 #include <list>
 #include <iostream>
@@ -19,12 +19,9 @@
  * @class result_observer
  * @brief Observes result of each step of numerical integration of network dynamics.
  */
+  //  }));
 class result_observer
 {
-public:
-  /// State of network.
-  typedef network_dynamics::state_type state_type;
-
 public:
   /**
    * @brief Processes step at defined time point.
@@ -109,13 +106,13 @@ private:
 class trajectory_dumper : public result_observer
 {
 public:
-  trajectory_dumper(std::ostream& out, const network::node_positions_type& initial_positions, const node_chooser::node_numbers_type& nodes, const std::size_t step);
+  trajectory_dumper(std::ostream& out, const node_positions_type& initial_positions, const node_chooser::node_numbers_type& nodes, const std::size_t step);
   virtual void process(const state_type& r, const double t) override;
 
 private:
   std::ostream& out_;
   std::mutex out_mutex_;
-  network::node_positions_type initial_positions_;
+  node_positions_type initial_positions_;
   node_chooser::node_numbers_type nodes_;
   std::size_t step_;
 };
@@ -123,11 +120,11 @@ private:
 class stability_checker : public result_observer
 {
 public:
-  stability_checker(const network::node_positions_type& initial_positions, const node_chooser::node_numbers_type& nodes);
+  stability_checker(const node_positions_type& initial_positions, const node_chooser::node_numbers_type& nodes);
   virtual void process(const state_type& r, const double t) override;
 
 private:
-  network::node_positions_type initial_positions_;
+  node_positions_type initial_positions_;
   node_chooser::node_numbers_type nodes_;
   std::size_t stabilization_steps_;
   double previous_dist1_;
@@ -146,23 +143,8 @@ private:
   std::list<std::shared_ptr<result_observer>> observers_;
 };
 
-class bg_thread_handler
-{
-public:
-  bg_thread_handler();
-  ~bg_thread_handler();
-  void add_future(std::future<void>&& f);
-
-private:
-  thread_pool pool_;
-  std::vector<std::future<void>> futures_;
-};
-
 class result_observer_wrapper
 {
-public:
-  typedef result_observer::state_type state_type;
-
 public:
   result_observer_wrapper(const network_dynamics_wrapper& dynamics);
   void operator()(const state_type& r, const double t);
@@ -171,5 +153,4 @@ public:
 private:
   network_dynamics_wrapper dynamics_;
   std::shared_ptr<result_observer> observer_;
-  std::shared_ptr<bg_thread_handler> bg_handler_;
 };

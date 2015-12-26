@@ -36,7 +36,7 @@ void dump_adjacency_list(const network& net, const std::string& file_name)
     std::cerr << "Error openning output file \"" << file_name << "\"" << std::endl;
     return;
   }
-  const network::links_type& links = net.get_links();
+  const links_type& links = net.get_links();
   for(std::size_t i = 0; i < links.size(); ++i)
   {
     out << links[i].first << " " << links[i].second << std::endl;

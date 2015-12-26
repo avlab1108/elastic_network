@@ -1,12 +1,11 @@
 #pragma once
 
-#include <network.h>
-#include <vector>
+#include <common_types.h>
 
 namespace hp
 {
 
-const network::node_positions_type& node_positions =
+const node_positions_type& node_positions =
 {
   {29.071289, 12.112305, 44.331055}, 
   {29.092773, 12.233398, 43.469727},

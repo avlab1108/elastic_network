@@ -1,23 +1,9 @@
 #include "excitor_dynamics.h"
 
-namespace
-{
-std::vector<std::size_t> all_nodes(const network& net)
-{
-  std::vector<std::size_t> res(net.get_size());
-  for(std::size_t i = 0; i < net.get_size(); ++i)
-  {
-    res.push_back(i);
-  }
-  return res;
-}
-}
-
-excitor_dynamics::excitor_dynamics(const network& net, const network::node_positions_type& initial_positions, const double fs, const std::vector<std::size_t>& nodes) :
+excitor_dynamics::excitor_dynamics(const network& net, const node_positions_type& initial_positions, const forces_spec& fspec) :
   network_dynamics(net, initial_positions),
-  fs_(fs),
-  nodes_(nodes.empty() ? all_nodes(net) : nodes),
-  generator_(fs_, nodes.empty() ? all_nodes(net) : nodes)
+  fspec_(fspec),
+  generator_(fspec)
 {
 }
 

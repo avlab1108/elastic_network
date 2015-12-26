@@ -74,7 +74,7 @@ void file_dumper::process(const state_type& r, const double t)
   dumper_.process(r, t);
 }
 
-trajectory_dumper::trajectory_dumper(std::ostream& out, const network::node_positions_type& initial_positions, const node_chooser::node_numbers_type& nodes, const std::size_t step) :
+trajectory_dumper::trajectory_dumper(std::ostream& out, const node_positions_type& initial_positions, const node_chooser::node_numbers_type& nodes, const std::size_t step) :
   out_(out),
   initial_positions_(initial_positions),
   nodes_(nodes),
@@ -112,7 +112,7 @@ void trajectory_dumper::process(const state_type& r, const double t)
   }
 }
 
-stability_checker::stability_checker(const network::node_positions_type& initial_positions, const node_chooser::node_numbers_type& nodes) :
+stability_checker::stability_checker(const node_positions_type& initial_positions, const node_chooser::node_numbers_type& nodes) :
   initial_positions_(initial_positions),
   nodes_(nodes),
   stabilization_steps_(0)
@@ -176,41 +176,18 @@ void composite_result_observer::add_result_observer(const std::shared_ptr<result
   observers_.push_back(observer);
 }
 
-bg_thread_handler::bg_thread_handler() :
-  pool_(10)
-{
-}
-
-bg_thread_handler::~bg_thread_handler()
-{
-  for(auto&& res : futures_)
-  {
-    res.get();
-  }
-}
-
-void bg_thread_handler::add_future(std::future<void>&& f)
-{
-  futures_.emplace_back(std::move(f));
-}
-
 result_observer_wrapper::result_observer_wrapper(const network_dynamics_wrapper& dynamics) :
-  dynamics_(dynamics),
-  bg_handler_(new bg_thread_handler())
+  dynamics_(dynamics)
 {
 }
 
 void result_observer_wrapper::operator()(const state_type& r, const double t)
 {
-  //bg_handler_->add_future(std::async(std::launch::async,
-  //  [&r, t, this]
-  //  {
-      dynamics_.prepare_for_step();
-      if(observer_)
-      {
-        observer_->process(r, t);
-      }
-  //  }));
+  dynamics_.prepare_for_step();
+  if(observer_)
+  {
+    observer_->process(r, t);
+  }
 }
 
 void result_observer_wrapper::set_result_observer(const std::shared_ptr<result_observer>& observer)

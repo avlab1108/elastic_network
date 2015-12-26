@@ -1,10 +1,11 @@
 #include "trajectory_task.h"
 
+#include <common_types.h>
 #include <excitor.h>
+#include <logging.h>
+#include <node_chooser.h>
 #include <relaxer.h>
 #include <result_observer.h>
-#include <node_chooser.h>
-#include <logging.h>
 
 #include <boost/filesystem.hpp>
 
@@ -58,7 +59,7 @@ void trajectory_process::execute()
   const global_settings& gs = config_.get_global_settings();
   const user_settings& us = config_.get_user_settings();
   network net = us.get_network();
-  network::node_positions_type initial_state = net.get_node_positions();
+  node_positions_type initial_state = net.get_node_positions();
 
   LOG(logger::info, std::string("Started execution for id \"") + std::to_string(run_id_) + "\" with following parameters:\n \
       \ttime step: " + std::to_string(us.get_time_step()) + ", \n\
@@ -67,7 +68,8 @@ void trajectory_process::execute()
   std::vector<std::size_t> force_application_nodes = us.get_force_application_nodes();
   //TODO MH: check for valid indexes
   pre_excitement();
-  excitor x(net, initial_state, us.get_time_step(), us.get_excitation_time(), us.get_fs(), force_application_nodes);
+  forces_spec fspec(us.get_fs(), force_application_nodes, gs.get_forces_dynamic());
+  excitor x(net, initial_state, us.get_time_step(), us.get_excitation_time(), fspec);
   if(gs.get_dump_data())
   {
     const std::string& excitation_output_file = generation_dir_ + "/" + gs.get_excitation_file_name();

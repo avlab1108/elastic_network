@@ -46,7 +46,7 @@ void test_from_article()
   {
     nodes.push_back(i);
   }
-  network::node_positions_type initial = net.get_node_positions();
+  node_positions_type initial = net.get_node_positions();
   std::ofstream tout("./trajectory.txt");
   if(!tout.is_open())
   {
@@ -60,7 +60,8 @@ void test_from_article()
   obs->add_result_observer(stab);
   //std::shared_ptr<result_observer> obs(new stream_dumper(stream_dumper::format_type::gnuplot));
   //std::shared_ptr<comparer> obs(new comparer(initial));
-  excitor x(net, initial, 0.002, 10000, 0.2, nodes);
+  forces_spec fspec(0.2, nodes, true);
+  excitor x(net, initial, 0.002, 10000, fspec);
   //x.set_result_observer(obs);
   clock_t t1 = clock();
   x.run();
@@ -81,7 +82,7 @@ void test_hierarchical_potential()
   {
     nodes.push_back(i);
   }
-  network::node_positions_type initial = net.get_node_positions();
+  node_positions_type initial = net.get_node_positions();
   //std::shared_ptr<result_observer> obs(new stream_dumper(stream_dumper::format_type::gnuplot));
   std::ofstream tout("./trajectory.txt");
   if(!tout.is_open())
@@ -96,7 +97,8 @@ void test_hierarchical_potential()
   //obs->add_result_observer(stab);
   const double dt = 0.002;
   //std::shared_ptr<comparer> obs(new comparer(initial));
-  excitor x(net, initial, dt, 10000, 0.2, nodes);
+  forces_spec fspec(0.2, nodes, true);
+  excitor x(net, initial, dt, 10000, fspec);
   //x.set_result_observer(obs);
   clock_t t1 = clock();
   x.run();

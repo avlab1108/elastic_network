@@ -1,13 +1,14 @@
 #pragma once
 
 #include <network.h>
+#include <common_types.h>
 
 #include <trajectory_worker.h>
 
 class relaxer : public trajectory_worker
 {
 public:
-  relaxer(network& net, const network::node_positions_type& initial_positions, const double step, const std::size_t max_time);
+  relaxer(network& net, const node_positions_type& initial_positions, const double step, const std::size_t max_time);
 
   virtual void run() override;
 

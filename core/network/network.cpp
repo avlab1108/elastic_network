@@ -51,12 +51,12 @@ void network::add_link(const std::size_t node1, const std::size_t node2)
   links_.set(node_pair_to_index(node1, node2));
 }
 
-const network::node_positions_type& network::get_node_positions() const
+const node_positions_type& network::get_node_positions() const
 {
   return nodes_;
 }
 
-network::node_positions_type& network::get_node_positions()
+node_positions_type& network::get_node_positions()
 {
   return nodes_;
 }
@@ -73,7 +73,7 @@ void network::set_links(const links_type& links)
   }
 }
 
-network::links_type network::get_links() const
+links_type network::get_links() const
 {
   links_type res;
   for(std::size_t i = 0; i < get_size(); ++i)

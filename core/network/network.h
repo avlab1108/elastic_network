@@ -7,6 +7,7 @@
 #pragma once
 
 #include <point.h>
+#include <common_types.h>
 
 #include <boost/dynamic_bitset.hpp>
 
@@ -22,12 +23,6 @@
  */
 class network
 {
-public:
-  /// Node positions container.
-  typedef std::vector<point_type> node_positions_type;
-  /// Links container.
-  typedef std::vector<std::pair<std::size_t, std::size_t>> links_type;
-
 public:
   /**
    * @brief Default constructor.

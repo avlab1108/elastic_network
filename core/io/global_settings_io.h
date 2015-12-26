@@ -15,6 +15,7 @@ const std::string nodes_file_name = "nodesFileName";
 const std::string dump_data = "dumpData";
 const std::string dump_step = "dumpStep";
 const std::string time_limit = "timeLimit";
+const std::string forces_dynamic = "forcesDynamic";
 }
 
 namespace YAML

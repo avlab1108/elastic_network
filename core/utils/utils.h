@@ -1,6 +1,7 @@
 #pragma once
 
 #include "point.h"
+#include "common_types.h"
 
 class network;
 

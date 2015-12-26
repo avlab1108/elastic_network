@@ -7,7 +7,9 @@
 #pragma once
 
 #include "network.h"
-#include "point.h"
+
+#include <common_types.h>
+#include <point.h>
 
 #include <memory>
 #include <vector>
@@ -27,17 +29,13 @@
 class network_dynamics
 {
 public:
-  /// Current state of system.
-  typedef std::vector<point_type> state_type;
-
-public:
   /**
    * @brief Constructs dynamics for provided network and initial positions of nodes.
    *
    * @param net Network.
    * @param initial_positions Initial positions of network nodes.
    */
-  network_dynamics(const network& net, const network::node_positions_type& initial_positions);
+  network_dynamics(const network& net, const node_positions_type& initial_positions);
   /**
    * @brief Calculates value of differential equation's right side based on provided data.
    *
@@ -56,7 +54,7 @@ private:
   /// Network.
   network net_;
   /// Initial positions of nodes.
-  network::node_positions_type initial_positions_;
+  node_positions_type initial_positions_;
   /// Initial distances between nodes.
   std::vector<std::vector<double>> initial_distances_;
 };
@@ -67,10 +65,6 @@ private:
  */
 class network_dynamics_wrapper
 {
-public:
-  /// State of network.
-  typedef network_dynamics::state_type state_type;
-
 public:
   /**
    * Constructs wrapper over the real dynamics calculator @a network_dynamics.
@@ -96,5 +90,3 @@ private:
   /// Dynamics of network.
   std::shared_ptr<network_dynamics> dynamics_;
 };
-
-typedef std::shared_ptr<network_dynamics> network_dynamics_ptr;
