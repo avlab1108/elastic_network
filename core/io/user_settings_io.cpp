@@ -99,7 +99,7 @@ void user_settings_io::import_settings(const std::string& file_path)
 
   if(node[constants::nodes])
   {
-    read_network_from_yaml(node);
+    settings_.set_network(read_network_from_yaml(node));
   }
   else
   {
