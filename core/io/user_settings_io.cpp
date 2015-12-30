@@ -177,14 +177,18 @@ void user_settings_io::export_settings(const std::string& output_dir)
       out << YAML::Key << constants::l0;
       out << YAML::Value << *settings_.get_cutoff_distance();
     }
-    if(settings_.get_nodes())
+    if(settings_.get_node_positions())
     {
       out << YAML::Key << constants::nodes;
-      const std::vector<std::size_t>& nodes = *settings_.get_nodes();
+      const node_positions_type& node_positions = *settings_.get_node_positions();
       out << YAML::Value << YAML::BeginSeq;
-      for(auto it = nodes.begin(); it != nodes.end(); ++it)
+      for(auto it = node_positions.begin(); it != node_positions.end(); ++it)
       {
-        out << *it;
+        out << YAML::BeginSeq;
+        out << (*it)[0];
+        out << (*it)[1];
+        out << (*it)[2];
+        out << YAML::EndSeq;
       }
       out << YAML::EndSeq;
     }
@@ -295,10 +299,14 @@ network user_settings_io::read_network_from_yaml(const YAML::Node& node)
   const YAML::Node& nodes = node[constants::nodes];
   const std::size_t size = nodes.size();
   network net(size);
+  node_positions_type node_positions;
   for(std::size_t i = 0; i < size; ++i)
   {
-    net.set_node_position(i, nodes[i].as<point_type>());
+    const point_type& position = nodes[i].as<point_type>();
+    net.set_node_position(i, position);
+    node_positions.push_back(position);
   }
+  settings_.set_node_positions(node_positions);
   if(node[constants::links])
   {
     std::vector<std::pair<std::size_t, std::size_t>> links;

@@ -77,22 +77,22 @@ const std::vector<std::size_t>& user_settings::get_force_application_nodes() con
   return force_application_nodes_;
 }
 
-void user_settings::set_nodes(const std::vector<std::size_t>& nodes)
+void user_settings::set_node_positions(const node_positions_type& node_positions)
 {
-  nodes_ = nodes;
+  node_positions_ = node_positions;
 }
 
-const boost::optional<std::vector<std::size_t>>& user_settings::get_nodes() const
+const boost::optional<node_positions_type>& user_settings::get_node_positions() const
 {
-  return nodes_;
+  return node_positions_;
 }
 
-void user_settings::set_links(const std::vector<std::pair<std::size_t, std::size_t>>& links)
+void user_settings::set_links(const links_type& links)
 {
   links_ = links;
 }
 
-const boost::optional<std::vector<std::pair<std::size_t, std::size_t>>>& user_settings::get_links() const
+const boost::optional<links_type>& user_settings::get_links() const
 {
   return links_;
 }

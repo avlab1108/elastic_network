@@ -35,8 +35,8 @@ public:
   void set_force_application_nodes(const std::vector<std::size_t>& nodes);
   const std::vector<std::size_t>& get_force_application_nodes() const;
 
-  void set_nodes(const std::vector<std::size_t>& nodes);
-  const boost::optional<std::vector<std::size_t>>& get_nodes() const;
+  void set_node_positions(const node_positions_type& node_positions);
+  const boost::optional<node_positions_type>& get_node_positions() const;
 
   void set_cutoff_distance(const double l0);
   const boost::optional<double>& get_cutoff_distance() const;
@@ -79,9 +79,9 @@ private:
    * @{
    */
   /// Nodes.
-  boost::optional<std::vector<std::size_t>> nodes_;
+  boost::optional<node_positions_type> node_positions_;
   /// Links.
-  boost::optional<std::vector<std::pair<std::size_t, std::size_t>>> links_;
+  boost::optional<links_type> links_;
   /// Cutoff distance.
   boost::optional<double> cutoff_distance_;
   /// Network file path.
