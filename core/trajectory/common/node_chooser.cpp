@@ -43,12 +43,11 @@ node_chooser::node_chooser(const network& net) :
 
   double max_change = 0.0;
   std::size_t node1 = 0, node2 = 0;
-  #pragma omp parallel for
+  #pragma omp parallel for ordered
   for(std::size_t i = 0; i < net_.get_size(); ++i)
   {
     const point_type& p1 = net_.get_node_position(i);
     point_type e1_i{e1(3*i), e1(3*i+1), e1(3*i+2)};
-    #pragma omp parallel for
     for(std::size_t j = 0; j < net_.get_size(); ++j)
     {
       if(i == j)
@@ -58,11 +57,14 @@ node_chooser::node_chooser(const network& net) :
       point_type e1_j{e1(3*j), e1(3*j+1), e1(3*j+2)};
       const point_type& p2 = net_.get_node_position(j);
       double rel = std::fabs(scalar_prod(e1_i - e1_j, p1 - p2)/abs(p1 - p2));
-      if(rel > max_change)
+      #pragma omp ordered
       {
-        node1 = i;
-        node2 = j;
-        max_change = rel;
+        if(rel > max_change)
+        {
+          node1 = i;
+          node2 = j;
+          max_change = rel;
+        }
       }
     }
   }
@@ -71,7 +73,7 @@ node_chooser::node_chooser(const network& net) :
   std::size_t node3 = 0;
   const point_type& p1 = net_.get_node_position(node1);
   point_type e2_1{e2(3*node1), e2(3*node1+1), e2(3*node1+2)};
-  #pragma omp parallel for
+  #pragma omp parallel for ordered
   for(std::size_t j = 0; j < net_.get_size(); ++j)
   {
     if(node1 == j)
@@ -81,10 +83,13 @@ node_chooser::node_chooser(const network& net) :
     point_type e2_j{e2(3*j), e2(3*j+1), e2(3*j+2)};
     const point_type& pj = net_.get_node_position(j);
     double rel = std::fabs(scalar_prod(e2_1 - e2_j, p1 - pj)/abs(p1 - pj));
-    if(rel > max_change1)
+    #pragma omp ordered
     {
-      node3 = j;
-      max_change1 = rel;
+      if(rel > max_change1)
+      {
+        node3 = j;
+        max_change1 = rel;
+      }
     }
   }
 
@@ -92,7 +97,7 @@ node_chooser::node_chooser(const network& net) :
   std::size_t node4 = 0;
   const point_type& p2 = net_.get_node_position(node2);
   point_type e2_2{e2(3*node2), e2(3*node2+1), e2(3*node2+2)};
-  #pragma omp parallel for
+  #pragma omp parallel for ordered
   for(std::size_t j = 0; j < net_.get_size(); ++j)
   {
     if(node2 == j)
@@ -102,10 +107,13 @@ node_chooser::node_chooser(const network& net) :
     point_type e2_j{e2(3*j), e2(3*j+1), e2(3*j+2)};
     const point_type& pj = net_.get_node_position(j);
     double rel = std::fabs(scalar_prod(e2_2 - e2_j, p2 - pj)/abs(p2 - pj));
-    if(rel > max_change2)
+    #pragma omp ordered
     {
-      node4 = j;
-      max_change2 = rel;
+      if(rel > max_change2)
+      {
+        node4 = j;
+        max_change2 = rel;
+      }
     }
   }
 
