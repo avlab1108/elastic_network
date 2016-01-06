@@ -130,9 +130,10 @@ void stability_checker::process(const state_type& r, const double t)
   std::size_t i1 = nodes_[0];
   std::size_t i2 = nodes_[1];
   std::size_t i3 = nodes_[2];
-  if(utils::distance(initial_positions_[i1], r[i1]) < 0.00001 &&
-    utils::distance(initial_positions_[i2], r[i2]) < 0.00001 &&
-    utils::distance(initial_positions_[i3], r[i3]) < 0.00001)
+  const double epsilon = 1e-9;
+  if(utils::distance(initial_positions_[i1], r[i1]) < epsilon &&
+    utils::distance(initial_positions_[i2], r[i2]) < epsilon &&
+    utils::distance(initial_positions_[i3], r[i3]) < epsilon)
   {
     throw std::exception();
   }
@@ -140,9 +141,9 @@ void stability_checker::process(const state_type& r, const double t)
   double current_dist1 = utils::distance(r[i1], r[i2]);
   double current_dist2 = utils::distance(r[i1], r[i3]);
   double current_dist3 = utils::distance(r[i2], r[i3]);
-  if(std::fabs(current_dist1 - previous_dist1_) < std::numeric_limits<double>::epsilon() &&
-    std::fabs(current_dist2 - previous_dist2_) < std::numeric_limits<double>::epsilon() &&
-    std::fabs(current_dist3 - previous_dist3_) < std::numeric_limits<double>::epsilon())
+  if(std::fabs(current_dist1 - previous_dist1_) < epsilon &&
+    std::fabs(current_dist2 - previous_dist2_) < epsilon &&
+    std::fabs(current_dist3 - previous_dist3_) < epsilon)
   {
     ++stabilization_steps_;
   }
