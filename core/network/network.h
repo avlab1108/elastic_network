@@ -51,7 +51,7 @@ public:
 
   /**
    * @brief Applies @a l0 cutoff distance to the network.
-   *        This means that all the nodes, which are at the disatnce below @a lo
+   *        This means that all the nodes, which are at the distance below @a lo
    *        are connected with link.
    * @param l0 Cutoff distance value.
    */
