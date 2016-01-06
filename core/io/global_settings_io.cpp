@@ -25,17 +25,17 @@ void global_settings_io::import_settings(const std::string& file_path)
     return;
   }
   check_input_validity(node);
-  settings_.set_results_dir(node[constants::results_dir].as<std::string>());
-  settings_.set_generation_dir(node[constants::generation_dir].as<std::string>());
-  settings_.set_excitation_file_name(node[constants::excitation_file_name].as<std::string>());
-  settings_.set_relaxation_file_name(node[constants::relaxation_file_name].as<std::string>());
-  settings_.set_trajectory_file_name(node[constants::trajectory_file_name].as<std::string>());
-  settings_.set_eigens_file_name(node[constants::eigens_file_name].as<std::string>());
-  settings_.set_nodes_file_name(node[constants::nodes_file_name].as<std::string>());
-  settings_.set_dump_data(node[constants::dump_data].as<bool>());
-  settings_.set_dump_step(node[constants::dump_step].as<std::size_t>());
-  settings_.set_time_limit(node[constants::time_limit].as<std::size_t>());
-  settings_.set_forces_dynamic(node[constants::forces_dynamic].as<bool>());
+  settings_.set_results_dir(node[gsc::results_dir].as<std::string>());
+  settings_.set_generation_dir(node[gsc::generation_dir].as<std::string>());
+  settings_.set_excitation_file_name(node[gsc::excitation_file_name].as<std::string>());
+  settings_.set_relaxation_file_name(node[gsc::relaxation_file_name].as<std::string>());
+  settings_.set_trajectory_file_name(node[gsc::trajectory_file_name].as<std::string>());
+  settings_.set_eigens_file_name(node[gsc::eigens_file_name].as<std::string>());
+  settings_.set_nodes_file_name(node[gsc::nodes_file_name].as<std::string>());
+  settings_.set_dump_data(node[gsc::dump_data].as<bool>());
+  settings_.set_dump_step(node[gsc::dump_step].as<std::size_t>());
+  settings_.set_time_limit(node[gsc::time_limit].as<std::size_t>());
+  settings_.set_forces_dynamic(node[gsc::forces_dynamic].as<bool>());
 }
 
 void global_settings_io::export_settings(const std::string& output_dir)
@@ -57,17 +57,17 @@ const global_settings& global_settings_io::get_settings() const
 
 void global_settings_io::check_input_validity(const YAML::Node& node)
 {
-  if(!node[constants::results_dir] ||
-    !node[constants::generation_dir] ||
-    !node[constants::excitation_file_name] ||
-    !node[constants::relaxation_file_name] ||
-    !node[constants::trajectory_file_name] ||
-    !node[constants::eigens_file_name] ||
-    !node[constants::nodes_file_name] ||
-    !node[constants::dump_data] ||
-    !node[constants::dump_step] ||
-    !node[constants::time_limit] ||
-    !node[constants::forces_dynamic])
+  if(!node[gsc::results_dir] ||
+    !node[gsc::generation_dir] ||
+    !node[gsc::excitation_file_name] ||
+    !node[gsc::relaxation_file_name] ||
+    !node[gsc::trajectory_file_name] ||
+    !node[gsc::eigens_file_name] ||
+    !node[gsc::nodes_file_name] ||
+    !node[gsc::dump_data] ||
+    !node[gsc::dump_step] ||
+    !node[gsc::time_limit] ||
+    !node[gsc::forces_dynamic])
   {
     throw std::runtime_error(invalid_structure);
   }
