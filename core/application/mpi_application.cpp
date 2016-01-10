@@ -13,6 +13,7 @@ void mpi_application::pre_execute()
 {
  if(0 == world_.rank())
  {
+   prepare_work_directory();
    pre_execute_main_process();
  }
  else

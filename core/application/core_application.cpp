@@ -56,19 +56,9 @@ core_application* core_application::instance()
   return instance_;
 }
 
-void core_application::set_timestamp(const std::time_t t)
-{
-  timestamp_ = t;
-}
-
 void core_application::prepare_work_directory()
 {
   utils::create_directory(get_work_directory());
-}
-
-void core_application::assign_task(const std::shared_ptr<base_task>& task)
-{
-  task_ = task;
 }
 
 void core_application::pre_execute()
