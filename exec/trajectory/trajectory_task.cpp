@@ -1,24 +1,25 @@
 #include "trajectory_task.h"
 
 #include <common_types.h>
+#include <config.h>
 #include <excitor.h>
 #include <logging.h>
 #include <node_chooser.h>
 #include <relaxer.h>
 #include <result_observer.h>
+#include <core_application.h>
 
 #include <boost/filesystem.hpp>
 
-trajectory_process::trajectory_process(const std::size_t run_id, const config& conf) :
-  run_id_(run_id),
-  config_(conf)
+trajectory_task::trajectory_task(const std::size_t run_id) :
+  run_id_(run_id)
 {
 }
 
-void trajectory_process::prepare_output_directory()
+void trajectory_task::prepare_output_directory()
 {
-  const global_settings& gs = config_.get_global_settings();
-  const std::string& out_dir = config_.get_work_directory() + "/" + gs.get_generation_dir() + "_" + std::to_string(run_id_); 
+  const global_settings& gs = get_config()->get_global_settings();
+  const std::string& out_dir = core_application::instance()->get_work_directory() + "/" + gs.get_generation_dir() + "_" + std::to_string(run_id_); 
   boost::filesystem::path dir(out_dir);
   if(boost::filesystem::is_directory(dir))
   {
@@ -31,33 +32,32 @@ void trajectory_process::prepare_output_directory()
   generation_dir_ = out_dir;
 }
 
-void trajectory_process::pre_excitement()
+void trajectory_task::pre_excitement()
 {
-  user_settings& us = config_.get_user_settings();
+  user_settings& us = get_config()->get_user_settings();
   if(us.get_visualization_nodes().empty())
   {
     us.set_visualization_nodes(node_chooser(us.get_network()).choose());
   }
-  config_.dump();
 }
 
-void trajectory_process::post_excitement()
+void trajectory_task::post_excitement()
 {
 }
 
-void trajectory_process::pre_relaxation()
+void trajectory_task::pre_relaxation()
 {
 }
 
-void trajectory_process::post_relaxation()
+void trajectory_task::post_relaxation()
 {
 }
 
-void trajectory_process::execute()
+int trajectory_task::execute()
 {
   prepare_output_directory();
-  const global_settings& gs = config_.get_global_settings();
-  const user_settings& us = config_.get_user_settings();
+  const global_settings& gs = get_config()->get_global_settings();
+  const user_settings& us = get_config()->get_user_settings();
   network net = us.get_network();
   node_positions_type initial_state = net.get_node_positions();
 
@@ -85,7 +85,7 @@ void trajectory_process::execute()
   if(!tout.is_open())
   {
     LOG(logger::error, std::string("Failed to open output file \"") + trajectory_output_file + "\". Silently stopping execution for id \"" + std::to_string(run_id_) + "\".");
-    return;
+    return -1;
   }
   const node_chooser::node_numbers_type& nodes = us.get_visualization_nodes();
   //TODO MH: check for valid indexes
@@ -108,12 +108,13 @@ void trajectory_process::execute()
 
   std::clock_t end = clock();
   LOG(logger::info, std::string("Finished execution for id \"") + std::to_string(run_id_) + "\". Elapsed CPU time: " + std::to_string(static_cast<double>(end-begin)/CLOCKS_PER_SEC) + " seconds.");
+  return 0;
 }
 
-trajectory_task::trajectory_task(const std::vector<std::size_t>& run_ids, const config& conf)
+group_trajectory_task::group_trajectory_task(const std::vector<std::size_t>& run_ids)
 {
   for(std::size_t i = 0; i < run_ids.size(); ++i)
   {
-    add_process(std::make_shared<trajectory_process>(run_ids[i], conf));
+    add_task(std::make_shared<trajectory_task>(run_ids[i]));
   }
 }

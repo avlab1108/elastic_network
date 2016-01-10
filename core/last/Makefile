@@ -2,12 +2,13 @@ SLIB_TARGETS 	= $(TARGET)
 
 TARGET				= $(OBJ_DIR)/libcore.so
 
-TARGET_DEPS  	= ../utils/$(OBJ_DIR)/utils.a\
-								../io/$(OBJ_DIR)/io.a\
-								../network/$(OBJ_DIR)/network.a\
-								../settings/$(OBJ_DIR)/settings.a\
-								../trajectory/last/$(OBJ_DIR)/trajectory.a\
-								../task_manager/$(OBJ_DIR)/task_manager.a
+TARGET_DEPS  	= ../utils/$(OBJ_DIR)/utils.a \
+								../io/$(OBJ_DIR)/io.a \
+								../network/$(OBJ_DIR)/network.a \
+								../settings/$(OBJ_DIR)/settings.a \
+								../trajectory/last/$(OBJ_DIR)/trajectory.a \
+								../task_management/$(OBJ_DIR)/task_management.a \
+								../application/$(OBJ_DIR)/application.a
 
 TARGET_CMD  	= $(SLIB_CMD) || $(DIE)
 TARGET_CLEAN 	= $(TARGET) $(TARGET_DEPS)

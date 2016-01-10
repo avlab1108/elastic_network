@@ -14,15 +14,9 @@ public:
   const user_settings& get_user_settings() const;
   user_settings& get_user_settings();
 
-  std::string get_work_directory() const;
-
-  void set_timestamp(const std::time_t t);
-  const std::time_t get_timestamp() const;
-
-  void dump();
+  void dump(const std::string& output_dir);
 
 private:
   user_settings_io user_;
   global_settings_io global_;
-  std::time_t timestamp_;
 };
