@@ -24,7 +24,7 @@
  * \f]
  * where \f$A\f$ is the adjacency matrix of network.
  * Network node positions at any point of time is calculated through the integration of this equation.
- * This class uses boost.odeint library for numeric integration of mentioned equaiton.
+ * This class uses boost.odeint library for numeric integration of mentioned equation.
  */
 class network_dynamics
 {

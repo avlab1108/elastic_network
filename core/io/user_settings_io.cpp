@@ -43,7 +43,7 @@ struct convert<point_type>
 }
 
 const std::string invalid_structure = "Invalid structure of user config file.";
-const std::string invalid_file_type = "Invalid file type provided as " + constants::network_file_path + ".";
+const std::string invalid_file_type = "Invalid file type provided as " + usc::network_file_path + ".";
 const std::string invalid_format    = "Invalid format of network file.";
 
 user_settings_io::user_settings_io()
@@ -68,14 +68,14 @@ void user_settings_io::import_settings(const std::string& file_path)
   /// Check input file structure validity
   check_input_validity(node);
 
-  settings_.set_fs(node[constants::fs].as<double>());
-  settings_.set_excitation_time(node[constants::excitation_time].as<std::size_t>());
-  settings_.set_time_step(node[constants::time_step].as<double>());
-  settings_.set_simulations_count(node[constants::simulations_count].as<std::size_t>());
+  settings_.set_fs(node[usc::fs].as<double>());
+  settings_.set_excitation_time(node[usc::excitation_time].as<std::size_t>());
+  settings_.set_time_step(node[usc::time_step].as<double>());
+  settings_.set_simulations_count(node[usc::simulations_count].as<std::size_t>());
 
-  if(node[constants::force_application_nodes])
+  if(node[usc::force_application_nodes])
   {
-    const YAML::Node& force_node = node[constants::force_application_nodes];
+    const YAML::Node& force_node = node[usc::force_application_nodes];
     std::vector<std::size_t> nodes;
     for(std::size_t i = 0; i < force_node.size(); ++i)
     {
@@ -85,9 +85,9 @@ void user_settings_io::import_settings(const std::string& file_path)
     settings_.set_force_application_nodes(nodes);
   }
 
-  if(node[constants::visualization_nodes])
+  if(node[usc::visualization_nodes])
   {
-    const YAML::Node& visualization_node = node[constants::visualization_nodes];
+    const YAML::Node& visualization_node = node[usc::visualization_nodes];
     std::vector<std::size_t> nodes;
     for(std::size_t i = 0; i < visualization_node.size(); ++i)
     {
@@ -97,13 +97,13 @@ void user_settings_io::import_settings(const std::string& file_path)
     settings_.set_visualization_nodes(nodes);
   }
 
-  if(node[constants::nodes])
+  if(node[usc::nodes])
   {
     settings_.set_network(read_network_from_yaml(node));
   }
   else
   {
-    std::string absolute_path = node[constants::network_file_path].as<std::string>();
+    std::string absolute_path = node[usc::network_file_path].as<std::string>();
     if(!absolute_path.empty())
     {
       if(absolute_path[0] != '/')
@@ -116,9 +116,9 @@ void user_settings_io::import_settings(const std::string& file_path)
     }
   }
 
-  if(node[constants::l0])
+  if(node[usc::l0])
   {
-    double cutoff = node[constants::l0].as<double>();
+    double cutoff = node[usc::l0].as<double>();
     settings_.set_cutoff_distance(cutoff);
     network net = settings_.get_network();
     net.set_cutoff_distance(cutoff);
@@ -139,19 +139,19 @@ void user_settings_io::export_settings(const std::string& output_dir)
 
     YAML::Emitter out;
     out << YAML::BeginMap;
-    out << YAML::Key << constants::fs;
+    out << YAML::Key << usc::fs;
     out << YAML::Value << settings_.get_fs();
 
-    out << YAML::Key << constants::time_step;
+    out << YAML::Key << usc::time_step;
     out << YAML::Value << settings_.get_time_step();
 
-    out << YAML::Key << constants::excitation_time;
+    out << YAML::Key << usc::excitation_time;
     out << YAML::Value << settings_.get_excitation_time();
 
-    out << YAML::Key << constants::simulations_count;
+    out << YAML::Key << usc::simulations_count;
     out << YAML::Value << settings_.get_simulations_count();
 
-    out << YAML::Key << constants::visualization_nodes;
+    out << YAML::Key << usc::visualization_nodes;
     out << YAML::Value << YAML::BeginSeq;
     const auto& vis_nodes = settings_.get_visualization_nodes();
     for(auto it = vis_nodes.begin(); it != vis_nodes.end(); ++it)
@@ -162,7 +162,7 @@ void user_settings_io::export_settings(const std::string& output_dir)
 
     if(!settings_.get_force_application_nodes().empty())
     {
-      out << YAML::Key << constants::force_application_nodes;
+      out << YAML::Key << usc::force_application_nodes;
       out << YAML::Value << YAML::BeginSeq;
       const auto& force_nodes = settings_.get_force_application_nodes();
       for(auto it = force_nodes.begin(); it != force_nodes.end(); ++it)
@@ -174,12 +174,12 @@ void user_settings_io::export_settings(const std::string& output_dir)
 
     if(settings_.get_cutoff_distance())
     {
-      out << YAML::Key << constants::l0;
+      out << YAML::Key << usc::l0;
       out << YAML::Value << *settings_.get_cutoff_distance();
     }
     if(settings_.get_node_positions())
     {
-      out << YAML::Key << constants::nodes;
+      out << YAML::Key << usc::nodes;
       const node_positions_type& node_positions = *settings_.get_node_positions();
       out << YAML::Value << YAML::BeginSeq;
       for(auto it = node_positions.begin(); it != node_positions.end(); ++it)
@@ -194,7 +194,7 @@ void user_settings_io::export_settings(const std::string& output_dir)
     }
     if(settings_.get_links())
     {
-      out << YAML::Key << constants::links;
+      out << YAML::Key << usc::links;
       out << YAML::Value << YAML::BeginSeq;
       const std::vector<std::pair<std::size_t, std::size_t>>& links = *settings_.get_links();
       for(auto it = links.begin(); it != links.end(); ++it)
@@ -206,7 +206,7 @@ void user_settings_io::export_settings(const std::string& output_dir)
 
     if(settings_.get_network_file_path())
     {
-      out << YAML::Key << constants::network_file_path;
+      out << YAML::Key << usc::network_file_path;
       /// Output onyl network file name as it will anyway be copied to the same
       /// directory as user config.
       std::string file_name = *settings_.get_network_file_path();
@@ -246,19 +246,19 @@ user_settings& user_settings_io::get_settings()
 
 void user_settings_io::check_input_validity(const YAML::Node& node) const
 {
-  if(!node[constants::simulations_count] ||
-    !node[constants::excitation_time] ||
-    !node[constants::fs] ||
-    !node[constants::time_step])
+  if(!node[usc::simulations_count] ||
+    !node[usc::excitation_time] ||
+    !node[usc::fs] ||
+    !node[usc::time_step])
   {
     LOG(logger::critical, invalid_structure);
     throw std::runtime_error(invalid_structure);
   }
-  if(node[constants::nodes])
+  if(node[usc::nodes])
   {
-    if((node[constants::links] && node[constants::l0]) ||
-      (!node[constants::links] && !node[constants::l0]) ||
-      node[constants::network_file_path])
+    if((node[usc::links] && node[usc::l0]) ||
+      (!node[usc::links] && !node[usc::l0]) ||
+      node[usc::network_file_path])
     {
       LOG(logger::critical, invalid_structure);
       throw std::runtime_error(invalid_structure);
@@ -266,7 +266,7 @@ void user_settings_io::check_input_validity(const YAML::Node& node) const
   }
   else
   {
-    if(!node[constants::network_file_path])
+    if(!node[usc::network_file_path])
     {
       LOG(logger::critical, invalid_structure);
       throw std::runtime_error(invalid_structure);
@@ -296,7 +296,7 @@ void user_settings_io::import_network_from_external_file(const std::string& file
 
 network user_settings_io::read_network_from_yaml(const YAML::Node& node)
 {
-  const YAML::Node& nodes = node[constants::nodes];
+  const YAML::Node& nodes = node[usc::nodes];
   const std::size_t size = nodes.size();
   network net(size);
   node_positions_type node_positions;
@@ -307,10 +307,10 @@ network user_settings_io::read_network_from_yaml(const YAML::Node& node)
     node_positions.push_back(position);
   }
   settings_.set_node_positions(node_positions);
-  if(node[constants::links])
+  if(node[usc::links])
   {
     std::vector<std::pair<std::size_t, std::size_t>> links;
-    const YAML::Node& links_node = node[constants::links];
+    const YAML::Node& links_node = node[usc::links];
     for(std::size_t i = 0; i < links_node.size(); ++i)
     {
       std::pair<std::size_t, std::size_t> link = links_node[i].as<std::pair<std::size_t, std::size_t>>();

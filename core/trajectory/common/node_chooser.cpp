@@ -76,7 +76,7 @@ node_chooser::node_chooser(const network& net) :
   #pragma omp parallel for ordered
   for(std::size_t j = 0; j < net_.get_size(); ++j)
   {
-    if(node1 == j)
+    if(node1 == j || node2 == j)
     {
       continue;
     }
@@ -100,7 +100,7 @@ node_chooser::node_chooser(const network& net) :
   #pragma omp parallel for ordered
   for(std::size_t j = 0; j < net_.get_size(); ++j)
   {
-    if(node2 == j)
+    if(node2 == j || node1 ==j)
     {
       continue;
     }
