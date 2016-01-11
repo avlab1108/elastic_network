@@ -18,7 +18,7 @@ Usage: $0 [OPTIONS]
 OPTIONS:
   -n [num]  Number of processes.
   -t        Perform trajectory task.
-  -e        Calculate eigenvalues/eigenvectors.
+  -e        Calculate eigenvalues and plot spectra.
   -p        Calculate 3 optimal points.
 
   -u        User config path.
@@ -27,7 +27,7 @@ OPTIONS:
 EOF
 }
 
-while getopts ":n:u:g:tep" opt
+while getopts "n:u:g:tep" opt
 do
   case "$opt" in
     n) num_proc=$OPTARG;;
@@ -41,11 +41,17 @@ do
   esac
 done
 
+ls_command="find . -maxdepth 1 -type d"
+
 #TODO: need to extract from mkfiles/default_defs.mk
 export LD_LIBRARY_PATH=/usr/local/lib:$scriptpath/../core/last/obj:$LD_LIBRARY_PATH
 
 if (( $eigens == 1 )); then
+  dirs_before=`eval $ls_command`
   $scriptpath/../applications/eigen_spectra/obj/eigens.exe -u $user_config -g $global_config
+  dirs_after=`eval $ls_command`
+  results_dir=`diff <(echo "$dirs_before") <(echo "$dirs_after") | grep "^>" | sed -e "s/^>\s*//" | grep "results_*"`
+  $scriptpath/plot_spectra.sh -i $results_dir/eigens.txt -o $results_dir/eigen_spectra.png
   exit
 fi
 
@@ -105,7 +111,6 @@ function setup_3d_plotter()
 
 if (( $trajectory == 1 )); then
 
-  ls_command="ls -d */ | sed -e 's/\/$//'"
   dirs_before=`eval $ls_command`
 
   comm="$scriptpath/../applications/trajectory/obj/trajectory.exe -u $user_config -g $global_config"
