@@ -315,7 +315,7 @@ network user_settings_io::read_network_from_yaml(const YAML::Node& node)
     {
       std::pair<std::size_t, std::size_t> link = links_node[i].as<std::pair<std::size_t, std::size_t>>();
       links.push_back(link);
-      net.add_link(link.first - 1, link.second - 1);
+      net.add_link(link.first, link.second);
     }
     settings_.set_links(links);
   }

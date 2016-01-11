@@ -45,12 +45,12 @@ done
 export LD_LIBRARY_PATH=/usr/local/lib:$scriptpath/../core/last/obj:$LD_LIBRARY_PATH
 
 if (( $eigens == 1 )); then
-  $scriptpath/../exec/eigen_spectra/obj/eigens.exe -u $user_config -g $global_config
+  $scriptpath/../applications/eigen_spectra/obj/eigens.exe -u $user_config -g $global_config
   exit
 fi
 
 if (( $points == 1 )); then
-  $scriptpath/../exec/optimal_nodes/obj/optimal_nodes.exe -u $user_config -g $global_config
+  $scriptpath/../applications/optimal_nodes/obj/optimal_nodes.exe -u $user_config -g $global_config
   exit
 fi
 
@@ -108,7 +108,7 @@ if (( $trajectory == 1 )); then
   ls_command="ls -d */ | sed -e 's/\/$//'"
   dirs_before=`eval $ls_command`
 
-  comm="$scriptpath/../exec/trajectory/obj/trajectory.exe -u $user_config -g $global_config"
+  comm="$scriptpath/../applications/trajectory/obj/trajectory.exe -u $user_config -g $global_config"
 
   result=0
 

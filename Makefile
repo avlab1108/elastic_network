@@ -1,3 +1,3 @@
-BUILD_DIRS = core exec utests
+BUILD_DIRS = core applications
 
 include mkfiles/defaults.mk

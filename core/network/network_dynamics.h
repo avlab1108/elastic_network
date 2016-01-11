@@ -31,14 +31,12 @@ class network_dynamics
 public:
   /**
    * @brief Constructs dynamics for provided network and initial positions of nodes.
-   *
    * @param net Network.
    * @param initial_positions Initial positions of network nodes.
    */
   network_dynamics(const network& net, const node_positions_type& initial_positions);
   /**
    * @brief Calculates value of differential equation's right side based on provided data.
-   *
    * @param r State of network.
    * @param drdt Derivative of position vector by the time (left side if equation).
    * @param t Time point.
@@ -61,20 +59,18 @@ private:
 
 /**
  * @class network_dynamics_wrapper
- * @brief Connection point between @a network_dynamics and boost.odeint infrastructure.
+ * @brief Connection point between @ref network_dynamics and boost.odeint infrastructure.
  */
 class network_dynamics_wrapper
 {
 public:
   /**
-   * Constructs wrapper over the real dynamics calculator @a network_dynamics.
-   *
+   * @brief Constructs wrapper over the real dynamics.
    * @param dynamics Dynamics of network.
    */
   network_dynamics_wrapper(const std::shared_ptr<network_dynamics>& dynamics);
   /**
    * @brief Calculate state of network. Delegates calculation to underlying dynamics.
-   *
    * @param r State of network.
    * @param drdt Derivative of position vector by the time.
    * @param t Time point.

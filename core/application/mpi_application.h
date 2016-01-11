@@ -47,6 +47,11 @@ private:
    */
   virtual void pre_execute_slave_process();
 
+  /**
+   * @brief Hook for post-execution of task.
+   */
+  virtual void post_execute() override;
+
 private:
   /// MPI environment.
   boost::mpi::environment env_;

@@ -3,6 +3,7 @@
 
 #include <config.h>
 #include <utils.h>
+#include <node_chooser.h>
 
 #include <boost/mpi/nonblocking.hpp>
 #include <boost/serialization/vector.hpp>
@@ -16,7 +17,8 @@ trajectory_main_task::trajectory_main_task()
 void trajectory_main_task::pre_execute()
 {
   world_.barrier();
-  const std::size_t sim_num = get_config()->get_user_settings().get_simulations_count();
+  user_settings& us = get_config()->get_user_settings();
+  const std::size_t sim_num = us.get_simulations_count();
   const int mpi_size = world_.size() - 1;
   int single_task_size = sim_num/(0 == mpi_size ? 1 : mpi_size);
   int remainder = sim_num - single_task_size * mpi_size;
@@ -32,6 +34,10 @@ void trajectory_main_task::pre_execute()
     requests.push_back(world_.isend(i, 1, sim_nums));
   }
   boost::mpi::wait_all(requests.begin(), requests.end());
+  if(us.get_visualization_nodes().empty())
+  {
+    us.set_visualization_nodes(node_chooser(us.get_network()).choose());
+  }
   if(0 != remainder)
   {
     std::vector<std::size_t> sim_nums;
