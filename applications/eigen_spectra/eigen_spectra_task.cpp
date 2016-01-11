@@ -19,8 +19,6 @@ int eigen_spectra_task::execute()
   }
   out << "#Eigenvalues" << std::endl;
   out << e.get_values() << std::endl;
-  out << "#Eigenvectors" << std::endl;
-  out << e.get_vectors() << std::endl;
   out.close();
   return 0;
 }

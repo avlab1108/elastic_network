@@ -135,6 +135,7 @@ public:
   /**
    * @brief Returns network links (if set).
    * @return Optional network links.
+   */
   const boost::optional<std::vector<std::pair<std::size_t, std::size_t>>>& get_links() const;
 
   /**
