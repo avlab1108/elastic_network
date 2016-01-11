@@ -94,7 +94,7 @@ private:
 
 /**
  * @class complex_task
- * @brief Allows group of similar tasks to be treated in the same way as single task.
+ * @brief Allows group of tasks to be treated in the same way as single task.
  */
 class complex_task : public base_task
 {

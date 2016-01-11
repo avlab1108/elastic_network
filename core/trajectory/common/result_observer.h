@@ -194,13 +194,26 @@ private:
 
 /**
  * @class composite_result_observer
- * @brief Allows to 
+ * @brief Allows group of observers to be treated in the same way as single observer.
  */
 class composite_result_observer : public result_observer
 {
 public:
+  /**
+   * @brief Constructs composite observer.
+   */
   composite_result_observer();
+  /**
+   * @brief Implements interface of base class.
+   *        Sequentially calls the same method of all containing observers.
+   * @param r State of network.
+   * @param t Time point.
+   */
   virtual void process(const state_type& r, const double t) override;
+  /**
+   * @brief Adds net observer to the list of observers.
+   * @param oberver New observer.
+   */
   void add_result_observer(const std::shared_ptr<result_observer>& observer);
 
 private:
