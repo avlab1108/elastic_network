@@ -35,8 +35,9 @@ echo "set output \"$output\"" >> spectra_plotter.gnu
 echo "filter(x)=(x>=0.00001)?(x):(1/0)" >> spectra_plotter.gnu
 echo "stats \"$input\" using (filter(\$1))" >> spectra_plotter.gnu
 echo "unset ytics" >> spectra_plotter.gnu
-echo "set xrange [-0.5:log(STATS_max/STATS_min)+0.5]" >> spectra_plotter.gnu
-echo "plot \"$input\" using (log(filter(\$1)/STATS_min)):(0) notitle" >> spectra_plotter.gnu
+echo "set xrange [-0.1:log10(STATS_max/STATS_min)+0.1]" >> spectra_plotter.gnu
+echo "set yrange [-1:1]" >> spectra_plotter.gnu
+echo "plot \"$input\" using (log10(filter(\$1)/STATS_min)):(0) notitle" >> spectra_plotter.gnu
 
 gnuplot spectra_plotter.gnu
 
