@@ -23,7 +23,7 @@
  * \frac{d\vec{R}}{dt}=-\sum\limits_{j=1}^{N} A_{ij} \frac{\vec{R_i} - \vec{R_j}}{\left|\vec{R_i} - \vec{R_j}\right|} \left(\left|\vec{R_i} - \vec{R_j}\right| - \left|\vec{R_i^{(0)}} - \vec{R_j^{(0)}}\right| \right)
  * \f]
  * where \f$A\f$ is the adjacency matrix of network.
- * Network node positions at any point of time is calculated through the integration of this equation.
+ * Network node positions at any point of time are calculated through the integration of this equation.
  * This class uses boost.odeint library for numeric integration of mentioned equation.
  */
 class network_dynamics
