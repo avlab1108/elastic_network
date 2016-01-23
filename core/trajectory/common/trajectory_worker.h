@@ -1,6 +1,6 @@
 /**
  * @file trajectory_worker.h
- * @brief This file contains @a trajectory_worker class.
+ * @brief This file contains @ref trajectory_worker class.
  * @author Minas Hovhannisyan
  */
 

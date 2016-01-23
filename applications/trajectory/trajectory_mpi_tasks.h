@@ -1,6 +1,6 @@
 /**
  * @file trajectory_mpi_tasks.h
- * @brief This file contains @a trajectory_main_task and @a trajectory_slave_task class.
+ * @brief This file contains @ref trajectory_main_task and @ref trajectory_slave_task class.
  * @author Minas Hovhannisyan
  */
 

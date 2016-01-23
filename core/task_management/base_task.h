@@ -1,6 +1,6 @@
 /**
  * @file base_task.h
- * @brief This file contains @a base_task, @a proxy_task and @a complex_task classes.
+ * @brief This file contains @ref base_task, @ref proxy_task and @ref complex_task classes.
  * @author Minas Hovhannisyan
  */
 

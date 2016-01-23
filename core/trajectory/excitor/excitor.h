@@ -1,6 +1,6 @@
 /**
  * @file excitor.h
- * @brief This file contains @a excitor class.
+ * @brief This file contains @ref excitor class.
  * @author Minas Hovhannisyan
  */
 

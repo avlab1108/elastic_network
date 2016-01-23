@@ -1,6 +1,6 @@
 /**
  * @file eigen_spectra_task.h
- * @brief This file contains @a eigen_spectra_task class.
+ * @brief This file contains @ref eigen_spectra_task class.
  * @author Minas Hovhannisyan
  */
 

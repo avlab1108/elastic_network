@@ -1,6 +1,6 @@
 /**
  * @file result_observer.h
- * @brief This file contains @a result_observer, @a stream_dumper, @a file_dumper, @a trajectory_dumper, @a stability_checker, @a composite_result_observer and @a result_observer_wrapper classes.
+ * @brief This file contains @ref result_observer, @ref stream_dumper, @ref file_dumper, @ref trajectory_dumper, @ref stability_checker, @ref composite_result_observer and @ref result_observer_wrapper classes.
  * @author Minas Hovhannisyan
  */
 

@@ -1,6 +1,6 @@
 /**
  * @file config.h
- * @brief This file contains @a config class.
+ * @brief This file contains @ref config class.
  * @author Minas Hovhannisyan
  */
 

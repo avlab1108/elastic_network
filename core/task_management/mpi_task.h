@@ -1,6 +1,6 @@
 /**
  * @file mpi_task.h
- * @brief This file contains @a mpi_task classes.
+ * @brief This file contains @ref mpi_task classes.
  * @author Minas Hovhannisyan
  */
 #pragma once

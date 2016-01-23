@@ -1,6 +1,6 @@
 /**
  * @file logging.h
- * @brief This file contains @a logger class.
+ * @brief This file contains @ref logger class.
  * @author Minas Hovhannisyan
  */
 

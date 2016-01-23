@@ -1,3 +1,9 @@
+/**
+ * @file common_types.h
+ * @brief This file contains common typedefs and types, used across all modules.
+ * @author Minas Hovhannisyan
+ */
+
 #pragma once
 
 #include "point.h"

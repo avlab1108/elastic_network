@@ -1,6 +1,6 @@
 /**
  * @file core_application.h
- * @brief This file contains @a core_application class.
+ * @brief This file contains @ref core_application class.
  * @author Minas Hovhannisyan
  */
 

@@ -1,6 +1,6 @@
 /**
  * @file eigens.h
- * @brief This file contains @a eigens class.
+ * @brief This file contains @ref eigens class.
  * @author Minas Hovhannisyan
  */
 

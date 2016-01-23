@@ -1,6 +1,6 @@
 /**
  * @file global_settings_io.h
- * @brief This file contains @a global_settings_io class.
+ * @brief This file contains @ref global_settings_io class.
  * @author Minas Hovhannisyan
  */
 

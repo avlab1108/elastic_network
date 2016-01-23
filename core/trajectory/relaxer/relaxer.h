@@ -1,6 +1,6 @@
 /**
  * @file relaxer.h
- * @brief This file contains @a relaxer class.
+ * @brief This file contains @ref relaxer class.
  * @author Minas Hovhannisyan
  */
 

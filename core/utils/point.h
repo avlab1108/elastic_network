@@ -1,6 +1,6 @@
 /**
  * @file point.h
- * @brief This file contains @a point class.
+ * @brief This file contains @ref point class.
  * @author Minas Hovhannisyan
  */
 
@@ -13,7 +13,7 @@
 
 /**
  * @class point
- * @brief Represents point(vector) in N-ary space.
+ * @brief Represents point (vector) in N-ary space.
  * @tparam T Data type.
  * @tparam Dim Dimension number.
  */

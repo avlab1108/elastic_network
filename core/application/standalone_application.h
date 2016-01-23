@@ -1,6 +1,6 @@
 /**
  * @file standalone_application.h
- * @brief This file contains @a standalone_application class.
+ * @brief This file contains @ref standalone_application class.
  * @author Minas Hovhannisyan
  */
 

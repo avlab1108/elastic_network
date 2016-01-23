@@ -1,6 +1,6 @@
 /**
  * @file node_chooser.h
- * @brief This file contains @a node_chooser class.
+ * @brief This file contains @ref node_chooser class.
  * @author Minas Hovhannisyan
  */
 

@@ -1,6 +1,6 @@
 /**
  * @file excitor_dynamics.h
- * @brief This file contains @a excitor_dynamics class.
+ * @brief This file contains @ref excitor_dynamics class.
  * @author Minas Hovhannisyan
  */
 

@@ -1,6 +1,6 @@
 /**
  * @file force_generator.h
- * @brief This file contains @a force_generator class.
+ * @brief This file contains @ref force_generator class.
  * @author Minas Hovhannisyan
  */
 

@@ -1,6 +1,6 @@
 /**
  * @file user_settings.h
- * @brief This file contains @a user_settings class.
+ * @brief This file contains @ref user_settings class.
  * @author Minas Hovhannisyan
  */
 

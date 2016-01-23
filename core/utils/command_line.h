@@ -1,6 +1,6 @@
 /**
  * @file command_line.h
- * @brief This file contains @a command_line class.
+ * @brief This file contains @ref command_line class.
  * @author Minas Hovhannisyan
  */
 

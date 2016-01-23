@@ -1,6 +1,6 @@
 /**
  * @file optimal_nodes_task.h
- * @brief This file contains @a optimal_nodes_task class.
+ * @brief This file contains @ref optimal_nodes_task class.
  * @author Minas Hovhannisyan
  */
 

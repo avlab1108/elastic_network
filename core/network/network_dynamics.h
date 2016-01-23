@@ -1,6 +1,6 @@
 /**
  * @file network_dynamics.h
- * @brief This file contains @a network_dynamics class.
+ * @brief This file contains @ref network_dynamics class.
  * @author Minas Hovhannisyan
  */
 

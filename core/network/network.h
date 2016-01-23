@@ -1,6 +1,6 @@
 /**
  * @file network.h
- * @brief This file contains @a network class.
+ * @brief This file contains @ref network class.
  * @author Minas Hovhannisyan
  */
 

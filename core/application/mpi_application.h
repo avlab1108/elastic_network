@@ -1,6 +1,6 @@
 /**
  * @file mpi_application.h
- * @brief This file contains @a mpi_application class.
+ * @brief This file contains @ref mpi_application class.
  * @author Minas Hovhannisyan
  */
 
