@@ -29,7 +29,7 @@ protected:
    * @param initial_positions Initial positions of nodes.
    * @param dynamics Dynamics of network.
    */
-  trajectory_worker(network& net, const node_positions_type& ininital_positions, const std::shared_ptr<network_dynamics>& dynamics);
+  trajectory_worker(network& net, const node_positions_type& initial_positions, const std::shared_ptr<network_dynamics>& dynamics);
 
 public:
   /**

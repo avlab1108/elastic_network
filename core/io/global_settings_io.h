@@ -63,14 +63,14 @@ public:
    * @brief Imports global settings from provided file.
    * @param file_path Global settings file name.
    *
-   * Import is based on the keys described in @namespace constants.
+   * Import is based on the keys described in @ref gsc.
    */
   void import_settings(const std::string& file_path);
   /**
    * @brief Exports global settings into provided directory.
    * @param output_dir Directory name.
    *
-   * Export is based on the keys described in @namespace constants.
+   * Export is based on the keys described in @ref gsc.
    */
   void export_settings(const std::string& output_dir);
 

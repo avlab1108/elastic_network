@@ -207,8 +207,9 @@ void user_settings_io::export_settings(const std::string& output_dir)
     if(settings_.get_network_file_path())
     {
       out << YAML::Key << usc::network_file_path;
-      /// Output onyl network file name as it will anyway be copied to the same
-      /// directory as user config.
+      /**
+       * @note Output only network file name as it will anyway be copied to the same directory as user config.
+       */
       std::string file_name = *settings_.get_network_file_path();
       if(std::string::npos != file_name.find_first_of('/'))
       {

@@ -18,10 +18,9 @@ class force_generator
 {
 public:
   /**
-   * @brief Constructs generator with summary magnitude @a fs for nodes @a nodes.
+   * @brief Constructs generator from provided force specification.
    *
-   * @param fs Summary magnitude of forces.
-   * @param nodes Node indexes for which forces are generated.
+   * @param fspec Force specification.
    */
   force_generator(const forces_spec& fspec);
 

@@ -212,7 +212,7 @@ public:
   virtual void process(const state_type& r, const double t) override;
   /**
    * @brief Adds net observer to the list of observers.
-   * @param oberver New observer.
+   * @param observer New observer.
    */
   void add_result_observer(const std::shared_ptr<result_observer>& observer);
 

@@ -62,16 +62,16 @@ public:
    * @brief Imports user settings from provided file.
    * @param file_path User settings file name.
    *
-   * Import is based on the keys described in @namespace constants.
+   * Import is based on the keys described in @ref usc.
    */
   void import_settings(const std::string& file_path);
   /**
    * @brief Exports user settings into provided directory.
    * @param output_dir Directory name.
    *
-   * Export is based on the keys described in @namespace constants.
+   * Export is based on the keys described in @ref usc.
    */
-  void export_settings(const std::string& ouput_dir);
+  void export_settings(const std::string& output_dir);
 
   /**
    * @brief Returns settings.
@@ -94,7 +94,7 @@ private:
    * @brief Imports network from provided external file.
    * @param file_path Network file name.
    *
-   * Based on @file_path extension, this function delegates reading of real network to one of the read_network_from_* methods.
+   * Based on @a file_path extension, this function delegates reading of real network to one of the read_network_from_* methods.
    * \n Following formats are supported (with according read function):
    * \n .yml  -> @ref read_network_from_yaml_file
    * \n .yaml -> @ref read_network_from_yaml_file
