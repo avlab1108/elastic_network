@@ -56,6 +56,12 @@ public:
   int execute();
 
   /**
+   * @brief Returns parsed command line.
+   * @return Parsed command line.
+   */
+  const command_line& get_command_line() const;
+
+  /**
    * @brief Global access point to application.
    * @return Application instance.
    *

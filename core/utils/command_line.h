@@ -5,6 +5,7 @@
  */
 
 #include <string>
+#include <vector>
 
 /**
  * @class command_line
@@ -24,19 +25,27 @@ public:
    */
   command_line(int argc, char** argv);
   /**
-   * @brief Return user settings file name.
-   * @return User settings file name,
+   * @brief Returns user settings file name.
+   * @return User settings file name.
    */
   const std::string& get_user_settings_path() const;
   /**
-   * @brief Return global settings file name.
-   * @return Global settings file name,
+   * @brief Returns global settings file name.
+   * @return Global settings file name.
    */
   const std::string& get_global_settings_path() const;
 
+  /**
+   * @brief Returns unrecognized options.
+   * @return Unrecognized options.
+   */
+  const std::vector<std::string>& get_unrecognized_options() const;
+
 private:
-  /// User settings file name,
+  /// User settings file name.
   std::string user_settings_path_;
-  /// Global settings file name,
+  /// Global settings file name.
   std::string global_settings_path_;
+  /// Unrecognized options.
+  std::vector<std::string> unrecognized_options_;
 };

@@ -45,6 +45,11 @@ int core_application::execute()
   return 0;
 }
 
+const command_line& core_application::get_command_line() const
+{
+  return command_line_;
+}
+
 core_application* core_application::instance()
 {
   if(nullptr == instance_)

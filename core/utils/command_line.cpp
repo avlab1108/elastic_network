@@ -17,7 +17,11 @@ command_line::command_line(int argc, char** argv) :
   po::variables_map vm;
   try
   {
-    po::store(po::parse_command_line(argc, argv, desc), vm);
+    po::command_line_parser parser{argc, argv};
+    parser.options(desc).allow_unregistered();
+    po::parsed_options parsed = parser.run();
+    po::store(parsed, vm);
+    po::notify(vm);
     if(vm.count("help"))
     {
       std::cout << "Elastic Network Modeller v1.0" << std::endl << desc << std::endl;
@@ -33,7 +37,7 @@ command_line::command_line(int argc, char** argv) :
       std::cout << "global settings file name = " << vm["global_settings"].as<std::string>() << std::endl;
       global_settings_path_ = vm["global_settings"].as<std::string>();
     }
-    po::notify(vm);
+    unrecognized_options_ = po::collect_unrecognized(parsed.options, po::include_positional);
   }
   catch(po::error& e)
   {
@@ -50,4 +54,9 @@ const std::string& command_line::get_user_settings_path() const
 const std::string& command_line::get_global_settings_path() const
 {
   return global_settings_path_;
+}
+
+const std::vector<std::string>& command_line::get_unrecognized_options() const
+{
+  return unrecognized_options_;
 }
