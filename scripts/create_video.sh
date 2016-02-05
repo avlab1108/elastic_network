@@ -84,7 +84,7 @@ done
 echo "Created images for excitation."
 
 echo "Creating excitation video ..."
-avconv -i "${results_dir}/excitation/pictures/%d.png" "${results_dir}/excitation/video.mp4" &>> ${results_dir}/log.txt
+cat `ls -v ${results_dir}/excitation/pictures/*.png` | ffmpeg -f image2pipe -i - "${results_dir}/excitation/video.mp4" &>> ${results_dir}/log.txt
 echo "Created excitation video ${results_dir}/excitation/video.mp4."
 
 mkdir ${results_dir}/relaxation/pictures
@@ -101,13 +101,13 @@ done
 echo "Created images for relaxation."
 
 echo "Creating relaxation video ..."
-cat `ls -v ${results_dir}/relaxation/pictures/*.png` | avconv -f image2pipe -i - "${results_dir}/relaxation/video.mp4" &>> ${results_dir}/log.txt
+cat `ls -v ${results_dir}/relaxation/pictures/*.png` | ffmpeg -f image2pipe -i - "${results_dir}/relaxation/video.mp4" &>> ${results_dir}/log.txt
 echo "Created relaxation video ${results_dir}/relaxation/video.mp4."
 
 echo "Creating full video ..."
-avconv -i ${results_dir}/excitation/video.mp4 -qscale 1 ${results_dir}/video_1.mpeg &>> ${results_dir}/log.txt 
-avconv -i ${results_dir}/relaxation/video.mp4 -qscale 1 ${results_dir}/video_2.mpeg &>> ${results_dir}/log.txt
-cat ${results_dir}/video_1.mpeg ${results_dir}/video_2.mpeg | avconv -f mpeg -i - -vcodec mpeg4 -qscale 1 -strict experimental ${results_dir}/video.mp4 &>> ${results_dir}/log.txt
+ffmpeg -i ${results_dir}/excitation/video.mp4 -qscale 1 ${results_dir}/video_1.mpeg &>> ${results_dir}/log.txt
+ffmpeg -i ${results_dir}/relaxation/video.mp4 -qscale 1 ${results_dir}/video_2.mpeg &>> ${results_dir}/log.txt
+cat ${results_dir}/video_1.mpeg ${results_dir}/video_2.mpeg | ffmpeg -f mpeg -i - -vcodec mpeg4 -qscale 1 -strict experimental ${results_dir}/video.mp4 &>> ${results_dir}/log.txt
 rm ${results_dir}/video_1.mpeg
 rm ${results_dir}/video_2.mpeg
 echo "Created full video ${results_dir}/video.mp4."
