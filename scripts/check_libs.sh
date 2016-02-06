@@ -144,9 +144,11 @@ function check_armadillo
 {
   lib_dir_var="ARMADILLO_LIB_DIR"
   lib_dir=`grep "$lib_dir_var\s*=" $scriptpath/../mkfiles/default_defs.mk | sed -e "s/$lib_dir_var\s*=\s*\(.*\)/\1/"`
+  include_dir_var="ARMADILLO_INCLUDE_DIR"
+  include_dir=`grep "$include_dir_var\s*=" $scriptpath/../mkfiles/default_defs.mk | sed -e "s/$include_dir_var\s*=\s*\(.*\)/\1/"`
   echo "#include <armadillo>" > test_armadillo.cpp
   echo "int main() {arma::mat m; arma::vec v;}" >> test_armadillo.cpp
-  $compiler $lib_dir -larmadillo test_armadillo.cpp -o test_armadillo &> /dev/null
+  $compiler $include_dir $lib_dir -larmadillo test_armadillo.cpp -o test_armadillo &> /dev/null
   result=$?
   rm -f test_armadillo.cpp test_armadillo
   if [ $result -ne 0 ]; then
@@ -160,9 +162,11 @@ function check_yaml
 {
   lib_dir_var="YAML_LIB_DIR"
   lib_dir=`grep "$lib_dir_var\s*=" $scriptpath/../mkfiles/default_defs.mk | sed -e "s/$lib_dir_var\s*=\s*\(.*\)/\1/"`
+  include_dir_var="YAML_INCLUDE_DIR"
+  include_dir=`grep "$include_dir_var\s*=" $scriptpath/../mkfiles/default_defs.mk | sed -e "s/$include_dir_var\s*=\s*\(.*\)/\1/"`
   echo "#include <yaml-cpp/yaml.h>" > test_yaml_cpp.cpp
   echo "int main() {YAML::Node n;}" >> test_yaml_cpp.cpp
-  $compiler -std=c++11 $lib_dir -I$boost_include_dir -lyaml-cpp test_yaml_cpp.cpp -o test_yaml_cpp &> /dev/null
+  $compiler -std=c++11 $include_dir $lib_dir -I$boost_include_dir -lyaml-cpp test_yaml_cpp.cpp -o test_yaml_cpp &> /dev/null
   result=$?
   rm -f test_yaml_cpp.cpp test_yaml_cpp
   if [ $result -ne 0 ]; then
