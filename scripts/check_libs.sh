@@ -146,9 +146,11 @@ function check_armadillo
   lib_dir=`grep "$lib_dir_var\s*=" $scriptpath/../mkfiles/default_defs.mk | sed -e "s/$lib_dir_var\s*=\s*\(.*\)/\1/"`
   include_dir_var="ARMADILLO_INCLUDE_DIR"
   include_dir=`grep "$include_dir_var\s*=" $scriptpath/../mkfiles/default_defs.mk | sed -e "s/$include_dir_var\s*=\s*\(.*\)/\1/"`
+  libs_var="ARMADILLO_LIB"
+  libs=`grep "$libs_var\s*=" $scriptpath/../mkfiles/default_defs.mk | sed -e "s/$libs_var\s*=\s*\(.*\)/\1/"`
   echo "#include <armadillo>" > test_armadillo.cpp
   echo "int main() {arma::mat m; arma::vec v;}" >> test_armadillo.cpp
-  $compiler $include_dir $lib_dir -larmadillo test_armadillo.cpp -o test_armadillo &> /dev/null
+  $compiler $include_dir $lib_dir $libs test_armadillo.cpp -o test_armadillo &> /dev/null
   result=$?
   rm -f test_armadillo.cpp test_armadillo
   if [ $result -ne 0 ]; then
