@@ -3,7 +3,8 @@
 user_settings::user_settings() :
   excitation_time_(0),
   fs_(0),
-  simulations_count_(0)
+  simulations_count_(0),
+  forces_dynamic_(false)
 {
 }
 
@@ -75,6 +76,16 @@ void user_settings::set_force_application_nodes(const std::vector<std::size_t>& 
 const std::vector<std::size_t>& user_settings::get_force_application_nodes() const
 {
   return force_application_nodes_;
+}
+
+void user_settings::set_forces_dynamic(const bool dynamic)
+{
+  forces_dynamic_ = dynamic;
+}
+
+const bool user_settings::get_forces_dynamic() const
+{
+  return forces_dynamic_;
 }
 
 void user_settings::set_node_positions(const node_positions_type& node_positions)

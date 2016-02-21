@@ -38,8 +38,10 @@ const std::string dump_data = "dumpData";
 const std::string dump_step = "dumpStep";
 /// Time limit specification for relaxation process.
 const std::string time_limit = "timeLimit";
-/// Specify whether excitation forces are dynamic/static.
-const std::string forces_dynamic = "forcesDynamic";
+/// Epsilon value used for stabilization determination.
+const std::string stabilization_epsilon = "stabilizationEpsilon";
+/// Step count used for stabilization determination.
+const std::string stabilization_step_count = "stabilizationSteps";
 }
 
 namespace YAML

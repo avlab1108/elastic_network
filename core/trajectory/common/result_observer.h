@@ -167,8 +167,9 @@ public:
    * @brief Constructs stability checker from provided parameters.
    * @param initial_positions Initial positions of network nodes.
    * @param nodes Node numbers.
+   * @param stab_spec Stabilization specification.
    */
-  stability_checker(const node_positions_type& initial_positions, const node_chooser::node_numbers_type& nodes);
+  stability_checker(const node_positions_type& initial_positions, const node_chooser::node_numbers_type& nodes, const stabilization_spec stab_spec);
   /**
    * @brief Implements interface of base class.
    *        Checks for stability conditions during relaxation..
@@ -184,6 +185,8 @@ private:
   node_chooser::node_numbers_type nodes_;
   /// Current number of stabilized steps.
   std::size_t stabilization_steps_;
+  /// Stabilization specification.
+  stabilization_spec stab_spec_;
   /// Distance between nodes 0-1 from previous step.
   double previous_dist1_;
   /// Distance between nodes 1-2 from previous step.

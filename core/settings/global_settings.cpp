@@ -9,8 +9,7 @@ global_settings::global_settings() :
   eigens_file_name_("eigens.txt"),
   nodes_file_name_("nodes.txt"),
   dump_data_(true),
-  dump_step_(1),
-  forces_dynamic_(false)
+  dump_step_(1)
 {
 }
 
@@ -114,12 +113,12 @@ const std::size_t global_settings::get_time_limit() const
   return time_limit_;
 }
 
-void global_settings::set_forces_dynamic(const bool dynamic)
+void global_settings::set_stabilization_spec(const stabilization_spec& spec)
 {
-  forces_dynamic_ = dynamic;
+  stabilization_spec_ = spec;
 }
 
-const bool global_settings::get_forces_dynamic() const
+const stabilization_spec& global_settings::get_stabilization_spec() const
 {
-  return forces_dynamic_;
+  return stabilization_spec_;
 }

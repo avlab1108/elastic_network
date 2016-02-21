@@ -112,10 +112,11 @@ void trajectory_dumper::process(const state_type& r, const double t)
   }
 }
 
-stability_checker::stability_checker(const node_positions_type& initial_positions, const node_chooser::node_numbers_type& nodes) :
+stability_checker::stability_checker(const node_positions_type& initial_positions, const node_chooser::node_numbers_type& nodes, const stabilization_spec stab_spec) :
   initial_positions_(initial_positions),
   nodes_(nodes),
-  stabilization_steps_(0)
+  stabilization_steps_(0),
+  stab_spec_(stab_spec)
 {
   std::size_t i1 = nodes_[0];
   std::size_t i2 = nodes_[1];
@@ -130,7 +131,7 @@ void stability_checker::process(const state_type& r, const double t)
   std::size_t i1 = nodes_[0];
   std::size_t i2 = nodes_[1];
   std::size_t i3 = nodes_[2];
-  const double epsilon = 1e-9;
+  const double& epsilon = stab_spec_.epsilon;
   if(utils::distance(initial_positions_[i1], r[i1]) < epsilon &&
     utils::distance(initial_positions_[i2], r[i2]) < epsilon &&
     utils::distance(initial_positions_[i3], r[i3]) < epsilon)
@@ -154,7 +155,7 @@ void stability_checker::process(const state_type& r, const double t)
   previous_dist1_ = current_dist1;
   previous_dist2_ = current_dist2;
   previous_dist3_ = current_dist3;
-  if(10000 == stabilization_steps_)
+  if(stab_spec_.step_count == stabilization_steps_)
   {
     throw std::exception();
   }

@@ -33,22 +33,43 @@ struct forces_spec
 {
   /**
    * @brief Constructs forces specification from specified params.
-   *
    * @param fs_value Summary magnitude of forces.
    * @param nodes_list Force application odes.
    * @param dynamic_forces Dynamic forces.
    */
-  forces_spec(const double fs_value, const std::vector<std::size_t>& nodes_list = std::vector<std::size_t>(), const bool dynamic_forces = false) :
+  explicit forces_spec(const double fs_value, const std::vector<std::size_t>& nodes_list = std::vector<std::size_t>(), const bool dynamic_forces = false) :
     fs(fs_value),
     nodes(nodes_list),
     dynamic(dynamic_forces)
   {}
 
   /// Summary magnitude of forces.
-  const double fs;
+  double fs;
   /// Force application nodes.
-  const std::vector<std::size_t> nodes;
+  std::vector<std::size_t> nodes;
   /// Dynamic forces.
-  const bool dynamic;
+  bool dynamic;
 };
 
+/**
+ * @struct stabilization_spec
+ * @brief Describes stabilization for relaxation process.
+ */
+struct stabilization_spec
+{
+  /**
+   * @brief Constructs stabilization specification from spefied params.
+   * @param eps Stabilization epsilon.
+   * @param steps Step count.
+   * */
+  explicit stabilization_spec(const double eps = 1e-9, const std::size_t steps = 10000) :
+    epsilon(eps),
+    step_count(steps)
+  {
+  }
+
+  /// Stabilization epsilon.
+  double epsilon;
+  /// Stabilization step count.
+  std::size_t step_count;
+};

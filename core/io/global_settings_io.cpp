@@ -35,7 +35,8 @@ void global_settings_io::import_settings(const std::string& file_path)
   settings_.set_dump_data(node[gsc::dump_data].as<bool>());
   settings_.set_dump_step(node[gsc::dump_step].as<std::size_t>());
   settings_.set_time_limit(node[gsc::time_limit].as<std::size_t>());
-  settings_.set_forces_dynamic(node[gsc::forces_dynamic].as<bool>());
+  stabilization_spec spec(node[gsc::stabilization_epsilon].as<double>(), node[gsc::stabilization_step_count].as<std::size_t>());
+  settings_.set_stabilization_spec(spec);
 }
 
 void global_settings_io::export_settings(const std::string& output_dir)
@@ -67,7 +68,8 @@ void global_settings_io::check_input_validity(const YAML::Node& node)
     !node[gsc::dump_data] ||
     !node[gsc::dump_step] ||
     !node[gsc::time_limit] ||
-    !node[gsc::forces_dynamic])
+    !node[gsc::stabilization_epsilon] ||
+    !node[gsc::stabilization_step_count])
   {
     throw std::runtime_error(invalid_structure);
   }

@@ -23,11 +23,14 @@ network_dynamics::network_dynamics(const network& net, const node_positions_type
 void network_dynamics::calculate(const state_type& r, state_type& drdt, const double t)
 {
   assert(drdt.size() == net_.get_size());
-  #pragma omp parallel for
+  // Initialize output to 0s
   for(std::size_t i = 0; i < drdt.size(); ++i)
   {
     drdt[i] = point_type(0.0, 0.0, 0.0);
-    #pragma omp parallel for
+  }
+  #pragma omp parallel for schedule(static, 64) collapse(2)
+  for(std::size_t i = 0; i < drdt.size(); ++i)
+  {
     for(std::size_t j = 0; j < net_.get_size(); ++j)
     {
       bool a_i_j = net_.are_connected(i, j);

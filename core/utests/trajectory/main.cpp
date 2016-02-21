@@ -54,7 +54,7 @@ void test_from_article()
   }
   node_chooser chooser(net);
   std::shared_ptr<trajectory_dumper> traj_obs(new trajectory_dumper(tout, initial, chooser.choose(), 10));
-  std::shared_ptr<stability_checker> stab(new stability_checker(initial, chooser.choose()));
+  std::shared_ptr<stability_checker> stab(new stability_checker(initial, chooser.choose(), stabilization_spec(10e-9, 10000)));
   std::shared_ptr<composite_result_observer> obs(new composite_result_observer());
   obs->add_result_observer(traj_obs);
   obs->add_result_observer(stab);

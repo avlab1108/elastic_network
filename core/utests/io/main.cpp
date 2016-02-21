@@ -26,6 +26,7 @@ BOOST_AUTO_TEST_CASE(user_settings_case)
   BOOST_CHECK(us.get_network().get_size() == 4);
   BOOST_CHECK(us.get_network().are_connected(3, 1));
   BOOST_CHECK(us.get_network().are_connected(1, 2));
+  BOOST_CHECK(!us.get_forces_dynamic());
 }
 
 BOOST_AUTO_TEST_CASE(global_settings_case)
@@ -38,7 +39,6 @@ BOOST_AUTO_TEST_CASE(global_settings_case)
   BOOST_CHECK(gs.get_relaxation_file_name() == "relaxation.txt");
   BOOST_CHECK(!gs.get_dump_data());
   BOOST_CHECK(gs.get_dump_step() == 10);
-  BOOST_CHECK(!gs.get_forces_dynamic());
 }
 
 BOOST_AUTO_TEST_SUITE_END()

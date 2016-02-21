@@ -106,6 +106,17 @@ public:
   const std::vector<std::size_t>& get_force_application_nodes() const;
 
   /**
+   * @brief Sets flag indicating whether excitation forces are dynamic.
+   * @param dynamic True for dynamic forces, false for static forces.
+   */
+  void set_forces_dynamic(const bool dynamic);
+  /**
+   * @brief Returns flag indicating whether excitation forces are dynamic.
+   * @return True if excitation forces are dynamic, false otherwise.
+   */
+  const bool get_forces_dynamic() const;
+
+  /**
    * @brief Sets node positions for network.
    * @param node_positions Node positions.
    */
@@ -168,6 +179,8 @@ private:
   std::vector<std::size_t> visualization_nodes_;
   /// Force application nodes.
   std::vector<std::size_t> force_application_nodes_;
+  /// Dynamic/static forces.
+  bool forces_dynamic_;
   /**
    * @}
    */

@@ -33,6 +33,8 @@ const std::string excitation_time = "timeIni";
 const std::string simulations_count = "runNum";
 /// Force application nodes.
 const std::string force_application_nodes = "activeNodes";
+/// Specify whether excitation forces are dynamic/static.
+const std::string forces_dynamic = "forcesDynamic";
 /// Nodes for trajectory construction.
 const std::string visualization_nodes = "visualizationNodes";
 /// Network file name.

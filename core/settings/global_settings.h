@@ -6,6 +6,8 @@
 
 #pragma once
 
+#include <common_types.h>
+
 #include <string>
 
 /**
@@ -132,16 +134,16 @@ public:
    */
   const std::size_t get_time_limit() const;
 
-  /** 
-   * @brief Sets flag indicating whether excitation forces are dynamic.
-   * @param dynamic True for dynamic forces, false for static forces.
-   */
-  void set_forces_dynamic(const bool dynamic);
   /**
-   * @brief Returns flag indicating whether excitation forces are dynamic.
-   * @return True if excitation forces are dynamic, false otherwise.
+   * @brief Sets stabilization specification for stabilization determination.
+   * @param spec Stabilization specification.
    */
-  const bool get_forces_dynamic() const;
+  void set_stabilization_spec(const stabilization_spec& spec);
+  /**
+   * @brief Returns stabilization specification used for stabilization determination.
+   * @return Stabilization spec.
+   */
+  const stabilization_spec& get_stabilization_spec() const;
 
 private:
   /// Output results directory.
@@ -164,6 +166,6 @@ private:
   std::size_t dump_step_;
   /// Relaxation time limit.
   std::size_t time_limit_;
-  /// Dynamic/static forces.
-  bool forces_dynamic_;
+  /// Stabilization specification.
+  stabilization_spec stabilization_spec_;
 };

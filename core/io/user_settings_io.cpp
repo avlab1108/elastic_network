@@ -84,6 +84,7 @@ void user_settings_io::import_settings(const std::string& file_path)
     }
     settings_.set_force_application_nodes(nodes);
   }
+  settings_.set_forces_dynamic(node[usc::forces_dynamic].as<bool>());
 
   if(node[usc::visualization_nodes])
   {
@@ -142,6 +143,9 @@ void user_settings_io::export_settings(const std::string& output_dir)
     out << YAML::Key << usc::fs;
     out << YAML::Value << settings_.get_fs();
 
+    out << YAML::Key << usc::forces_dynamic;
+    out << YAML::Value << settings_.get_forces_dynamic();
+
     out << YAML::Key << usc::time_step;
     out << YAML::Value << settings_.get_time_step();
 
@@ -177,34 +181,36 @@ void user_settings_io::export_settings(const std::string& output_dir)
       out << YAML::Key << usc::l0;
       out << YAML::Value << *settings_.get_cutoff_distance();
     }
-    if(settings_.get_node_positions())
+    if(!settings_.get_network_file_path())
     {
-      out << YAML::Key << usc::nodes;
-      const node_positions_type& node_positions = *settings_.get_node_positions();
-      out << YAML::Value << YAML::BeginSeq;
-      for(auto it = node_positions.begin(); it != node_positions.end(); ++it)
+      if(settings_.get_node_positions())
       {
-        out << YAML::BeginSeq;
-        out << (*it)[0];
-        out << (*it)[1];
-        out << (*it)[2];
+        out << YAML::Key << usc::nodes;
+        const node_positions_type& node_positions = *settings_.get_node_positions();
+        out << YAML::Value << YAML::BeginSeq;
+        for(auto it = node_positions.begin(); it != node_positions.end(); ++it)
+        {
+          out << YAML::BeginSeq;
+          out << (*it)[0];
+          out << (*it)[1];
+          out << (*it)[2];
+          out << YAML::EndSeq;
+        }
         out << YAML::EndSeq;
       }
-      out << YAML::EndSeq;
-    }
-    if(settings_.get_links())
-    {
-      out << YAML::Key << usc::links;
-      out << YAML::Value << YAML::BeginSeq;
-      const std::vector<std::pair<std::size_t, std::size_t>>& links = *settings_.get_links();
-      for(auto it = links.begin(); it != links.end(); ++it)
+      if(settings_.get_links())
       {
-        out << YAML::BeginSeq << it->first << it->second << YAML::EndSeq;
+        out << YAML::Key << usc::links;
+        out << YAML::Value << YAML::BeginSeq;
+        const std::vector<std::pair<std::size_t, std::size_t>>& links = *settings_.get_links();
+        for(auto it = links.begin(); it != links.end(); ++it)
+        {
+          out << YAML::BeginSeq << it->first << it->second << YAML::EndSeq;
+        }
+        out << YAML::EndSeq;
       }
-      out << YAML::EndSeq;
     }
-
-    if(settings_.get_network_file_path())
+    else
     {
       out << YAML::Key << usc::network_file_path;
       /**
@@ -250,7 +256,8 @@ void user_settings_io::check_input_validity(const YAML::Node& node) const
   if(!node[usc::simulations_count] ||
     !node[usc::excitation_time] ||
     !node[usc::fs] ||
-    !node[usc::time_step])
+    !node[usc::time_step] ||
+    !node[usc::forces_dynamic])
   {
     LOG(logger::critical, invalid_structure);
     throw std::runtime_error(invalid_structure);

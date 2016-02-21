@@ -68,7 +68,7 @@ int trajectory_task::execute()
   std::vector<std::size_t> force_application_nodes = us.get_force_application_nodes();
   //TODO MH: check for valid indexes
   pre_excitement();
-  forces_spec fspec(us.get_fs(), force_application_nodes, gs.get_forces_dynamic());
+  forces_spec fspec(us.get_fs(), force_application_nodes, us.get_forces_dynamic());
   excitor x(net, initial_state, us.get_time_step(), us.get_excitation_time(), fspec);
   if(gs.get_dump_data())
   {
@@ -91,7 +91,7 @@ int trajectory_task::execute()
   //TODO MH: check for valid indexes
   std::shared_ptr<trajectory_dumper> traj_dumper(new trajectory_dumper(tout, initial_state, nodes, gs.get_dump_step()));
   std::shared_ptr<composite_result_observer> comp(new composite_result_observer());
-  std::shared_ptr<stability_checker> stab_checker(new stability_checker(initial_state, nodes));
+  std::shared_ptr<stability_checker> stab_checker(new stability_checker(initial_state, nodes, gs.get_stabilization_spec()));
   if(gs.get_dump_data())
   {
     const std::string& relaxation_output_file = generation_dir_ + "/" + gs.get_relaxation_file_name();
