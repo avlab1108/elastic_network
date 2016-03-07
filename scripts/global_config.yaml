@@ -7,6 +7,7 @@ eigensFileName: "eigens.txt"
 nodesFileName: "nodes.txt"
 dumpData: false
 dumpStep: 10
-timeLimit: 10000000 #максимальное число шагов моделирования
-stabilizationEpsilon: 1e-9
-stabilizationSteps: 10000
+relaxationTimeLimit: 10000000 #максимальное число шагов моделирования
+stabilizationSpec:
+  epsilon: 5e-2
+  stepCount: 1000

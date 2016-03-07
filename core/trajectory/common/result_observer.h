@@ -166,10 +166,11 @@ public:
   /**
    * @brief Constructs stability checker from provided parameters.
    * @param initial_positions Initial positions of network nodes.
+   * @param current_positions Current positions of network nodes.
    * @param nodes Node numbers.
    * @param stab_spec Stabilization specification.
    */
-  stability_checker(const node_positions_type& initial_positions, const node_chooser::node_numbers_type& nodes, const stabilization_spec stab_spec);
+  stability_checker(const node_positions_type& initial_positions, const node_positions_type& current_positions, const node_chooser::node_numbers_type& nodes, const stabilization_spec stab_spec);
   /**
    * @brief Implements interface of base class.
    *        Checks for stability conditions during relaxation..
@@ -181,18 +182,35 @@ public:
 private:
   /// Initial positions of network nodes.
   node_positions_type initial_positions_;
+  /// Current positions of network nodes.
+  node_positions_type current_positions_;
   /// Node numbers.
   node_chooser::node_numbers_type nodes_;
-  /// Current number of stabilized steps.
-  std::size_t stabilization_steps_;
+  /// Current number of steps of stabilization by closeness to initial positions.
+  std::size_t closeness_stabilization_steps_;
+  /// Current number of steps of stabilization by order of relative changes.
+  std::size_t rel_change_stabilization_steps_;
   /// Stabilization specification.
   stabilization_spec stab_spec_;
-  /// Distance between nodes 0-1 from previous step.
-  double previous_dist1_;
-  /// Distance between nodes 1-2 from previous step.
-  double previous_dist2_;
-  /// Distance between nodes 2-0 from previous step.
-  double previous_dist3_;
+  /// Initial distance between nodes 0-1.
+  double initial_dist1_;
+  /// Initial distance between nodes 1-2.
+  double initial_dist2_;
+  /// Initial distance between nodes 2-0.
+  double initial_dist3_;
+  /// Closeness epsilon for nodes 0-1.
+  double closeness_epsilon1_;
+  /// Closeness epsilon for nodes 1-2.
+  double closeness_epsilon2_;
+  /// Closeness epsilon for nodes 2-0.
+  double closeness_epsilon3_;
+
+  /// Relaive change epsilon for nodes 0-1.
+  double rel_change_epsilon1_;
+  /// Relative change epsilon for nodes 1-2.
+  double rel_change_epsilon2_;
+  /// Relative change epsilon for nodes 2-0.
+  double rel_change_epsilon3_;
 };
 
 /**

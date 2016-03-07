@@ -73,3 +73,33 @@ struct stabilization_spec
   /// Stabilization step count.
   std::size_t step_count;
 };
+
+/**
+ * @struct relaxation_time_step_spec
+ * @brief Describes integration step specification for relaxation process.
+ *
+ * Integration step is calculated in the following way: initial step size is @ref step. Then, after each @ref time_delta steps, step is multiplied by @ref coefficient.
+ * So, at the time moment i step can be retrieved in the following way: step_value = coefficient ^ (floor(i / time_delta)) * step.  
+ */
+struct relaxation_time_step_spec
+{
+  /**
+   * @brief Constructs relaxation time step specification from provided parameters.
+   * @param step Initial step size.
+   * @param delta Time delta.
+   * @param coefficient Multiplication coefficient.
+   */
+  explicit relaxation_time_step_spec(const double step = 1e-2, const std::size_t delta = 10000, const double coeff = 1.0) :
+    initial_step(step),
+    time_delta(delta),
+    coefficient(coeff)
+  {
+  }
+
+  /// Initial step.
+  double initial_step;
+  /// Time delta.
+  std::size_t time_delta;
+  /// Multiplication coefficient.
+  double coefficient;
+};

@@ -9,6 +9,7 @@
 
 namespace
 {
+
 std::vector<std::size_t> all_nodes(const network& net)
 {
   std::vector<std::size_t> res(net.get_size());

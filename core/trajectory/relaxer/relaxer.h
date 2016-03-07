@@ -21,10 +21,10 @@ public:
    * @brief Constructs relaxer for provided network and parameters.
    * @param net Network.
    * @param initial_positions Initial positions of network nodes.
-   * @param step Integration step.
+   * @param step_spec Integration step specification.
    * @param max_time Integration upper limit.
    */
-  relaxer(network& net, const node_positions_type& initial_positions, const double step, const std::size_t max_time);
+  relaxer(network& net, const node_positions_type& initial_positions, const relaxation_time_step_spec& step_spec, const std::size_t max_time);
 
   /**
    * @brief Implementation of base class interface.
@@ -33,8 +33,8 @@ public:
   virtual void run() override;
 
 private:
-  /// Integration step.
-  const double step_;
+  /// Integration step specification.
+  const relaxation_time_step_spec step_spec_;
   /// Integration upper limit.
   const std::size_t max_time_;
 };

@@ -88,7 +88,7 @@ void global_settings::set_dump_data(const bool dump)
   dump_data_ = dump;
 }
 
-const bool global_settings::get_dump_data() const
+bool global_settings::get_dump_data() const
 {
   return dump_data_;
 }
@@ -98,19 +98,19 @@ void global_settings::set_dump_step(const std::size_t step)
   dump_step_ = step;
 }
 
-const std::size_t global_settings::get_dump_step() const
+std::size_t global_settings::get_dump_step() const
 {
   return dump_step_;
 }
 
-void global_settings::set_time_limit(const std::size_t limit)
+void global_settings::set_relaxation_time_limit(const std::size_t limit)
 {
-  time_limit_ = limit;
+  relaxation_time_limit_ = limit;
 }
 
-const std::size_t global_settings::get_time_limit() const
+std::size_t global_settings::get_relaxation_time_limit() const
 {
-  return time_limit_;
+  return relaxation_time_limit_;
 }
 
 void global_settings::set_stabilization_spec(const stabilization_spec& spec)

@@ -48,18 +48,29 @@ public:
    * @brief Returns excitation time.
    * @return Excitation time.
    */
-  const std::size_t get_excitation_time() const;
+  std::size_t get_excitation_time() const;
 
   /**
-   * @brief Sets time step.
-   * @param step Time step.
+   * @brief Sets excitation time step.
+   * @param step Excitation time step.
    */
-  void set_time_step(const double step);
+  void set_excitation_time_step(const double step);
   /**
-   * @brief Returns time step.
-   * @return Time step.
+   * @brief Returns excitation time step.
+   * @return Excitation time step.
    */
-  const double get_time_step() const;
+  double get_excitation_time_step() const;
+
+  /**
+   * @brief Sets relaxation time step specification.
+   * @param step_spec Step specification.
+   */
+  void set_relaxation_time_step_spec(const relaxation_time_step_spec& step_spec);
+  /**
+   * @brief Returns relaxation time step specification.
+   * @return Relaxation time step specification.
+   */
+  const relaxation_time_step_spec& get_relaxation_time_step_spec() const;
 
   /**
    * @brief Sets summary magnitude of forces.
@@ -70,7 +81,7 @@ public:
    * @brief Returns summary magnitude of forces.
    * @return Summary magnitude of forces.
    */
-  const double get_fs() const;
+  double get_fs() const;
 
   /**
    * @brief Sets number of trajectory generations.
@@ -81,7 +92,7 @@ public:
    * @brief Returns number of trajectory generations.
    * @return Number of generations.
    */
-  const std::size_t get_simulations_count() const;
+  std::size_t get_simulations_count() const;
 
   /**
    * @brief Sets nodes for visualization during trajectory generation.
@@ -114,7 +125,7 @@ public:
    * @brief Returns flag indicating whether excitation forces are dynamic.
    * @return True if excitation forces are dynamic, false otherwise.
    */
-  const bool get_forces_dynamic() const;
+  bool get_forces_dynamic() const;
 
   /**
    * @brief Sets node positions for network.
@@ -167,10 +178,12 @@ private:
    */
   /// Network.
   network net_;
-  /// Time step.
-  double time_step_;
+  /// Excitation time step.
+  double excitation_time_step_;
   /// Excitation time.
   std::size_t excitation_time_;
+  /// Relaxation time step spec.
+  relaxation_time_step_spec relaxation_time_step_spec_;
   /// Summary magnitude of random forces.
   double fs_;
   /// Simulation count.

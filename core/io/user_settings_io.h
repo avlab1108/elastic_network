@@ -39,8 +39,26 @@ const std::string forces_dynamic = "forcesDynamic";
 const std::string visualization_nodes = "visualizationNodes";
 /// Network file name.
 const std::string network_file_path = "networkFile";
-/// Time step.
-const std::string time_step = "timeStep";
+/// Excitation time step.
+const std::string excitation_time_step = "excitationTimeStep";
+
+/**
+ * @namespace rtss
+ * @brief Relaxation time specification.
+ * @note rtss stands for relaxation time step specification.
+ */
+namespace rtss
+{
+/// Self name.
+const std::string self = "relaxationTimeStepSpec";
+/// Initial nitial step.
+const std::string initial_step = "initialStep";
+/// Time delta.
+const std::string time_delta = "timeDelta";
+/// Multiplication coefficient.
+const std::string coefficient = "coefficient";
+}
+
 }
 
 namespace YAML

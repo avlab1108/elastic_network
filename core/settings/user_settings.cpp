@@ -23,7 +23,7 @@ void user_settings::set_excitation_time(const std::size_t time)
   excitation_time_ = time;
 }
 
-const std::size_t user_settings::get_excitation_time() const
+std::size_t user_settings::get_excitation_time() const
 {
   return excitation_time_;
 }
@@ -33,7 +33,7 @@ void user_settings::set_fs(const double fs)
   fs_ = fs;
 }
 
-const double user_settings::get_fs() const
+double user_settings::get_fs() const
 {
   return fs_;
 }
@@ -43,7 +43,7 @@ void user_settings::set_simulations_count(const std::size_t sim_count)
   simulations_count_ = sim_count;
 }
 
-const std::size_t user_settings::get_simulations_count() const
+std::size_t user_settings::get_simulations_count() const
 {
   return simulations_count_;
 }
@@ -58,14 +58,24 @@ const std::vector<std::size_t>& user_settings::get_visualization_nodes() const
   return visualization_nodes_;
 }
 
-void user_settings::set_time_step(const double step)
+void user_settings::set_excitation_time_step(const double step)
 {
-  time_step_ = step;
+  excitation_time_step_ = step;
 }
 
-const double user_settings::get_time_step() const
+double user_settings::get_excitation_time_step() const
 {
-  return time_step_;
+  return excitation_time_step_;
+}
+
+void user_settings::set_relaxation_time_step_spec(const relaxation_time_step_spec& step_spec)
+{
+  relaxation_time_step_spec_ = step_spec;
+}
+
+const relaxation_time_step_spec& user_settings::get_relaxation_time_step_spec() const
+{
+  return relaxation_time_step_spec_;
 }
 
 void user_settings::set_force_application_nodes(const std::vector<std::size_t>& nodes)
@@ -83,7 +93,7 @@ void user_settings::set_forces_dynamic(const bool dynamic)
   forces_dynamic_ = dynamic;
 }
 
-const bool user_settings::get_forces_dynamic() const
+bool user_settings::get_forces_dynamic() const
 {
   return forces_dynamic_;
 }

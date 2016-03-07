@@ -1,6 +1,10 @@
 runNum: 100 #число симуляций
-timeStep: 0.02 #шаг времени
+excitationTimeStep: 0.02 #шаг времени
 timeIni: 10000 #время подготовки стартового состояния
+relaxationTimeStepSpec:
+  initialStep: 0.02
+  timeDelta: 10000
+  coefficient: 1.1
 Fs: 0.2 #нормировка суммы сил при возбуждении
 L0: 3
 forcesDynamic: false

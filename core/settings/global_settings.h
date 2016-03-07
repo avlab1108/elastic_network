@@ -110,7 +110,7 @@ public:
    * @brief Returns flag indicating whether dump of excitation/relaxation data is enabled.
    * @return True if dump is enabled, false otherwise.
    */
-  const bool get_dump_data() const;
+  bool get_dump_data() const;
 
   /**
    * @brief Sets dump step for excitation/relaxation data.
@@ -121,18 +121,18 @@ public:
    * @brief Returns dump step for excitation/relaxation data.
    * @return Dump step.
    */
-  const std::size_t get_dump_step() const;
+  std::size_t get_dump_step() const;
 
   /**
    * @brief Sets time limit for relaxation process.
    * @param limit Limit value.
    */
-  void set_time_limit(const std::size_t limit);
+  void set_relaxation_time_limit(const std::size_t limit);
   /**
    * @brief Returns time limit for relaxation process.
    * @return Limit value.
    */
-  const std::size_t get_time_limit() const;
+  std::size_t get_relaxation_time_limit() const;
 
   /**
    * @brief Sets stabilization specification for stabilization determination.
@@ -165,7 +165,7 @@ private:
   /// Dump step.
   std::size_t dump_step_;
   /// Relaxation time limit.
-  std::size_t time_limit_;
+  std::size_t relaxation_time_limit_;
   /// Stabilization specification.
   stabilization_spec stabilization_spec_;
 };

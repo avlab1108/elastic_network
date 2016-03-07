@@ -70,7 +70,10 @@ void user_settings_io::import_settings(const std::string& file_path)
 
   settings_.set_fs(node[usc::fs].as<double>());
   settings_.set_excitation_time(node[usc::excitation_time].as<std::size_t>());
-  settings_.set_time_step(node[usc::time_step].as<double>());
+  settings_.set_excitation_time_step(node[usc::excitation_time_step].as<double>());
+  YAML::Node spec_node = node[usc::rtss::self];
+  relaxation_time_step_spec spec(spec_node[usc::rtss::initial_step].as<double>(), spec_node[usc::rtss::time_delta].as<std::size_t>(), spec_node[usc::rtss::coefficient].as<double>());
+  settings_.set_relaxation_time_step_spec(spec);
   settings_.set_simulations_count(node[usc::simulations_count].as<std::size_t>());
 
   if(node[usc::force_application_nodes])
@@ -146,11 +149,21 @@ void user_settings_io::export_settings(const std::string& output_dir)
     out << YAML::Key << usc::forces_dynamic;
     out << YAML::Value << settings_.get_forces_dynamic();
 
-    out << YAML::Key << usc::time_step;
-    out << YAML::Value << settings_.get_time_step();
+    out << YAML::Key << usc::excitation_time_step;
+    out << YAML::Value << settings_.get_excitation_time_step();
 
     out << YAML::Key << usc::excitation_time;
     out << YAML::Value << settings_.get_excitation_time();
+
+    out << YAML::Key << usc::rtss::self;
+    out << YAML::BeginMap;
+    out << YAML::Key << usc::rtss::initial_step;
+    out << YAML::Value << settings_.get_relaxation_time_step_spec().initial_step;
+    out << YAML::Key << usc::rtss::time_delta;
+    out << YAML::Value << settings_.get_relaxation_time_step_spec().initial_step;
+    out << YAML::Key << usc::rtss::coefficient;
+    out << YAML::Value << settings_.get_relaxation_time_step_spec().coefficient;
+    out << YAML::EndMap;
 
     out << YAML::Key << usc::simulations_count;
     out << YAML::Value << settings_.get_simulations_count();
@@ -256,8 +269,9 @@ void user_settings_io::check_input_validity(const YAML::Node& node) const
   if(!node[usc::simulations_count] ||
     !node[usc::excitation_time] ||
     !node[usc::fs] ||
-    !node[usc::time_step] ||
-    !node[usc::forces_dynamic])
+    !node[usc::excitation_time_step] ||
+    !node[usc::forces_dynamic] ||
+    !node[usc::rtss::self])
   {
     LOG(logger::critical, invalid_structure);
     throw std::runtime_error(invalid_structure);
@@ -279,6 +293,13 @@ void user_settings_io::check_input_validity(const YAML::Node& node) const
       LOG(logger::critical, invalid_structure);
       throw std::runtime_error(invalid_structure);
     }
+  }
+  if(!node[usc::rtss::self][usc::rtss::initial_step] ||
+    !node[usc::rtss::self][usc::rtss::time_delta] ||
+    !node[usc::rtss::self][usc::rtss::coefficient])
+  {
+    LOG(logger::critical, invalid_structure);
+    throw std::runtime_error(invalid_structure);
   }
 }
 

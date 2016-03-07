@@ -37,11 +37,23 @@ const std::string dump_data = "dumpData";
 /// Dump step for additional data dump.
 const std::string dump_step = "dumpStep";
 /// Time limit specification for relaxation process.
-const std::string time_limit = "timeLimit";
+const std::string relaxation_time_limit = "relaxationTimeLimit";
+
+/**
+ * @namespace ss
+ * @brief Stabilization specification.
+ * @note ss stands for stabilization specification.
+ */
+namespace ss
+{
+/// Self name.
+const std::string self = "stabilizationSpec";
 /// Epsilon value used for stabilization determination.
-const std::string stabilization_epsilon = "stabilizationEpsilon";
+const std::string epsilon = "epsilon";
 /// Step count used for stabilization determination.
-const std::string stabilization_step_count = "stabilizationSteps";
+const std::string step_count = "stepCount";
+}
+
 }
 
 namespace YAML

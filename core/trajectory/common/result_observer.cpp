@@ -112,18 +112,55 @@ void trajectory_dumper::process(const state_type& r, const double t)
   }
 }
 
-stability_checker::stability_checker(const node_positions_type& initial_positions, const node_chooser::node_numbers_type& nodes, const stabilization_spec stab_spec) :
+namespace
+{
+
+double order(double num)
+{
+  int p = 0;
+  num = std::abs(num);
+  while(num < 1)
+  {
+    num *= 10;
+    p--;
+  }
+  while(num > 10)
+  {
+    num /= 10;
+    p++;
+  }
+  return std::pow(10.0, p);
+}
+
+}
+
+stability_checker::stability_checker(const node_positions_type& initial_positions, const node_positions_type& current_positions, const node_chooser::node_numbers_type& nodes, const stabilization_spec stab_spec) :
   initial_positions_(initial_positions),
+  current_positions_(current_positions),
   nodes_(nodes),
-  stabilization_steps_(0),
+  closeness_stabilization_steps_(0),
+  rel_change_stabilization_steps_(0),
   stab_spec_(stab_spec)
 {
   std::size_t i1 = nodes_[0];
   std::size_t i2 = nodes_[1];
   std::size_t i3 = nodes_[2];
-  previous_dist1_ = utils::distance(initial_positions_[i1], initial_positions_[i2]);
-  previous_dist2_ = utils::distance(initial_positions_[i1], initial_positions_[i3]);
-  previous_dist3_ = utils::distance(initial_positions_[i2], initial_positions_[i3]);
+  initial_dist1_ = utils::distance(initial_positions_[i1], initial_positions_[i2]);
+  initial_dist2_ = utils::distance(initial_positions_[i1], initial_positions_[i3]);
+  initial_dist3_ = utils::distance(initial_positions_[i2], initial_positions_[i3]);
+
+  double current_dist1 = utils::distance(current_positions_[i1], current_positions_[i2]);
+  rel_change_epsilon1_ = std::abs((current_dist1-initial_dist1_)/initial_dist1_) * stab_spec_.epsilon;
+
+  double current_dist2 = utils::distance(current_positions_[i1], current_positions_[i3]);
+  rel_change_epsilon2_ = std::abs((current_dist2-initial_dist2_)/initial_dist2_) * stab_spec_.epsilon;
+
+  double current_dist3 = utils::distance(current_positions_[i2], current_positions_[i3]);
+  rel_change_epsilon3_ = std::abs((current_dist3-initial_dist3_)/initial_dist3_) * stab_spec_.epsilon;
+
+  closeness_epsilon1_ = utils::distance(initial_positions_[i1], current_positions_[i1]) * stab_spec_.epsilon;
+  closeness_epsilon2_ = utils::distance(initial_positions_[i2], current_positions_[i2]) * stab_spec_.epsilon;
+  closeness_epsilon3_ = utils::distance(initial_positions_[i3], current_positions_[i3]) * stab_spec_.epsilon;
 }
 
 void stability_checker::process(const state_type& r, const double t)
@@ -131,31 +168,36 @@ void stability_checker::process(const state_type& r, const double t)
   std::size_t i1 = nodes_[0];
   std::size_t i2 = nodes_[1];
   std::size_t i3 = nodes_[2];
-  const double& epsilon = stab_spec_.epsilon;
-  if(utils::distance(initial_positions_[i1], r[i1]) < epsilon &&
-    utils::distance(initial_positions_[i2], r[i2]) < epsilon &&
-    utils::distance(initial_positions_[i3], r[i3]) < epsilon)
+  if(utils::distance(initial_positions_[i1], r[i1]) < closeness_epsilon1_ &&
+    utils::distance(initial_positions_[i2], r[i2]) < closeness_epsilon2_ &&
+    utils::distance(initial_positions_[i3], r[i3]) < closeness_epsilon3_)
   {
-    throw std::exception();
-  }
-
-  double current_dist1 = utils::distance(r[i1], r[i2]);
-  double current_dist2 = utils::distance(r[i1], r[i3]);
-  double current_dist3 = utils::distance(r[i2], r[i3]);
-  if(std::fabs(current_dist1 - previous_dist1_) < epsilon &&
-    std::fabs(current_dist2 - previous_dist2_) < epsilon &&
-    std::fabs(current_dist3 - previous_dist3_) < epsilon)
-  {
-    ++stabilization_steps_;
+    ++closeness_stabilization_steps_;
   }
   else
   {
-    stabilization_steps_ = 0;
+    closeness_stabilization_steps_ = 0;
   }
-  previous_dist1_ = current_dist1;
-  previous_dist2_ = current_dist2;
-  previous_dist3_ = current_dist3;
-  if(stab_spec_.step_count == stabilization_steps_)
+
+  double current_dist = utils::distance(r[i1], r[i2]);
+  double val1 = (current_dist-initial_dist1_)/initial_dist1_;
+
+  current_dist = utils::distance(r[i1], r[i3]);
+  double val2 = (current_dist-initial_dist2_)/initial_dist2_;
+
+  current_dist = utils::distance(r[i2], r[i3]);
+  double val3 = (current_dist-initial_dist3_)/initial_dist3_;
+
+  if(std::abs(val1) < rel_change_epsilon1_ && std::abs(val2) < rel_change_epsilon2_ && std::abs(val3) < rel_change_epsilon3_)
+  {
+    ++rel_change_stabilization_steps_;
+  }
+  else
+  {
+    rel_change_stabilization_steps_ = 0;
+  }
+
+  if(stab_spec_.step_count <= closeness_stabilization_steps_ || stab_spec_.step_count <= rel_change_stabilization_steps_)
   {
     throw std::exception();
   }

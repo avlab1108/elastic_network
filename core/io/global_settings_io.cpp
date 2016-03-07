@@ -34,8 +34,8 @@ void global_settings_io::import_settings(const std::string& file_path)
   settings_.set_nodes_file_name(node[gsc::nodes_file_name].as<std::string>());
   settings_.set_dump_data(node[gsc::dump_data].as<bool>());
   settings_.set_dump_step(node[gsc::dump_step].as<std::size_t>());
-  settings_.set_time_limit(node[gsc::time_limit].as<std::size_t>());
-  stabilization_spec spec(node[gsc::stabilization_epsilon].as<double>(), node[gsc::stabilization_step_count].as<std::size_t>());
+  settings_.set_relaxation_time_limit(node[gsc::relaxation_time_limit].as<std::size_t>());
+  stabilization_spec spec(node[gsc::ss::self][gsc::ss::epsilon].as<double>(), node[gsc::ss::self][gsc::ss::step_count].as<std::size_t>());
   settings_.set_stabilization_spec(spec);
 }
 
@@ -67,9 +67,10 @@ void global_settings_io::check_input_validity(const YAML::Node& node)
     !node[gsc::nodes_file_name] ||
     !node[gsc::dump_data] ||
     !node[gsc::dump_step] ||
-    !node[gsc::time_limit] ||
-    !node[gsc::stabilization_epsilon] ||
-    !node[gsc::stabilization_step_count])
+    !node[gsc::relaxation_time_limit] ||
+    !node[gsc::ss::self] ||
+    !node[gsc::ss::self][gsc::ss::epsilon] ||
+    !node[gsc::ss::self][gsc::ss::step_count])
   {
     throw std::runtime_error(invalid_structure);
   }
