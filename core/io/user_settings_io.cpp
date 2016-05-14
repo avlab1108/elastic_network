@@ -160,7 +160,7 @@ void user_settings_io::export_settings(const std::string& output_dir)
     out << YAML::Key << usc::rtss::initial_step;
     out << YAML::Value << settings_.get_relaxation_time_step_spec().initial_step;
     out << YAML::Key << usc::rtss::time_delta;
-    out << YAML::Value << settings_.get_relaxation_time_step_spec().initial_step;
+    out << YAML::Value << settings_.get_relaxation_time_step_spec().time_delta;
     out << YAML::Key << usc::rtss::coefficient;
     out << YAML::Value << settings_.get_relaxation_time_step_spec().coefficient;
     out << YAML::EndMap;

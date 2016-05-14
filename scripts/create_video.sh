@@ -8,6 +8,8 @@ path_to_generation=
 user_config=$scriptpath/config.yaml
 global_config=$scriptpath/global_config.yaml
 
+path_to_generation_defined=false
+
 function usage()
 {
   cat << EOF
@@ -16,17 +18,41 @@ Usage: $0 [OPTIONS]
 OPTIONS:
   -p       Path to the generation directory. Required option.
 
+  -u       User config path.
+  -g       Global config path.
 EOF
 }
 
-while getopts "p:tep" opt
+while getopts ":p:u:g:" opt
 do
   case "$opt" in
-    p) path_to_generation=$OPTARG;;
+    p) path_to_generation=$OPTARG; path_to_generation_defined=true;;
+    u) user_config=$OPTARG;;
+    g) global_config=$OPTARG;;
    \:) usage; exit;;
    \?) usage; exit;;
   esac
 done
+
+if ! $path_to_generation_defined; then
+  usage
+  exit
+fi
+
+if [ ! -d "$path_to_generation" ]; then
+  echo "Generation directory not found."
+  exit
+fi
+
+if [ ! -f "$user_config" ]; then
+  echo "User config file not found."
+  exit
+fi
+
+if [ ! -f "$global_config" ]; then
+  echo "Global config file not found."
+  exit
+fi
 
 function setup_plotter()
 {
@@ -65,6 +91,11 @@ dirs_before=`eval $ls_command`
 $scriptpath/../applications/video_data_preparer/obj/video_data_preparer.exe -u $user_config -g $global_config -p $path_to_generation &> /tmp/log.txt
 dirs_after=`eval $ls_command`
 results_dir=`diff <(echo "$dirs_before") <(echo "$dirs_after") | grep "^>" | sed -e "s/^>\s*//" | grep "results_*"`
+
+if [ -z $results_dir ] ; then
+  echo "Cannot find output directory."
+  exit
+fi
 
 mv /tmp/log.txt ${results_dir}/log.txt
 
