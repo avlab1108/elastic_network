@@ -8,6 +8,10 @@ path_to_generation=
 user_config=$scriptpath/config.yaml
 global_config=$scriptpath/global_config.yaml
 
+period_of_pictures=100
+width=1024
+height=768
+
 path_to_generation_defined=false
 
 function usage()
@@ -16,17 +20,23 @@ function usage()
 Usage: $0 [OPTIONS]
 
 OPTIONS:
-  -p       Path to the generation directory. Required option.
+  -p [path] Path to the generation directory. Required option.
+  -n [num]  Take every num-th picture and skip others. Default is 100.
+  -h [num]  Height of video. Default is 768.
+  -w [num]  Width of video. Default is 1024.
 
-  -u       User config path.
-  -g       Global config path.
+  -u [path] User config path.
+  -g [path] Global config path.
 EOF
 }
 
-while getopts ":p:u:g:" opt
+while getopts ":p:u:g:n:h:w:" opt
 do
   case "$opt" in
     p) path_to_generation=$OPTARG; path_to_generation_defined=true;;
+    n) period_of_pictures=$OPTARG;;
+    h) height=$OPTARG;;
+    w) width=$OPTARG;;
     u) user_config=$OPTARG;;
     g) global_config=$OPTARG;;
    \:) usage; exit;;
@@ -57,7 +67,7 @@ fi
 function setup_plotter()
 {
   > $results_dir/plotter.gnu
-  echo "set term pngcairo size 1024,768 enhanced" >> $results_dir/plotter.gnu
+  echo "set term pngcairo size $width,$height enhanced" >> $results_dir/plotter.gnu
   echo "set output \"$2\"" >> $results_dir/plotter.gnu
   echo "unset border" >> $results_dir/plotter.gnu
   echo "unset xtics" >> $results_dir/plotter.gnu
@@ -93,7 +103,8 @@ dirs_after=`eval $ls_command`
 results_dir=`diff <(echo "$dirs_before") <(echo "$dirs_after") | grep "^>" | sed -e "s/^>\s*//" | grep "results_*"`
 
 if [ -z $results_dir ] ; then
-  echo "Cannot find output directory."
+    echo "Cannot find results directory."
+    echo "Please check program arguments and try again."
   exit
 fi
 
@@ -106,10 +117,10 @@ mkdir ${results_dir}/excitation/pictures
 for i in `find ${results_dir}/excitation -type f -name "*.txt"`;
 do
   name=$(basename "$i" .txt)
-  if (( $name % 100 != 0 )); then
+  if (( $name % $period_of_pictures != 0 )); then
     continue
   fi
-  output="${results_dir}/excitation/pictures/$(($name/100)).png"
+  output="${results_dir}/excitation/pictures/$(($name/$period_of_pictures)).png"
   setup_plotter $i $output "Возбуждение (T=$name)" &>> ${results_dir}/log.txt
 done
 echo "Created images for excitation."
@@ -123,10 +134,10 @@ echo "Creating images for relaxation ..."
 for i in `find ${results_dir}/relaxation -type f -name "*.txt"`;
 do
   name=$(basename "$i" .txt)
-  if (( $name % 100 != 0 )); then
+  if (( $name % $period_of_pictures != 0 )); then
     continue
   fi
-  output="${results_dir}/relaxation/pictures/$(($name/100)).png"
+  output="${results_dir}/relaxation/pictures/$(($name/$period_of_pictures)).png"
   setup_plotter $i $output "Релаксация (T=$name)" &>> ${results_dir}/log.txt
 done
 echo "Created images for relaxation."

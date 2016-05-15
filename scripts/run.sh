@@ -21,8 +21,8 @@ OPTIONS:
   -e        Calculate eigenvalues and plot spectra.
   -p        Calculate 3 optimal points.
 
-  -u        User config path.
-  -g        Global config path.
+  -u [path] User config path.
+  -g [path] Global config path.
 
 EOF
 }
@@ -41,6 +41,16 @@ do
   esac
 done
 
+if [ ! -f "$user_config" ]; then
+  echo "User config file not found."
+  exit
+fi
+
+if [ ! -f "$global_config" ]; then
+  echo "Global config file not found."
+  exit
+fi
+
 ls_command="find . -maxdepth 1 -type d"
 
 #TODO: need to extract from mkfiles/default_defs.mk
@@ -51,6 +61,13 @@ if (( $eigens == 1 )); then
   $scriptpath/../applications/eigen_spectra/obj/eigens.exe -u $user_config -g $global_config
   dirs_after=`eval $ls_command`
   results_dir=`diff <(echo "$dirs_before") <(echo "$dirs_after") | grep "^>" | sed -e "s/^>\s*//" | grep "results_*"`
+
+  if [ -z $results_dir ] ; then
+    echo "Cannot find results directory."
+    echo "Please check program arguments and try again."
+    exit
+  fi
+
   $scriptpath/plot_spectra.sh -i $results_dir/eigens.txt -o $results_dir/eigen_spectra.png
   exit
 fi
@@ -79,6 +96,13 @@ if (( $trajectory == 1 )); then
   if (( $result == 0 )); then
     dirs_after=`eval $ls_command`
     results_dir=`diff <(echo "$dirs_before") <(echo "$dirs_after") | grep "^>" | sed -e "s/^>\s*//" | grep "results_*"`
+
+    if [ -z $results_dir ] ; then
+      echo "Cannot find results directory."
+      echo "Please check program arguments and try again."
+      exit
+    fi
+
     $scriptpath/plot_trajectory.sh -i $results_dir
   fi
 fi
