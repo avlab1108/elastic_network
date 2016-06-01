@@ -79,10 +79,11 @@ void create_directory(const std::string& dir)
 void copy_file(const std::string& source, const std::string& destination)
 {
   namespace fs = boost::filesystem;
-  std::string file_name = source.substr(source.find_last_of("/"));
-  if(file_name.empty())
+  std::string file_name = source;
+  std::size_t last_slash = source.find_last_of("/");
+  if(std::string::npos != last_slash)
   {
-    file_name = source;
+    file_name = source.substr(last_slash);
   }
   const std::string& out = destination + file_name;
 

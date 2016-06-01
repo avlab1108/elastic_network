@@ -53,8 +53,16 @@ fi
 
 ls_command="find . -maxdepth 1 -type d"
 
-#TODO: need to extract from mkfiles/default_defs.mk
 export LD_LIBRARY_PATH=/usr/local/lib:$scriptpath/../core/last/obj:$LD_LIBRARY_PATH
+#TODO: need to extract from mkfiles/default_defs.mk
+# Get lib dir for boost from mkfiles/default_defs.mk
+boost_lib_dir_name="BOOST_LIB_DIR"
+boost_lib_str=`grep "$boost_lib_dir_name\s*=" $scriptpath/../mkfiles/default_defs.mk | sed -e "s/$boost_lib_dir_name\s*=\s*\(.*\)/\1/"`
+if [ ! -z $boost_lib_str ]; then
+  # remove -L from lib dir
+  boost_lib_str=`echo $boost_lib_str | sed -r 's/^.{2}//'`
+  export LD_LIBRARY_PATH=${boost_lib_str}:$LD_LIBRARY_PATH
+fi
 
 if (( $eigens == 1 )); then
   dirs_before=`eval $ls_command`

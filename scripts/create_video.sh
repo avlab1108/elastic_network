@@ -13,6 +13,8 @@ width=1024
 height=768
 
 path_to_generation_defined=false
+user_config_defined=false
+global_config_defined=false
 
 function usage()
 {
@@ -37,8 +39,8 @@ do
     n) period_of_pictures=$OPTARG;;
     h) height=$OPTARG;;
     w) width=$OPTARG;;
-    u) user_config=$OPTARG;;
-    g) global_config=$OPTARG;;
+    u) user_config=$OPTARG; user_config_defined=true;;
+    g) global_config=$OPTARG; global_config_defined=true;;
    \:) usage; exit;;
    \?) usage; exit;;
   esac
@@ -47,6 +49,18 @@ done
 if ! $path_to_generation_defined; then
   usage
   exit
+fi
+
+if ! $user_config_defined; then
+  if [ -f `pwd`/config.yaml ]; then
+    user_config="`pwd`/config.yaml";
+  fi
+fi
+
+if ! $global_config_defined; then
+  if [ -f `pwd`/global_config.yaml ]; then
+    global_config="`pwd`/global_config.yaml";
+  fi
 fi
 
 if [ ! -d "$path_to_generation" ]; then
@@ -63,6 +77,9 @@ if [ ! -f "$global_config" ]; then
   echo "Global config file not found."
   exit
 fi
+
+echo "User config: $user_config"
+echo "Global config: $global_config"
 
 function setup_plotter()
 {
@@ -88,13 +105,20 @@ function setup_plotter()
   echo "\"$1\" index 1:all_blocks-2 using 1:2:3 with lines lc rgb \"red\", \\" >> $results_dir/plotter.gnu
   echo "\"$1\" index all_blocks-1 using 1:2:3 pt 7 ps 2 lc rgb \"blue\"" >> $results_dir/plotter.gnu
   gnuplot $results_dir/plotter.gnu
-  rm $results_dir/plotter.gnu
 }
 
 ls_command="find . -maxdepth 1 -type d"
 
-#TODO: need to extract from mkfiles/default_defs.mk
 export LD_LIBRARY_PATH=/usr/local/lib:$scriptpath/../core/last/obj:$LD_LIBRARY_PATH
+#TODO: need to extract from mkfiles/default_defs.mk
+# Get lib dir for boost from mkfiles/default_defs.mk
+boost_lib_dir_name="BOOST_LIB_DIR"
+boost_lib_str=`grep "$boost_lib_dir_name\s*=" $scriptpath/../mkfiles/default_defs.mk | sed -e "s/$boost_lib_dir_name\s*=\s*\(.*\)/\1/"`
+if [ ! -z $boost_lib_str ]; then
+  # remove -L from lib dir
+  boost_lib_str=`echo $boost_lib_str | sed -r 's/^.{2}//'`
+  export LD_LIBRARY_PATH=${boost_lib_str}:$LD_LIBRARY_PATH
+fi
 
 echo "Preparing data for video ..."
 dirs_before=`eval $ls_command`
@@ -114,7 +138,8 @@ echo "Finished data preparation."
 
 echo "Creating images for excitation ..."
 mkdir ${results_dir}/excitation/pictures
-for i in `find ${results_dir}/excitation -type f -name "*.txt"`;
+input_files=(`find ${results_dir}/excitation -type f -name "*.txt"`)
+for i in ${input_files[@]};
 do
   name=$(basename "$i" .txt)
   if (( $name % $period_of_pictures != 0 )); then
@@ -123,15 +148,20 @@ do
   output="${results_dir}/excitation/pictures/$(($name/$period_of_pictures)).png"
   setup_plotter $i $output "Возбуждение (T=$name)" &>> ${results_dir}/log.txt
 done
+for i in "${input_files[@]}"; do
+  rm -f ${i}
+done
 echo "Created images for excitation."
 
 echo "Creating excitation video ..."
-cat `ls -v ${results_dir}/excitation/pictures/*.png` | ffmpeg -f image2pipe -i - "${results_dir}/excitation/video.mp4" &>> ${results_dir}/log.txt
+cat `ls -v ${results_dir}/excitation/pictures/*.png` | ffmpeg -f image2pipe -i - -vcodec mpeg4 "${results_dir}/excitation/video.mp4" &>> ${results_dir}/log.txt
+rm -rf ${results_dir}/excitation/pictures
 echo "Created excitation video ${results_dir}/excitation/video.mp4."
 
 mkdir ${results_dir}/relaxation/pictures
 echo "Creating images for relaxation ..."
-for i in `find ${results_dir}/relaxation -type f -name "*.txt"`;
+input_files=(`find ${results_dir}/relaxation -type f -name "*.txt"`)
+for i in ${input_files[@]};
 do
   name=$(basename "$i" .txt)
   if (( $name % $period_of_pictures != 0 )); then
@@ -140,10 +170,14 @@ do
   output="${results_dir}/relaxation/pictures/$(($name/$period_of_pictures)).png"
   setup_plotter $i $output "Релаксация (T=$name)" &>> ${results_dir}/log.txt
 done
+for i in "${input_files[@]}"; do
+  rm -f ${i}
+done
 echo "Created images for relaxation."
 
 echo "Creating relaxation video ..."
-cat `ls -v ${results_dir}/relaxation/pictures/*.png` | ffmpeg -f image2pipe -i - "${results_dir}/relaxation/video.mp4" &>> ${results_dir}/log.txt
+cat `ls -v ${results_dir}/relaxation/pictures/*.png` | ffmpeg -f image2pipe -i - -vcodec mpeg4 "${results_dir}/relaxation/video.mp4" &>> ${results_dir}/log.txt
+rm -rf ${results_dir}/relaxation/pictures
 echo "Created relaxation video ${results_dir}/relaxation/video.mp4."
 
 echo "Creating full video ..."
