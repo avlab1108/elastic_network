@@ -20,6 +20,14 @@ int video_data_preparer_task::execute()
     return -1;
   }
   const std::string& input = command_line.get_unrecognized_options()[1];
+  bool excitation = true;
+  bool relaxation = true;
+  if(command_line.get_unrecognized_options().size() > 3)
+  {
+    const std::string& mode = command_line.get_unrecognized_options()[3];
+    excitation = mode.empty() || mode == "e" || mode =="a";
+    relaxation = mode.empty() || mode == "r" || mode =="a";
+  }
   const std::string& output = get_work_directory();
   const links_type& links = get_config()->get_user_settings().get_network().get_links();
   std::map<std::size_t, std::set<std::size_t>> sorted_links;
@@ -38,17 +46,26 @@ int video_data_preparer_task::execute()
 
   std::size_t time = 0;
 
-  const std::string& excitation_input{input + "/" + "excitation.txt"};
-  const std::string& excitation_output_dir{output + "/excitation"};
-  int result = convert(time, excitation_input, excitation_output_dir);
+  int result = 0;
+
+  if(excitation)
+  {
+    const std::string& excitation_input{input + "/" + "excitation.txt"};
+    const std::string& excitation_output_dir{output + "/excitation"};
+    result = convert(time, excitation_input, excitation_output_dir);
+  }
   if(0 != result)
   {
     return result;
   }
 
-  std::string relaxation_input{input + "/" + "relaxation.txt"};
-  const std::string& relaxation_output_dir{output + "/relaxation"};
-  return convert(time, relaxation_input, relaxation_output_dir);
+  if(relaxation)
+  {
+    std::string relaxation_input{input + "/" + "relaxation.txt"};
+    const std::string& relaxation_output_dir{output + "/relaxation"};
+    result = convert(time, relaxation_input, relaxation_output_dir);
+  }
+  return result;
 }
 
 int video_data_preparer_task::convert(std::size_t& start_time, const std::string& input_file, const std::string& output)
