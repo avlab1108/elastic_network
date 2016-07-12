@@ -9,3 +9,4 @@ Fs: 0.2 #нормировка суммы сил при возбуждении
 L0: 3
 forcesDynamic: false
 networkFile: "hier_potential.yaml"
+initialState: "initial_state.yaml" #начальное (равновесное) состояние

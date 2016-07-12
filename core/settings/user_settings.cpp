@@ -138,6 +138,16 @@ const boost::optional<std::string>& user_settings::get_network_file_path() const
   return network_file_path_;
 }
 
+void user_settings::set_initial_state(const node_positions_type& state)
+{
+	initial_state_ = state;
+}
+
+const boost::optional<node_positions_type>& user_settings::get_initial_state() const
+{
+	return initial_state_;
+}
+
 std::ostream& operator<<(std::ostream& out, const user_settings& s)
 {
   out << "Network size: " << s.get_network().get_size() << std::endl;

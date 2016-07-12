@@ -129,6 +129,20 @@ void user_settings_io::import_settings(const std::string& file_path)
     settings_.set_network(net);
   }
 
+	if(node[usc::initial_state])
+	{
+    std::string absolute_path = node[usc::initial_state].as<std::string>();
+    if(!absolute_path.empty())
+    {
+      if(absolute_path[0] != '/')
+      {
+        //This is relative path, need to attach current YAML file's directory to path
+        absolute_path.insert(0, file_path.substr(0, file_path.find_last_of("/") + 1));
+      }
+      import_initial_state_from_external_file(absolute_path);
+    }
+	}
+
   std::cout << settings_ << std::endl;
 }
 
@@ -321,6 +335,25 @@ void user_settings_io::import_network_from_external_file(const std::string& file
     throw std::runtime_error(invalid_file_type);
   }
   settings_.set_network_file_path(file_path);
+}
+
+void user_settings_io::import_initial_state_from_external_file(const std::string& file_path)
+{
+  std::size_t dot = file_path.find_last_of(".");
+  const std::string& ext = file_path.substr(dot + 1);
+  if("yml" == ext || "yaml" == ext)
+  {
+    settings_.set_initial_state(read_network_from_yaml_file(file_path).get_node_positions());
+  }
+  else if("csv" == ext || "dat" == ext || "txt" == ext)
+  {
+    settings_.set_initial_state(read_network_from_csv_file(file_path).get_node_positions());
+  }
+  else
+  {
+    LOG(logger::critical, invalid_file_type);
+    throw std::runtime_error(invalid_file_type);
+  }
 }
 
 network user_settings_io::read_network_from_yaml(const YAML::Node& node)

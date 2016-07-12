@@ -27,6 +27,12 @@ network::network(const node_positions_type& node_positions, const links_type& li
   set_links(links);
 }
 
+network::network(const network& other) :
+	nodes_(other.nodes_),
+	links_(other.links_)
+{
+}
+
 void network::set_cutoff_distance(const double l0)
 {
   for(std::size_t i = 0; i < get_size(); ++i)

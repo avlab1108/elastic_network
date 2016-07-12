@@ -41,6 +41,8 @@ const std::string visualization_nodes = "visualizationNodes";
 const std::string network_file_path = "networkFile";
 /// Excitation time step.
 const std::string excitation_time_step = "excitationTimeStep";
+/// Initial state of network.
+const std::string initial_state = "initialState";
 
 /**
  * @namespace rtss
@@ -123,6 +125,13 @@ private:
    * \n .txt  -> @ref read_network_from_csv_file
    */
   void import_network_from_external_file(const std::string& file_path);
+  /**
+   * @brief Imports initial state of network from provided external file.
+   * @param file_path Network file name.
+   *
+	 * Extension-based processing is the same as with @ref import_network_from_external_file
+   */
+  void import_initial_state_from_external_file(const std::string& file_path);
   /**
    * @brief Reads network from provided YAML tree node.
    * @param node YAML node for network.

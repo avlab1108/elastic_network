@@ -7,6 +7,7 @@ num_proc=1
 trajectory=0
 eigens=0
 points=0
+relaxation=0
 user_config=$scriptpath/config.yaml
 global_config=$scriptpath/global_config.yaml
 
@@ -20,6 +21,7 @@ OPTIONS:
   -t        Perform trajectory task.
   -e        Calculate eigenvalues and plot spectra.
   -p        Calculate 3 optimal points.
+	-r				Custom relaxation.
 
   -u [path] User config path.
   -g [path] Global config path.
@@ -27,7 +29,7 @@ OPTIONS:
 EOF
 }
 
-while getopts "n:u:g:tep" opt
+while getopts "n:u:g:tepr" opt
 do
   case "$opt" in
     n) num_proc=$OPTARG;;
@@ -36,6 +38,7 @@ do
     t) trajectory=1;;
     e) eigens=1;;
     p) points=1;;
+    r) relaxation=1;;
     \:) usage; exit;;
     \?) usage; exit;;
   esac
@@ -90,6 +93,36 @@ if (( $trajectory == 1 )); then
   dirs_before=`eval $ls_command`
 
   comm="$scriptpath/../applications/trajectory/obj/trajectory.exe -u $user_config -g $global_config"
+
+  result=0
+
+  if (( $num_proc > 1 )); then
+    mpirun -np $num_proc $comm
+    result=$?
+  else
+    eval $comm
+    result=$?
+  fi
+
+  if (( $result == 0 )); then
+    dirs_after=`eval $ls_command`
+    results_dir=`diff <(echo "$dirs_before") <(echo "$dirs_after") | grep "^>" | sed -e "s/^>\s*//" | grep "results_*"`
+
+    if [ -z $results_dir ] ; then
+      echo "Cannot find results directory."
+      echo "Please check program arguments and try again."
+      exit
+    fi
+
+    $scriptpath/plot_trajectory.sh -i $results_dir
+  fi
+fi
+
+if (( $relaxation == 1 )); then
+
+  dirs_before=`eval $ls_command`
+
+  comm="$scriptpath/../applications/relaxer/obj/relaxer.exe -u $user_config -g $global_config"
 
   result=0
 

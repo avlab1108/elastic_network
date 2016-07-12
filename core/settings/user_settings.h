@@ -171,6 +171,17 @@ public:
    */
   const boost::optional<std::string>& get_network_file_path() const;
 
+	/**
+	 * @brief Sets initial state of network.
+	 * @param state Initial state.
+	 */
+	void set_initial_state(const node_positions_type& state);
+	/**
+	 * @brief Returns initial state of network (if set).
+	 * @return Optional initial state.
+	 */
+	const boost::optional<node_positions_type>& get_initial_state() const;
+
 private:
   /**
    * @brief Required parameters
@@ -214,6 +225,8 @@ private:
   boost::optional<double> cutoff_distance_;
   /// Network file path.
   boost::optional<std::string> network_file_path_;
+	/// Initial state of network.
+	boost::optional<node_positions_type> initial_state_;
   /**
    * @}
    */

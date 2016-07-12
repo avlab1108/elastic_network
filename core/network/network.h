@@ -41,6 +41,12 @@ public:
    * @param l0 Cutoff distance.
    */
   network(const node_positions_type& node_positions, const double l0);
+	/**
+	 * @brief Copy constructor.
+	 *
+	 * @param other Network to copy from.
+	 */
+	network(const network& other);
   /**
    * @brief Constructs network with provided node positions and links.
    *

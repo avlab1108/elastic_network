@@ -112,28 +112,6 @@ void trajectory_dumper::process(const state_type& r, const double t)
   }
 }
 
-namespace
-{
-
-double order(double num)
-{
-  int p = 0;
-  num = std::abs(num);
-  while(num < 1)
-  {
-    num *= 10;
-    p--;
-  }
-  while(num > 10)
-  {
-    num /= 10;
-    p++;
-  }
-  return std::pow(10.0, p);
-}
-
-}
-
 stability_checker::stability_checker(const node_positions_type& initial_positions, const node_positions_type& current_positions, const node_chooser::node_numbers_type& nodes, const stabilization_spec stab_spec) :
   initial_positions_(initial_positions),
   current_positions_(current_positions),
