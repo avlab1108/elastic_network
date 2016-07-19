@@ -11,7 +11,16 @@ forcesDynamic: false
 networkFile: "hier_potential.yaml"
 equilibriumState: "equilibrium_state.yaml" #начальное (равновесное) состояние
 
+# For now, to define custom distance between nodes i and j, user have to define
+# both i->j and j->i distances, otherwise the distance, which is not provided
+# will be calculated as an euclidean distance between nodes. Here is an example
+# how to define distance between nodes 1 and 2.
+# TODO: need to discuss whether this is useful or maybe need to minimize effort
+# to define custom distance between nodes.
 #equilibriumDistances:
 #  ? - 1
 #    - 2
+#  : 23.23
+#  ? - 2
+#    - 1
 #  : 23.23
