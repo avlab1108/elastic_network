@@ -33,8 +33,11 @@ public:
    * @brief Constructs dynamics for provided network and initial positions of nodes.
    * @param net Network.
    * @param initial_positions Initial positions of network nodes.
+   * @param initial_distances Initial (equilibrium) distances between nodes.
+   *
+   * @note If no equilibrium distance provided for a certain pair of nodes, it will be calculated as an euclidean distance between initial positions of those nodes.
    */
-  network_dynamics(const network& net, const node_positions_type& initial_positions);
+  network_dynamics(const network& net, const equilibrium_state_spec& equilibrium_state);
   /**
    * @brief Calculates value of differential equation's right side based on provided data.
    * @param r State of network.
@@ -51,8 +54,6 @@ public:
 private:
   /// Network.
   network net_;
-  /// Initial positions of nodes.
-  node_positions_type initial_positions_;
   /// Initial distances between nodes.
   std::vector<std::vector<double>> initial_distances_;
 };

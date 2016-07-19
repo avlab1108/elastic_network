@@ -59,7 +59,7 @@ int trajectory_task::execute()
   const global_settings& gs = get_config()->get_global_settings();
   const user_settings& us = get_config()->get_user_settings();
   network net = us.get_network();
-  node_positions_type initial_state = net.get_node_positions();
+  equilibrium_state_spec initial_state{net.get_node_positions()};
 
   LOG(logger::info, std::string("Started execution for id \"") + std::to_string(run_id_) + "\" with following parameters:\n \
       \ttime step: " + std::to_string(us.get_excitation_time_step()) + ", \n\
@@ -87,7 +87,7 @@ int trajectory_task::execute()
     LOG(logger::error, std::string("Failed to open output file \"") + trajectory_output_file + "\". Silently stopping execution for id \"" + std::to_string(run_id_) + "\".");
     return -1;
   }
-  const node_positions_type& current_state = net.get_node_positions();
+  const node_positions_t& current_state = net.get_node_positions();
   const node_chooser::node_numbers_type& nodes = us.get_visualization_nodes();
   //TODO MH: check for valid indexes
   std::shared_ptr<trajectory_dumper> traj_dumper(new trajectory_dumper(tout, initial_state, nodes, gs.get_dump_step()));

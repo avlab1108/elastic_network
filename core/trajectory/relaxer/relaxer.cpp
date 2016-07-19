@@ -6,8 +6,8 @@
 #include <boost/numeric/odeint.hpp>
 #include <boost/numeric/odeint/external/openmp/openmp.hpp>
 
-relaxer::relaxer(network& net, const node_positions_type& initial_positions, const relaxation_time_step_spec& step_spec, const std::size_t max_time) :
-  trajectory_worker(net, initial_positions, std::make_shared<network_dynamics>(net, initial_positions)),
+relaxer::relaxer(network& net, const equilibrium_state_spec& equilibrium_state, const relaxation_time_step_spec& step_spec, const std::size_t max_time) :
+  trajectory_worker(net, equilibrium_state, std::make_shared<network_dynamics>(net, equilibrium_state)),
   step_spec_(step_spec),
   max_time_(max_time)
 {

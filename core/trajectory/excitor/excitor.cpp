@@ -32,8 +32,8 @@ forces_spec update_spec_for_net(const forces_spec& fspec, const network& net)
 
 }
 
-excitor::excitor(network& net, const node_positions_type& initial_positions, const double step, const std::size_t time, const forces_spec& fspec) :
-  trajectory_worker(net, initial_positions, std::make_shared<excitor_dynamics>(net, initial_positions, update_spec_for_net(fspec, net))),
+excitor::excitor(network& net, const equilibrium_state_spec& equilibrium_state, const double step, const std::size_t time, const forces_spec& fspec) :
+  trajectory_worker(net, equilibrium_state, std::make_shared<excitor_dynamics>(net, equilibrium_state, update_spec_for_net(fspec, net))),
   step_(step),
   time_(time)
 {

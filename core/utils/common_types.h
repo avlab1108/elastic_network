@@ -8,6 +8,7 @@
 
 #include "point.h"
 
+#include <map>
 #include <vector>
 
 /// Point type (3d-vector)
@@ -17,13 +18,16 @@ typedef point<double, 3> point_type;
 typedef std::vector<point_type> state_type;
 
 /// Node positions container.
-typedef std::vector<point_type> node_positions_type;
+typedef std::vector<point_type> node_positions_t;
 
 /// Links container.
-typedef std::vector<std::pair<std::size_t, std::size_t>> links_type;
+typedef std::vector<std::pair<std::size_t, std::size_t>> links_t;
 
 /// Forces type.
-typedef std::vector<std::pair<std::size_t, point_type>> forces_type;
+typedef std::vector<std::pair<std::size_t, point_type>> forces_t;
+
+/// Distances type.
+typedef std::map<std::pair<std::size_t, std::size_t>, double> node_distances_t;
 
 /**
  * @struct forces_spec
@@ -102,4 +106,27 @@ struct relaxation_time_step_spec
   std::size_t time_delta;
   /// Multiplication coefficient.
   double coefficient;
+};
+
+/**
+ * @struct equilibrium_state_spec
+ * @@brief Describes equilibrium state of network.
+ */
+struct equilibrium_state_spec
+{
+  /**
+   * @brief Constructs equilibrium state specification from provided parameters.
+   * @param pos Node positions.
+   * @param dist Distances between nodes.
+   */
+  explicit equilibrium_state_spec(const node_positions_t& pos, const node_distances_t& dist = node_distances_t()) :
+    positions(pos),
+    distances(dist)
+  {
+  }
+
+  /// Node positions.
+  node_positions_t positions;
+  /// Distances between nodes.
+  node_distances_t distances;
 };

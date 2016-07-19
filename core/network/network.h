@@ -40,7 +40,7 @@ public:
    * @param node_positions Node positions.
    * @param l0 Cutoff distance.
    */
-  network(const node_positions_type& node_positions, const double l0);
+  network(const node_positions_t& node_positions, const double l0);
 	/**
 	 * @brief Copy constructor.
 	 *
@@ -53,7 +53,7 @@ public:
    * @param node_positions Node positions.
    * @param links Links.
    */
-  network(const node_positions_type& node_positions, const links_type& links);
+  network(const node_positions_t& node_positions, const links_t& links);
 
   /**
    * @brief Applies @a l0 cutoff distance to the network.
@@ -76,26 +76,26 @@ public:
    *
    * @return Node positions.
    */
-  const node_positions_type& get_node_positions() const;
+  const node_positions_t& get_node_positions() const;
   /**
    * @brief Returns positions of all nodes in network.
    *
    * @return Node positions.
    */
-  node_positions_type& get_node_positions();
+  node_positions_t& get_node_positions();
 
   /**
    * @brief Sets links in the network.
    *
    * @param links Links.
    */
-  void set_links(const links_type& links);
+  void set_links(const links_t& links);
   /**
    * @brief Returns all links in network.
    *
    * @return Links.
    */
-  links_type get_links() const;
+  links_t get_links() const;
 
   /**
    * @brief Returns position of node with index @a node.
@@ -146,7 +146,7 @@ private:
 
 private:
   /// Node positions.
-  node_positions_type nodes_;
+  node_positions_t nodes_;
   /// Array of links.
   boost::dynamic_bitset<> links_;
 };

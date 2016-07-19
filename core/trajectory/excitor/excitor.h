@@ -22,12 +22,12 @@ public:
   /**
    * @brief Constructs excitor for provided network and parameters.
    * @param net Network.
-   * @param initial_positions Initial positions of network nodes.
+   * @param equilibrium_state Equilibrium state specification.
    * @param step Integration step.
    * @param time Integration upper limit.
    * @param fspec Force specialization.
    */
-  excitor(network& net, const node_positions_type& initial_positions, const double step, const std::size_t time, const forces_spec& fspec);
+  excitor(network& net, const equilibrium_state_spec& equilibrium_state, const double step, const std::size_t time, const forces_spec& fspec);
 
   /**
    * @brief Implementation of base class interface.

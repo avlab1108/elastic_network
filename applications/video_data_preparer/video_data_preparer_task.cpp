@@ -29,7 +29,7 @@ int video_data_preparer_task::execute()
     relaxation = mode.empty() || mode == "r" || mode =="a";
   }
   const std::string& output = get_work_directory();
-  const links_type& links = get_config()->get_user_settings().get_network().get_links();
+  const links_t& links = get_config()->get_user_settings().get_network().get_links();
   std::map<std::size_t, std::set<std::size_t>> sorted_links;
   for(auto it = links.begin(); it != links.end(); ++it)
   {

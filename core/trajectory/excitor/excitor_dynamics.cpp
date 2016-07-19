@@ -1,7 +1,7 @@
 #include "excitor_dynamics.h"
 
-excitor_dynamics::excitor_dynamics(const network& net, const node_positions_type& initial_positions, const forces_spec& fspec) :
-  network_dynamics(net, initial_positions),
+excitor_dynamics::excitor_dynamics(const network& net, const equilibrium_state_spec& equilibrium_state, const forces_spec& fspec) :
+  network_dynamics(net, equilibrium_state),
   fspec_(fspec),
   generator_(fspec)
 {

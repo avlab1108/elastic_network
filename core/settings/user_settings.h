@@ -131,12 +131,12 @@ public:
    * @brief Sets node positions for network.
    * @param node_positions Node positions.
    */
-  void set_node_positions(const node_positions_type& node_positions);
+  void set_node_positions(const node_positions_t& node_positions);
   /**
    * @brief Returns node positions (if set).
    * @return Optional node positions.
    */
-  const boost::optional<node_positions_type>& get_node_positions() const;
+  const boost::optional<node_positions_t>& get_node_positions() const;
 
   /**
    * @brief Sets cutoff distance for network.
@@ -172,15 +172,15 @@ public:
   const boost::optional<std::string>& get_network_file_path() const;
 
 	/**
-	 * @brief Sets initial state of network.
-	 * @param state Initial state.
+	 * @brief Sets equilibrium state specification.
+	 * @param state Equilibrium state specification.
 	 */
-	void set_initial_state(const node_positions_type& state);
+	void set_equilibrium_state_spec(const equilibrium_state_spec& state);
 	/**
-	 * @brief Returns initial state of network (if set).
-	 * @return Optional initial state.
+	 * @brief Returns equilibrium state specification (if set).
+	 * @return Optional equilibrium state specification.
 	 */
-	const boost::optional<node_positions_type>& get_initial_state() const;
+	const boost::optional<equilibrium_state_spec>& get_equilibrium_state_spec() const;
 
 private:
   /**
@@ -218,15 +218,15 @@ private:
    * @{
    */
   /// Nodes.
-  boost::optional<node_positions_type> node_positions_;
+  boost::optional<node_positions_t> node_positions_;
   /// Links.
-  boost::optional<links_type> links_;
+  boost::optional<links_t> links_;
   /// Cutoff distance.
   boost::optional<double> cutoff_distance_;
   /// Network file path.
   boost::optional<std::string> network_file_path_;
-	/// Initial state of network.
-	boost::optional<node_positions_type> initial_state_;
+	/// Equilibrium state specification.
+	boost::optional<equilibrium_state_spec> equilibrium_state_spec_;
   /**
    * @}
    */

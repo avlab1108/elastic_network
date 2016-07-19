@@ -107,17 +107,7 @@ void user_settings_io::import_settings(const std::string& file_path)
   }
   else
   {
-    std::string absolute_path = node[usc::network_file_path].as<std::string>();
-    if(!absolute_path.empty())
-    {
-      if(absolute_path[0] != '/')
-      {
-        //This is relative path, need to attach current YAML file's directory to path
-        absolute_path.insert(0, file_path.substr(0, file_path.find_last_of("/") + 1));
-      }
-      network_file_name_ = absolute_path;
-      import_network_from_external_file(absolute_path);
-    }
+    import_network_from_external_file(node);
   }
 
   if(node[usc::l0])
@@ -129,19 +119,7 @@ void user_settings_io::import_settings(const std::string& file_path)
     settings_.set_network(net);
   }
 
-	if(node[usc::initial_state])
-	{
-    std::string absolute_path = node[usc::initial_state].as<std::string>();
-    if(!absolute_path.empty())
-    {
-      if(absolute_path[0] != '/')
-      {
-        //This is relative path, need to attach current YAML file's directory to path
-        absolute_path.insert(0, file_path.substr(0, file_path.find_last_of("/") + 1));
-      }
-      import_initial_state_from_external_file(absolute_path);
-    }
-	}
+  import_equilibrium_state_spec(node);
 
   std::cout << settings_ << std::endl;
 }
@@ -213,7 +191,7 @@ void user_settings_io::export_settings(const std::string& output_dir)
       if(settings_.get_node_positions())
       {
         out << YAML::Key << usc::nodes;
-        const node_positions_type& node_positions = *settings_.get_node_positions();
+        const node_positions_t& node_positions = *settings_.get_node_positions();
         out << YAML::Value << YAML::BeginSeq;
         for(auto it = node_positions.begin(); it != node_positions.end(); ++it)
         {
@@ -317,43 +295,89 @@ void user_settings_io::check_input_validity(const YAML::Node& node) const
   }
 }
 
-void user_settings_io::import_network_from_external_file(const std::string& file_path)
+void user_settings_io::import_network_from_external_file(const YAML::Node& node)
 {
-  std::size_t dot = file_path.find_last_of(".");
-  const std::string& ext = file_path.substr(dot + 1);
+  std::string absolute_path = node[usc::network_file_path].as<std::string>();
+  if(absolute_path.empty())
+  {
+    // TODO report error
+    return;
+  }
+  if(absolute_path[0] != '/')
+  {
+    //This is relative path, need to attach current YAML file's directory to path
+    absolute_path.insert(0, settings_file_name_.substr(0, settings_file_name_.find_last_of("/") + 1));
+  }
+
+  std::size_t dot = absolute_path.find_last_of(".");
+  const std::string& ext = absolute_path.substr(dot + 1);
   if("yml" == ext || "yaml" == ext)
   {
-    settings_.set_network(read_network_from_yaml_file(file_path));
+    settings_.set_network(read_network_from_yaml_file(absolute_path));
   }
   else if("csv" == ext || "dat" == ext || "txt" == ext)
   {
-    settings_.set_network(read_network_from_csv_file(file_path));
+    settings_.set_network(read_network_from_csv_file(absolute_path));
   }
   else
   {
     LOG(logger::critical, invalid_file_type);
     throw std::runtime_error(invalid_file_type);
   }
-  settings_.set_network_file_path(file_path);
+  settings_.set_network_file_path(absolute_path);
 }
 
-void user_settings_io::import_initial_state_from_external_file(const std::string& file_path)
+void user_settings_io::import_equilibrium_state_spec(const YAML::Node& node)
 {
-  std::size_t dot = file_path.find_last_of(".");
-  const std::string& ext = file_path.substr(dot + 1);
-  if("yml" == ext || "yaml" == ext)
-  {
-    settings_.set_initial_state(read_network_from_yaml_file(file_path).get_node_positions());
+  node_positions_t positions;
+	if(node[usc::equilibrium_state])
+	{
+    std::string absolute_path = node[usc::equilibrium_state].as<std::string>();
+    if(!absolute_path.empty())
+    {
+      if(absolute_path[0] != '/')
+      {
+        //This is relative path, need to attach current YAML file's directory to path
+        absolute_path.insert(0, settings_file_name_.substr(0, settings_file_name_.find_last_of("/") + 1));
+      }
+      std::size_t dot = absolute_path.find_last_of(".");
+      const std::string& ext = absolute_path.substr(dot + 1);
+      if("yml" == ext || "yaml" == ext)
+      {
+        positions = read_network_from_yaml_file(absolute_path).get_node_positions();
+      }
+      else if("csv" == ext || "dat" == ext || "txt" == ext)
+      {
+        positions = read_network_from_csv_file(absolute_path).get_node_positions();
+      }
+      else
+      {
+        LOG(logger::critical, invalid_file_type);
+        throw std::runtime_error(invalid_file_type);
+      }
+    }
   }
-  else if("csv" == ext || "dat" == ext || "txt" == ext)
+
+  node_distances_t distances;
+  if(node[usc::equilibrium_distances])
   {
-    settings_.set_initial_state(read_network_from_csv_file(file_path).get_node_positions());
+    const YAML::Node& eq_node = node[usc::equilibrium_distances];
+    for(YAML::const_iterator it = eq_node.begin(); it != eq_node.end(); ++it)
+    {
+      YAML::Node key = it->first;
+      if(2 != key.size())
+      {
+        LOG(logger::critical, invalid_structure);
+        throw std::runtime_error(invalid_structure);
+      }
+      std::size_t node1, node2;
+      node1 = key[0].as<std::size_t>();
+      node2 = key[1].as<std::size_t>();
+      double value = it->second.as<double>();
+      distances[std::make_pair(node1, node2)] = value;
+    }
   }
-  else
-  {
-    LOG(logger::critical, invalid_file_type);
-    throw std::runtime_error(invalid_file_type);
-  }
+  settings_.set_equilibrium_state_spec(equilibrium_state_spec{positions, distances});
 }
 
 network user_settings_io::read_network_from_yaml(const YAML::Node& node)
@@ -361,7 +385,7 @@ network user_settings_io::read_network_from_yaml(const YAML::Node& node)
   const YAML::Node& nodes = node[usc::nodes];
   const std::size_t size = nodes.size();
   network net(size);
-  node_positions_type node_positions;
+  node_positions_t node_positions;
   for(std::size_t i = 0; i < size; ++i)
   {
     const point_type& position = nodes[i].as<point_type>();
@@ -409,7 +433,7 @@ network user_settings_io::read_network_from_csv_file(const std::string& file_pat
     throw std::runtime_error(invalid_file_type);
   }
   std::string line;
-  node_positions_type nodes;
+  node_positions_t nodes;
   while(std::getline(csv, line))
   {
     std::vector<std::string> parts;

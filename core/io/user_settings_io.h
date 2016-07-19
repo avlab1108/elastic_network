@@ -42,7 +42,9 @@ const std::string network_file_path = "networkFile";
 /// Excitation time step.
 const std::string excitation_time_step = "excitationTimeStep";
 /// Initial state of network.
-const std::string initial_state = "initialState";
+const std::string equilibrium_state = "equilibriumState";
+/// Equilibrium distances between ndoes.
+const std::string equilibrium_distances = "equilibriumDistances";
 
 /**
  * @namespace rtss
@@ -113,10 +115,10 @@ private:
    */
   void check_input_validity(const YAML::Node& node) const;
   /**
-   * @brief Imports network from provided external file.
-   * @param file_path Network file name.
+   * @brief Imports network from provided @ref node.
+   * @param node YAML node to read network from.
    *
-   * Based on @a file_path extension, this function delegates reading of real network to one of the read_network_from_* methods.
+   * Tries to read network from path, provided with usc::network_file_path key. Based on extension, this function delegates reading of real network to one of the read_network_from_* methods.
    * \n Following formats are supported (with according read function):
    * \n .yml  -> @ref read_network_from_yaml_file
    * \n .yaml -> @ref read_network_from_yaml_file
@@ -124,14 +126,12 @@ private:
    * \n .dat  -> @ref read_network_from_csv_file
    * \n .txt  -> @ref read_network_from_csv_file
    */
-  void import_network_from_external_file(const std::string& file_path);
+  void import_network_from_external_file(const YAML::Node& node);
   /**
-   * @brief Imports initial state of network from provided external file.
-   * @param file_path Network file name.
-   *
-	 * Extension-based processing is the same as with @ref import_network_from_external_file
+   * @brief Imports equilibrium state specialization from @ref node.
+   * @param node YAML node to read equilibrium state from.
    */
-  void import_initial_state_from_external_file(const std::string& file_path);
+  void import_equilibrium_state_spec(const YAML::Node& node);
   /**
    * @brief Reads network from provided YAML tree node.
    * @param node YAML node for network.
@@ -158,6 +158,4 @@ private:
   user_settings settings_;
   /// User settings file name.
   std::string settings_file_name_;
-  /// Network file name.
-  std::string network_file_name_;
 };
