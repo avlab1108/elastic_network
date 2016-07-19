@@ -8,6 +8,7 @@
 #include <relaxer.h>
 #include <result_observer.h>
 #include <core_application.h>
+#include <utils.h>
 
 #include <boost/filesystem.hpp>
 
@@ -45,12 +46,14 @@ void trajectory_task::post_excitement()
 {
 }
 
-void trajectory_task::pre_relaxation()
+void trajectory_task::pre_relaxation(const network& net)
 {
 }
 
-void trajectory_task::post_relaxation()
+void trajectory_task::post_relaxation(const network& net)
 {
+  // dump final network to output 
+  utils::dump_yaml(net, generation_dir_ + "/final_network.yaml");
 }
 
 int trajectory_task::execute()
@@ -101,11 +104,11 @@ int trajectory_task::execute()
   }
   comp->add_result_observer(traj_dumper);
   comp->add_result_observer(stab_checker);
-  pre_relaxation();
+  pre_relaxation(net);
   relaxer r(net, initial_state, us.get_relaxation_time_step_spec(), gs.get_relaxation_time_limit());
   r.set_result_observer(comp);
   r.run();
-  post_relaxation();
+  post_relaxation(net);
 
   std::clock_t end = clock();
   LOG(logger::info, std::string("Finished execution for id \"") + std::to_string(run_id_) + "\". Elapsed CPU time: " + std::to_string(static_cast<double>(end-begin)/CLOCKS_PER_SEC) + " seconds.");

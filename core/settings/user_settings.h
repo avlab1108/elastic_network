@@ -128,48 +128,15 @@ public:
   bool get_forces_dynamic() const;
 
   /**
-   * @brief Sets node positions for network.
-   * @param node_positions Node positions.
-   */
-  void set_node_positions(const node_positions_t& node_positions);
-  /**
-   * @brief Returns node positions (if set).
-   * @return Optional node positions.
-   */
-  const boost::optional<node_positions_t>& get_node_positions() const;
-
-  /**
-   * @brief Sets cutoff distance for network.
-   * @param l0 Cutoff distance.
-   */
-  void set_cutoff_distance(const double l0);
-  /**
-   * @brief Returns cutoff distance (if set).
-   * @return Optional cutoff distance.
-   */
-  const boost::optional<double>& get_cutoff_distance() const;
-
-  /**
-   * @brief Sets network links.
-   * @param links Network links.
-   */
-  void set_links(const std::vector<std::pair<std::size_t, std::size_t>>& links);
-  /**
-   * @brief Returns network links (if set).
-   * @return Optional network links.
-   */
-  const boost::optional<std::vector<std::pair<std::size_t, std::size_t>>>& get_links() const;
-
-  /**
    * @brief Sets network file path.
    * @param path Network file path.
    */
   void set_network_file_path(const std::string& path);
   /**
-   * @brief Returns network file path (if set).
-   * @return Optional network file path.
+   * @brief Returns network file path.
+   * @return Network file path.
    */
-  const boost::optional<std::string>& get_network_file_path() const;
+  const std::string& get_network_file_path() const;
 
 	/**
 	 * @brief Sets equilibrium state specification.
@@ -205,26 +172,15 @@ private:
   std::vector<std::size_t> force_application_nodes_;
   /// Dynamic/static forces.
   bool forces_dynamic_;
+  /// Network file path.
+  std::string network_file_path_;
   /**
    * @}
    */
   /**
    * @brief Optional parameters.
-   * Some of these parameters has some mutual conditions and in some cases 
-   * they can become required.
-   * For example - Nodes and Network file path are mutual exclusive.
-   * If Nodes is defined, Links or Cutoff distance should also be defined
-   * (so one of them becomes required).
    * @{
    */
-  /// Nodes.
-  boost::optional<node_positions_t> node_positions_;
-  /// Links.
-  boost::optional<links_t> links_;
-  /// Cutoff distance.
-  boost::optional<double> cutoff_distance_;
-  /// Network file path.
-  boost::optional<std::string> network_file_path_;
 	/// Equilibrium state specification.
 	boost::optional<equilibrium_state_spec> equilibrium_state_spec_;
   /**

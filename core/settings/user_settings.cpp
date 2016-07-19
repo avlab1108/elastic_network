@@ -98,42 +98,12 @@ bool user_settings::get_forces_dynamic() const
   return forces_dynamic_;
 }
 
-void user_settings::set_node_positions(const node_positions_t& node_positions)
-{
-  node_positions_ = node_positions;
-}
-
-const boost::optional<node_positions_t>& user_settings::get_node_positions() const
-{
-  return node_positions_;
-}
-
-void user_settings::set_links(const links_t& links)
-{
-  links_ = links;
-}
-
-const boost::optional<links_t>& user_settings::get_links() const
-{
-  return links_;
-}
-
-void user_settings::set_cutoff_distance(const double l0)
-{
-  cutoff_distance_ = l0;
-}
-
-const boost::optional<double>& user_settings::get_cutoff_distance() const
-{
-  return cutoff_distance_;
-}
-
 void user_settings::set_network_file_path(const std::string& path)
 {
   network_file_path_ = path;
 }
 
-const boost::optional<std::string>& user_settings::get_network_file_path() const
+const std::string& user_settings::get_network_file_path() const
 {
   return network_file_path_;
 }

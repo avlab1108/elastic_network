@@ -13,38 +13,10 @@
 
 #include <iostream>
 
-namespace YAML
-{
-template<>
-struct convert<point_type>
-{
-  static Node encode(const point_type& rhs)
-  {
-    Node node;
-    node.push_back(rhs[0]);
-    node.push_back(rhs[1]);
-    node.push_back(rhs[2]);
-    return node;
-  }
-
-  static bool decode(const Node& node, point_type& rhs)
-  {
-    if(!node.IsSequence() || node.size() != 3)
-    {
-      return false;
-    }
-
-    rhs[0] = node[0].as<point_type::value_type>();
-    rhs[1] = node[1].as<point_type::value_type>();
-    rhs[2] = node[2].as<point_type::value_type>();
-    return true;
-  }
-};
-}
-
 const std::string invalid_structure = "Invalid structure of user config file.";
 const std::string invalid_file_type = "Invalid file type provided as " + usc::network_file_path + ".";
-const std::string invalid_format    = "Invalid format of network file.";
+const std::string invalid_network = "Invalid structure of network file.";
+const std::string invalid_equilibrium_state_spec = "Invalid structure of equilibrium state specification file.";
 
 user_settings_io::user_settings_io()
 {
@@ -101,23 +73,7 @@ void user_settings_io::import_settings(const std::string& file_path)
     settings_.set_visualization_nodes(nodes);
   }
 
-  if(node[usc::nodes])
-  {
-    settings_.set_network(read_network_from_yaml(node));
-  }
-  else
-  {
-    import_network_from_external_file(node);
-  }
-
-  if(node[usc::l0])
-  {
-    double cutoff = node[usc::l0].as<double>();
-    settings_.set_cutoff_distance(cutoff);
-    network net = settings_.get_network();
-    net.set_cutoff_distance(cutoff);
-    settings_.set_network(net);
-  }
+  import_network_from_external_file(node);
 
   import_equilibrium_state_spec(node);
 
@@ -181,53 +137,16 @@ void user_settings_io::export_settings(const std::string& output_dir)
       out << YAML::EndSeq;
     }
 
-    if(settings_.get_cutoff_distance())
+    out << YAML::Key << usc::network_file_path;
+    /**
+     * @note Output only network file name as it will anyway be copied to the same directory as user config.
+     */
+    std::string file_name = settings_.get_network_file_path();
+    if(std::string::npos != file_name.find_first_of('/'))
     {
-      out << YAML::Key << usc::l0;
-      out << YAML::Value << *settings_.get_cutoff_distance();
+      file_name = file_name.substr(file_name.find_last_of('/')+1);
     }
-    if(!settings_.get_network_file_path())
-    {
-      if(settings_.get_node_positions())
-      {
-        out << YAML::Key << usc::nodes;
-        const node_positions_t& node_positions = *settings_.get_node_positions();
-        out << YAML::Value << YAML::BeginSeq;
-        for(auto it = node_positions.begin(); it != node_positions.end(); ++it)
-        {
-          out << YAML::BeginSeq;
-          out << (*it)[0];
-          out << (*it)[1];
-          out << (*it)[2];
-          out << YAML::EndSeq;
-        }
-        out << YAML::EndSeq;
-      }
-      if(settings_.get_links())
-      {
-        out << YAML::Key << usc::links;
-        out << YAML::Value << YAML::BeginSeq;
-        const std::vector<std::pair<std::size_t, std::size_t>>& links = *settings_.get_links();
-        for(auto it = links.begin(); it != links.end(); ++it)
-        {
-          out << YAML::BeginSeq << it->first << it->second << YAML::EndSeq;
-        }
-        out << YAML::EndSeq;
-      }
-    }
-    else
-    {
-      out << YAML::Key << usc::network_file_path;
-      /**
-       * @note Output only network file name as it will anyway be copied to the same directory as user config.
-       */
-      std::string file_name = *settings_.get_network_file_path();
-      if(std::string::npos != file_name.find_first_of('/'))
-      {
-        file_name = file_name.substr(file_name.find_last_of('/')+1);
-      }
-      out << YAML::Value << file_name;
-    }
+    out << YAML::Value << file_name;
     out << YAML::EndMap;
 
     std::ofstream fout(config_dir + "/config.yaml");
@@ -239,10 +158,7 @@ void user_settings_io::export_settings(const std::string& output_dir)
     fout << out.c_str() << std::endl;
     fout.close();
 
-    if(settings_.get_network_file_path())
-    {
-      utils::copy_file(*settings_.get_network_file_path(), config_dir);
-    }
+    utils::copy_file(settings_.get_network_file_path(), config_dir);
   }
 }
 
@@ -263,29 +179,13 @@ void user_settings_io::check_input_validity(const YAML::Node& node) const
     !node[usc::fs] ||
     !node[usc::excitation_time_step] ||
     !node[usc::forces_dynamic] ||
-    !node[usc::rtss::self])
+    !node[usc::rtss::self] ||
+    !node[usc::network_file_path])
   {
     LOG(logger::critical, invalid_structure);
     throw std::runtime_error(invalid_structure);
   }
-  if(node[usc::nodes])
-  {
-    if((node[usc::links] && node[usc::l0]) ||
-      (!node[usc::links] && !node[usc::l0]) ||
-      node[usc::network_file_path])
-    {
-      LOG(logger::critical, invalid_structure);
-      throw std::runtime_error(invalid_structure);
-    }
-  }
-  else
-  {
-    if(!node[usc::network_file_path])
-    {
-      LOG(logger::critical, invalid_structure);
-      throw std::runtime_error(invalid_structure);
-    }
-  }
+
   if(!node[usc::rtss::self][usc::rtss::initial_step] ||
     !node[usc::rtss::self][usc::rtss::time_delta] ||
     !node[usc::rtss::self][usc::rtss::coefficient])
@@ -315,10 +215,6 @@ void user_settings_io::import_network_from_external_file(const YAML::Node& node)
   {
     settings_.set_network(read_network_from_yaml_file(absolute_path));
   }
-  else if("csv" == ext || "dat" == ext || "txt" == ext)
-  {
-    settings_.set_network(read_network_from_csv_file(absolute_path));
-  }
   else
   {
     LOG(logger::critical, invalid_file_type);
@@ -330,6 +226,7 @@ void user_settings_io::import_network_from_external_file(const YAML::Node& node)
 void user_settings_io::import_equilibrium_state_spec(const YAML::Node& node)
 {
   node_positions_t positions;
+  node_distances_t distances;
 	if(node[usc::equilibrium_state])
 	{
     std::string absolute_path = node[usc::equilibrium_state].as<std::string>();
@@ -344,11 +241,7 @@ void user_settings_io::import_equilibrium_state_spec(const YAML::Node& node)
       const std::string& ext = absolute_path.substr(dot + 1);
       if("yml" == ext || "yaml" == ext)
       {
-        positions = read_network_from_yaml_file(absolute_path).get_node_positions();
-      }
-      else if("csv" == ext || "dat" == ext || "txt" == ext)
-      {
-        positions = read_network_from_csv_file(absolute_path).get_node_positions();
+        settings_.set_equilibrium_state_spec(read_equilibrium_state_from_yaml_file(absolute_path));
       }
       else
       {
@@ -357,55 +250,65 @@ void user_settings_io::import_equilibrium_state_spec(const YAML::Node& node)
       }
     }
   }
-
-  node_distances_t distances;
-  if(node[usc::equilibrium_distances])
-  {
-    const YAML::Node& eq_node = node[usc::equilibrium_distances];
-    for(YAML::const_iterator it = eq_node.begin(); it != eq_node.end(); ++it)
-    {
-      YAML::Node key = it->first;
-      if(2 != key.size())
-      {
-        LOG(logger::critical, invalid_structure);
-        throw std::runtime_error(invalid_structure);
-      }
-      std::size_t node1, node2;
-      node1 = key[0].as<std::size_t>();
-      node2 = key[1].as<std::size_t>();
-      double value = it->second.as<double>();
-      distances[std::make_pair(node1, node2)] = value;
-    }
-  }
-  settings_.set_equilibrium_state_spec(equilibrium_state_spec{positions, distances});
 }
 
 network user_settings_io::read_network_from_yaml(const YAML::Node& node)
 {
+  if(!node[usc::nodes] || !node[usc::links])
+  {
+    LOG(logger::critical, invalid_network);
+    throw std::runtime_error(invalid_network);
+  }
   const YAML::Node& nodes = node[usc::nodes];
   const std::size_t size = nodes.size();
   network net(size);
-  node_positions_t node_positions;
   for(std::size_t i = 0; i < size; ++i)
   {
     const point_type& position = nodes[i].as<point_type>();
     net.set_node_position(i, position);
-    node_positions.push_back(position);
   }
-  settings_.set_node_positions(node_positions);
-  if(node[usc::links])
+  const YAML::Node& links = node[usc::links];
+  for(std::size_t i = 0; i < links.size(); ++i)
   {
-    std::vector<std::pair<std::size_t, std::size_t>> links;
-    const YAML::Node& links_node = node[usc::links];
-    for(std::size_t i = 0; i < links_node.size(); ++i)
-    {
-      std::pair<std::size_t, std::size_t> link = links_node[i].as<std::pair<std::size_t, std::size_t>>();
-      links.push_back(link);
-      net.add_link(link.first, link.second);
-    }
-    settings_.set_links(links);
+    std::pair<std::size_t, std::size_t> link = links[i].as<std::pair<std::size_t, std::size_t>>();
+    net.add_link(link.first, link.second);
   }
   return net;
+}
+
+equilibrium_state_spec user_settings_io::read_equilibrium_state_from_yaml(const YAML::Node& node)
+{
+  if(!node[usc::nodes] || !node[usc::equilibrium_distances])
+  {
+    LOG(logger::critical, invalid_equilibrium_state_spec);
+    throw std::runtime_error(invalid_equilibrium_state_spec);
+  }
+
+  node_positions_t positions;
+  node_distances_t distances;
+
+  const YAML::Node& nodes = node[usc::nodes];
+  const std::size_t size = nodes.size();
+  for(std::size_t i = 0; i < size; ++i)
+  {
+    positions.push_back(nodes[i].as<point_type>());
+  }
+  const YAML::Node& dists = node[usc::equilibrium_distances];
+  for(YAML::const_iterator it = dists.begin(); it != dists.end(); ++it)
+  {
+    YAML::Node key = it->first;
+    if(2 != key.size())
+    {
+      LOG(logger::critical, invalid_structure);
+      throw std::runtime_error(invalid_structure);
+    }
+    std::size_t node1, node2;
+    node1 = key[0].as<std::size_t>();
+    node2 = key[1].as<std::size_t>();
+    double value = it->second.as<double>();
+    distances[std::make_pair(node1, node2)] = value;
+  }
+  return equilibrium_state_spec{positions, distances};
 }
 
 network user_settings_io::read_network_from_yaml_file(const std::string& file_path)
@@ -424,48 +327,18 @@ network user_settings_io::read_network_from_yaml_file(const std::string& file_pa
   return read_network_from_yaml(node);
 }
 
-network user_settings_io::read_network_from_csv_file(const std::string& file_path)
+equilibrium_state_spec user_settings_io::read_equilibrium_state_from_yaml_file(const std::string& file_path)
 {
-  std::ifstream csv(file_path);
-  if(!csv.is_open())
+  YAML::Node node;
+  try
   {
-    LOG(logger::critical, invalid_file_type);
-    throw std::runtime_error(invalid_file_type);
+    node = YAML::LoadFile(file_path);
   }
-  std::string line;
-  node_positions_t nodes;
-  while(std::getline(csv, line))
+  catch(YAML::Exception& e)
   {
-    std::vector<std::string> parts;
-    boost::split(parts, line, boost::is_any_of(" \t"), boost::token_compress_on);
-    if(parts.size() < 4)
-    {
-      LOG(logger::critical, invalid_format);
-      throw std::runtime_error(invalid_format);
-    }
-    try
-    {
-      double x = std::stod(parts[0]);
-      double y = std::stod(parts[1]);
-      double z = std::stod(parts[2]);
-      int type = std::stod(parts[3]);
-      if(1 != type)
-      {
-        continue;
-      }
-      nodes.push_back(point_type(x, y, z));
-    }
-    catch(const std::invalid_argument& err)
-    {
-      //TODO maybe process?
-      LOG(logger::critical, invalid_format);
-      throw std::runtime_error(invalid_format);
-    }
+    const std::string& error = "Failed to load equilibrium state specification from \"" + file_path + "\".\n\tError: " + e.what();
+    LOG(logger::critical, error);
+    throw std::runtime_error(error);
   }
-  network net(nodes.size());
-  for(std::size_t i = 0; i < nodes.size(); ++i)
-  {
-    net.set_node_position(i, nodes[i]);
-  }
-  return net;
+  return read_equilibrium_state_from_yaml(node);
 }

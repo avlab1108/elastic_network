@@ -46,7 +46,7 @@ void test_from_article()
   {
     nodes.push_back(i);
   }
-  node_positions_t initial = net.get_node_positions();
+  equilibrium_state_spec initial{net.get_node_positions()};
   std::ofstream tout("./trajectory.txt");
   if(!tout.is_open())
   {
@@ -83,7 +83,7 @@ void test_hierarchical_potential()
   {
     nodes.push_back(i);
   }
-  node_positions_t initial = net.get_node_positions();
+  equilibrium_state_spec initial{net.get_node_positions()};
   //std::shared_ptr<result_observer> obs(new stream_dumper(stream_dumper::format_type::gnuplot));
   std::ofstream tout("./trajectory.txt");
   if(!tout.is_open())
