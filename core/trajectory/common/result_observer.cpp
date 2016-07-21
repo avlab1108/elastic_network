@@ -74,9 +74,9 @@ void file_dumper::process(const state_type& r, const double t)
   dumper_.process(r, t);
 }
 
-trajectory_dumper::trajectory_dumper(std::ostream& out, const node_positions_type& initial_positions, const node_chooser::node_numbers_type& nodes, const std::size_t step) :
+trajectory_dumper::trajectory_dumper(std::ostream& out, const equilibrium_state_spec& equilibrium_state, const node_chooser::node_numbers_type& nodes, const std::size_t step) :
   out_(out),
-  initial_positions_(initial_positions),
+  equilibrium_state_(equilibrium_state),
   nodes_(nodes),
   step_(step)
 {
@@ -84,6 +84,22 @@ trajectory_dumper::trajectory_dumper(std::ostream& out, const node_positions_typ
   {
     LOG(logger::error, std::string("Invalid stream handle provided. Output will not be available."));
   }
+  std::size_t i1 = nodes_[0];
+  std::size_t i2 = nodes_[1];
+  std::size_t i3 = nodes_[2];
+
+  const auto& positions = equilibrium_state.positions;
+  const auto& distances = equilibrium_state.distances;
+  const auto& p1 = std::make_pair(i1, i2);
+  const auto& p2 = std::make_pair(i1, i3);
+  const auto& p3 = std::make_pair(i2, i3);
+  auto it = distances.find(p1);
+  auto end = distances.end();
+  equilibrium_dist1_ = end == it ? utils::distance(positions[i1], positions[i2]) : it->second;
+  it = distances.find(p2);
+  equilibrium_dist2_ = end == it ? utils::distance(positions[i1], positions[i3]) : it->second;
+  it = distances.find(p3);
+  equilibrium_dist3_ = end == it ? utils::distance(positions[i2], positions[i3]) : it->second;
 }
 
 void trajectory_dumper::process(const state_type& r, const double t)
@@ -96,24 +112,21 @@ void trajectory_dumper::process(const state_type& r, const double t)
     std::size_t i3 = nodes_[2];
 
     double current_dist = utils::distance(r[i1], r[i2]);
-    double initial_dist = utils::distance(initial_positions_[i1], initial_positions_[i2]);
-    double val1 = (current_dist-initial_dist)/initial_dist;
+    double val1 = (current_dist-equilibrium_dist1_)/equilibrium_dist1_;
 
     current_dist = utils::distance(r[i1], r[i3]);
-    initial_dist = utils::distance(initial_positions_[i1], initial_positions_[i3]);
-    double val2 = (current_dist-initial_dist)/initial_dist;
+    double val2 = (current_dist-equilibrium_dist2_)/equilibrium_dist2_;
 
     current_dist = utils::distance(r[i2], r[i3]);
-    initial_dist = utils::distance(initial_positions_[i2], initial_positions_[i3]);
-    double val3 = (current_dist-initial_dist)/initial_dist;
+    double val3 = (current_dist-equilibrium_dist3_)/equilibrium_dist3_;
 
     std::lock_guard<std::mutex> lock(out_mutex_);
     out_ << val1 << " " << val2 << " " << val3 << std::endl;
   }
 }
 
-stability_checker::stability_checker(const node_positions_type& initial_positions, const node_positions_type& current_positions, const node_chooser::node_numbers_type& nodes, const stabilization_spec stab_spec) :
-  initial_positions_(initial_positions),
+stability_checker::stability_checker(const equilibrium_state_spec& equilibrium_state, const node_positions_t& current_positions, const node_chooser::node_numbers_type& nodes, const stabilization_spec stab_spec) :
+  equilibrium_state_(equilibrium_state),
   current_positions_(current_positions),
   nodes_(nodes),
   closeness_stabilization_steps_(0),
@@ -123,22 +136,32 @@ stability_checker::stability_checker(const node_positions_type& initial_position
   std::size_t i1 = nodes_[0];
   std::size_t i2 = nodes_[1];
   std::size_t i3 = nodes_[2];
-  initial_dist1_ = utils::distance(initial_positions_[i1], initial_positions_[i2]);
-  initial_dist2_ = utils::distance(initial_positions_[i1], initial_positions_[i3]);
-  initial_dist3_ = utils::distance(initial_positions_[i2], initial_positions_[i3]);
+
+  const auto& positions = equilibrium_state.positions;
+  const auto& distances = equilibrium_state.distances;
+  const auto& p1 = std::make_pair(i1, i2);
+  const auto& p2 = std::make_pair(i1, i3);
+  const auto& p3 = std::make_pair(i2, i3);
+  auto it = distances.find(p1);
+  auto end = distances.end();
+  equilibrium_dist1_ = end == it ? utils::distance(positions[i1], positions[i2]) : it->second;
+  it = distances.find(p2);
+  equilibrium_dist2_ = end == it ? utils::distance(positions[i1], positions[i3]) : it->second; 
+  it = distances.find(p3);
+  equilibrium_dist3_ = end == it ? utils::distance(positions[i2], positions[i3]) : it->second;
 
   double current_dist1 = utils::distance(current_positions_[i1], current_positions_[i2]);
-  rel_change_epsilon1_ = std::abs((current_dist1-initial_dist1_)/initial_dist1_) * stab_spec_.epsilon;
+  rel_change_epsilon1_ = std::abs((current_dist1-equilibrium_dist1_)/equilibrium_dist1_) * stab_spec_.epsilon;
 
   double current_dist2 = utils::distance(current_positions_[i1], current_positions_[i3]);
-  rel_change_epsilon2_ = std::abs((current_dist2-initial_dist2_)/initial_dist2_) * stab_spec_.epsilon;
+  rel_change_epsilon2_ = std::abs((current_dist2-equilibrium_dist2_)/equilibrium_dist2_) * stab_spec_.epsilon;
 
   double current_dist3 = utils::distance(current_positions_[i2], current_positions_[i3]);
-  rel_change_epsilon3_ = std::abs((current_dist3-initial_dist3_)/initial_dist3_) * stab_spec_.epsilon;
+  rel_change_epsilon3_ = std::abs((current_dist3-equilibrium_dist3_)/equilibrium_dist3_) * stab_spec_.epsilon;
 
-  closeness_epsilon1_ = utils::distance(initial_positions_[i1], current_positions_[i1]) * stab_spec_.epsilon;
-  closeness_epsilon2_ = utils::distance(initial_positions_[i2], current_positions_[i2]) * stab_spec_.epsilon;
-  closeness_epsilon3_ = utils::distance(initial_positions_[i3], current_positions_[i3]) * stab_spec_.epsilon;
+  closeness_epsilon1_ = utils::distance(positions[i1], current_positions_[i1]) * stab_spec_.epsilon;
+  closeness_epsilon2_ = utils::distance(positions[i2], current_positions_[i2]) * stab_spec_.epsilon;
+  closeness_epsilon3_ = utils::distance(positions[i3], current_positions_[i3]) * stab_spec_.epsilon;
 }
 
 void stability_checker::process(const state_type& r, const double t)
@@ -146,9 +169,9 @@ void stability_checker::process(const state_type& r, const double t)
   std::size_t i1 = nodes_[0];
   std::size_t i2 = nodes_[1];
   std::size_t i3 = nodes_[2];
-  if(utils::distance(initial_positions_[i1], r[i1]) < closeness_epsilon1_ &&
-    utils::distance(initial_positions_[i2], r[i2]) < closeness_epsilon2_ &&
-    utils::distance(initial_positions_[i3], r[i3]) < closeness_epsilon3_)
+  if(utils::distance(equilibrium_state_.positions[i1], r[i1]) < closeness_epsilon1_ &&
+    utils::distance(equilibrium_state_.positions[i2], r[i2]) < closeness_epsilon2_ &&
+    utils::distance(equilibrium_state_.positions[i3], r[i3]) < closeness_epsilon3_)
   {
     ++closeness_stabilization_steps_;
   }
@@ -158,13 +181,13 @@ void stability_checker::process(const state_type& r, const double t)
   }
 
   double current_dist = utils::distance(r[i1], r[i2]);
-  double val1 = (current_dist-initial_dist1_)/initial_dist1_;
+  double val1 = (current_dist-equilibrium_dist1_)/equilibrium_dist1_;
 
   current_dist = utils::distance(r[i1], r[i3]);
-  double val2 = (current_dist-initial_dist2_)/initial_dist2_;
+  double val2 = (current_dist-equilibrium_dist2_)/equilibrium_dist2_;
 
   current_dist = utils::distance(r[i2], r[i3]);
-  double val3 = (current_dist-initial_dist3_)/initial_dist3_;
+  double val3 = (current_dist-equilibrium_dist3_)/equilibrium_dist3_;
 
   if(std::abs(val1) < rel_change_epsilon1_ && std::abs(val2) < rel_change_epsilon2_ && std::abs(val3) < rel_change_epsilon3_)
   {

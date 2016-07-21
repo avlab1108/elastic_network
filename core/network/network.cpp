@@ -13,14 +13,14 @@ network::network(const std::size_t size) :
   nodes_.resize(size);
 }
 
-network::network(const node_positions_type& node_positions, const double l0) :
+network::network(const node_positions_t& node_positions, const double l0) :
   nodes_(node_positions),
   links_(nodes_.size() * (nodes_.size() - 1)/2)
 {
   set_cutoff_distance(l0);
 }
 
-network::network(const node_positions_type& node_positions, const links_type& links) :
+network::network(const node_positions_t& node_positions, const links_t& links) :
   nodes_(node_positions),
   links_(nodes_.size() * (nodes_.size() - 1)/2)
 {
@@ -57,17 +57,17 @@ void network::add_link(const std::size_t node1, const std::size_t node2)
   links_.set(node_pair_to_index(node1, node2));
 }
 
-const node_positions_type& network::get_node_positions() const
+const node_positions_t& network::get_node_positions() const
 {
   return nodes_;
 }
 
-node_positions_type& network::get_node_positions()
+node_positions_t& network::get_node_positions()
 {
   return nodes_;
 }
 
-void network::set_links(const links_type& links)
+void network::set_links(const links_t& links)
 {
   for(std::size_t i = 0; i < links.size(); ++i)
   {
@@ -79,9 +79,9 @@ void network::set_links(const links_type& links)
   }
 }
 
-links_type network::get_links() const
+links_t network::get_links() const
 {
-  links_type res;
+  links_t res;
   for(std::size_t i = 0; i < get_size(); ++i)
   {
     for(std::size_t j = i + 1; j < get_size(); ++j)

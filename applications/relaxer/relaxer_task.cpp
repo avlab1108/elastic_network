@@ -38,12 +38,12 @@ int relaxer_task::execute()
   const global_settings& gs = get_config()->get_global_settings();
   const user_settings& us = get_config()->get_user_settings();
   network net = us.get_network();
-	if(!us.get_initial_state())
+	if(!us.get_equilibrium_state_spec())
 	{
-    LOG(logger::error, "Initial state of network is not provided.");
+    LOG(logger::error, "Equilibrium state of network is not provided.");
     return -1;
 	}
-  node_positions_type initial_state = *us.get_initial_state();
+  const equilibrium_state_spec& equilibrium_state = *us.get_equilibrium_state_spec();
 
   LOG(logger::info, std::string("Started execution for id \"") + std::to_string(run_id_) + "\" with following parameters:\n \
       \ttime step: " + std::to_string(us.get_excitation_time_step()) + ", \n\
@@ -57,12 +57,12 @@ int relaxer_task::execute()
     LOG(logger::error, std::string("Failed to open output file \"") + relaxer_output_file + "\". Silently stopping execution for id \"" + std::to_string(run_id_) + "\".");
     return -1;
   }
-  const node_positions_type& current_state = net.get_node_positions();
+  const node_positions_t& current_state = net.get_node_positions();
   const node_chooser::node_numbers_type& nodes = us.get_visualization_nodes();
   //TODO MH: check for valid indexes
-  std::shared_ptr<trajectory_dumper> traj_dumper(new trajectory_dumper(tout, initial_state, nodes, gs.get_dump_step()));
+  std::shared_ptr<trajectory_dumper> traj_dumper(new trajectory_dumper(tout, equilibrium_state, nodes, gs.get_dump_step()));
   std::shared_ptr<composite_result_observer> comp(new composite_result_observer());
-  std::shared_ptr<stability_checker> stab_checker(new stability_checker(initial_state, current_state, nodes, gs.get_stabilization_spec()));
+  std::shared_ptr<stability_checker> stab_checker(new stability_checker(equilibrium_state, current_state, nodes, gs.get_stabilization_spec()));
   if(gs.get_dump_data())
   {
     const std::string& relaxation_output_file = generation_dir_ + "/" + gs.get_relaxation_file_name();
@@ -74,7 +74,7 @@ int relaxer_task::execute()
 
   comp->add_result_observer(traj_dumper);
   comp->add_result_observer(stab_checker);
-  relaxer r(net, initial_state, us.get_relaxation_time_step_spec(), gs.get_relaxation_time_limit());
+  relaxer r(net, equilibrium_state, us.get_relaxation_time_step_spec(), gs.get_relaxation_time_limit());
   r.set_result_observer(comp);
   r.run();
 

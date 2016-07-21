@@ -5,7 +5,7 @@
 namespace fa
 {
 
-const node_positions_type& node_positions =
+const node_positions_t& node_positions =
 {
   {-3.137324414184,  -12.109642999101, -17.041595796478},
   {-4.398176668972,  -9.382328162968,  -19.593386833401},
@@ -73,7 +73,7 @@ const node_positions_type& node_positions =
   {-0.540893688783,  -1.040231676405,   17.386283924273}
 };
 
-const links_type links =
+const links_t links =
 {
   {0, 1}, {0, 2}, {0, 8}, {0, 9}, {0, 10},
   {1, 2}, {1, 3}, {1, 8}, {1, 9}, {1, 10},

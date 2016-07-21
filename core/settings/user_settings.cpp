@@ -98,54 +98,24 @@ bool user_settings::get_forces_dynamic() const
   return forces_dynamic_;
 }
 
-void user_settings::set_node_positions(const node_positions_type& node_positions)
-{
-  node_positions_ = node_positions;
-}
-
-const boost::optional<node_positions_type>& user_settings::get_node_positions() const
-{
-  return node_positions_;
-}
-
-void user_settings::set_links(const links_type& links)
-{
-  links_ = links;
-}
-
-const boost::optional<links_type>& user_settings::get_links() const
-{
-  return links_;
-}
-
-void user_settings::set_cutoff_distance(const double l0)
-{
-  cutoff_distance_ = l0;
-}
-
-const boost::optional<double>& user_settings::get_cutoff_distance() const
-{
-  return cutoff_distance_;
-}
-
 void user_settings::set_network_file_path(const std::string& path)
 {
   network_file_path_ = path;
 }
 
-const boost::optional<std::string>& user_settings::get_network_file_path() const
+const std::string& user_settings::get_network_file_path() const
 {
   return network_file_path_;
 }
 
-void user_settings::set_initial_state(const node_positions_type& state)
+void user_settings::set_equilibrium_state_spec(const equilibrium_state_spec& state)
 {
-	initial_state_ = state;
+	equilibrium_state_spec_ = state;
 }
 
-const boost::optional<node_positions_type>& user_settings::get_initial_state() const
+const boost::optional<equilibrium_state_spec>& user_settings::get_equilibrium_state_spec() const
 {
-	return initial_state_;
+	return equilibrium_state_spec_;
 }
 
 std::ostream& operator<<(std::ostream& out, const user_settings& s)

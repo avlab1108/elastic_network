@@ -5,7 +5,7 @@
 namespace hp
 {
 
-const node_positions_type& node_positions =
+const node_positions_t& node_positions =
 {
   {29.071289, 12.112305, 44.331055}, 
   {29.092773, 12.233398, 43.469727},

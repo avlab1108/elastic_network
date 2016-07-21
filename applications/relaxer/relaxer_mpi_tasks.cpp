@@ -38,7 +38,7 @@ void relaxer_main_task::pre_execute()
   {
 		network initial(us.get_network());
 		//TODO need to check optional
-		initial.get_node_positions() = *us.get_initial_state();
+		initial.get_node_positions() = us.get_equilibrium_state_spec()->positions;
     us.set_visualization_nodes(node_chooser(initial).choose());
   }
   if(0 != remainder)

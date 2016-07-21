@@ -3,6 +3,8 @@
 
 #include <network.h>
 
+#include <yaml-cpp/yaml.h>
+
 #include <boost/filesystem.hpp>
 
 #include <iostream>
@@ -33,10 +35,10 @@ void dump_adjacency_list(const network& net, const std::string& file_name)
   std::ofstream out(file_name);
   if(!out.is_open())
   {
-    std::cerr << "Error openning output file \"" << file_name << "\"" << std::endl;
+    LOG(logger::error, std::string("Error openning output file \"") + file_name + "\".");
     return;
   }
-  const links_type& links = net.get_links();
+  const links_t& links = net.get_links();
   for(std::size_t i = 0; i < links.size(); ++i)
   {
     out << links[i].first << " " << links[i].second << std::endl;
@@ -49,7 +51,7 @@ void dump_adjacency_matrix(const network& net, const std::string& file_name)
   std::ofstream out(file_name);
   if(!out.is_open())
   {
-    std::cerr << "Error openning output file \"" << file_name << "\"" << std::endl;
+    LOG(logger::error, std::string("Error openning output file \"") + file_name + "\".");
     return;
   }
   for(std::size_t i = 0; i < net.get_size(); ++i)
@@ -61,6 +63,47 @@ void dump_adjacency_matrix(const network& net, const std::string& file_name)
     out << std::endl;
   }
   out.close();
+}
+
+namespace
+{
+/// Output YAML file keys.
+const std::string nodes_key = "nodes";
+const std::string links_key = "links";
+}
+
+void dump_yaml(const network& net, const std::string& file_name)
+{
+  std::ofstream fout(file_name);
+  if(!fout.is_open())
+  {
+    LOG(logger::error, std::string("Error openning output file \"") + file_name + "\".");
+    return;
+  }
+  YAML::Emitter out;
+  out << YAML::BeginMap;
+  out << YAML::Key << nodes_key;
+  out << YAML::Value << YAML::BeginSeq;
+  auto nodes = net.get_node_positions();
+  for(std::size_t i = 0; i < nodes.size(); ++i)
+  {
+    out << YAML::BeginSeq;
+    out << nodes[i][0];
+    out << nodes[i][1];
+    out << nodes[i][2];
+    out << YAML::EndSeq;
+  }
+  out << YAML::EndSeq;
+  out << YAML::Key << links_key;
+  out << YAML::Value << YAML::BeginSeq;
+  auto links = net.get_links();
+  for(auto it = links.begin(); it != links.end(); ++it)
+  {
+    out << YAML::BeginSeq << it->first << it->second << YAML::EndSeq;
+  }
+  out << YAML::EndMap;
+  fout << out.c_str() << std::endl;
+  fout.close();
 }
 
 void create_directory(const std::string& dir)

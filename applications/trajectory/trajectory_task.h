@@ -12,6 +12,7 @@
 #include <vector>
 
 class config;
+class network;
 
 /**
  * @class trajectory_task
@@ -46,12 +47,14 @@ private:
   void post_excitement();
   /**
    * @brief Hook for pre-relaxation.
+   * @param net Network.
    */
-  void pre_relaxation();
+  void pre_relaxation(const network& net);
   /**
    * @brief Hook for post-relaxation.
+   * @param net Network.
    */
-  void post_relaxation();
+  void post_relaxation(const network& net);
 
 private:
   /// Output directory name.

@@ -1,26 +1,36 @@
 #include "network_dynamics.h"
 
+#include <common_types.h>
 #include <utils.h>
 
 #include <cmath>
 #include <omp.h>
 
-network_dynamics::network_dynamics(const network& net, const node_positions_type& initial_positions) :
-  net_(net),
-  initial_positions_(initial_positions)
+network_dynamics::network_dynamics(const network& net, const equilibrium_state_spec& equilibrium_state) :
+  net_(net)
 {
-  initial_distances_.resize(initial_positions_.size());
-  for(std::size_t i = 0; i < initial_positions_.size(); ++i)
+  const auto& distances = equilibrium_state.distances;
+  const auto& positions = equilibrium_state.positions;
+  initial_distances_.resize(positions.size());
+  for(std::size_t i = 0; i < positions.size(); ++i)
   {
-    initial_distances_[i].resize(initial_positions_.size());
-    for(std::size_t j = 0; j < initial_positions_.size(); ++j)
+    initial_distances_[i].resize(positions.size());
+    for(std::size_t j = 0; j < positions.size(); ++j)
     {
-      initial_distances_[i][j] = utils::distance(initial_positions_[i], initial_positions_[j]);
+      auto it = distances.find(std::make_pair(i, j));
+      if(distances.end() != it)
+      {
+        initial_distances_[i][j] = it->second;
+      }
+      else
+      {
+        initial_distances_[i][j] = utils::distance(positions[i], positions[j]);
+      }
     }
   }
 }
 
-void network_dynamics::calculate(const state_type& r, state_type& drdt, const double t)
+void network_dynamics::calculate(const state_type& r, state_type& drdt, const double /*t*/)
 {
   assert(drdt.size() == net_.get_size());
   // Initialize output to 0s

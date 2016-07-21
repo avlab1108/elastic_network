@@ -8,7 +8,7 @@ force_generator::force_generator(const forces_spec& fspec) :
   generate_forces();
 }
 
-forces_type force_generator::generate()
+forces_t force_generator::generate()
 {
   if(fspec_.dynamic)
   {

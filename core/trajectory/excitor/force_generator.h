@@ -29,7 +29,7 @@ public:
    *
    * @return Generated forces.
    */
-  forces_type generate();
+  forces_t generate();
 
 private:
   void generate_forces();
@@ -38,5 +38,5 @@ private:
   /// Forces specification.
   const forces_spec fspec_;
   /// Resulting forces.
-  forces_type result_;
+  forces_t result_;
 };

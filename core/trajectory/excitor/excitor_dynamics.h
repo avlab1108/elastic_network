@@ -25,7 +25,7 @@ public:
    * @param initial_positions Initial positions of nodes.
    * @param fspec Forces specification.
    */
-  excitor_dynamics(const network& net, const node_positions_type& initial_positions, const forces_spec& fspec);
+  excitor_dynamics(const network& net, const equilibrium_state_spec& equilibrium_state, const forces_spec& fspec);
   /**
    * @brief Implementation of base class interface. Calculates state of network with provided arguments.
    *
@@ -43,7 +43,7 @@ private:
   /// Forces specification.
   forces_spec fspec_;
   /// Generated forces.
-  forces_type forces_;
+  forces_t forces_;
   /// Force generator.
   force_generator generator_;
 };

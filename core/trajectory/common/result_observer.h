@@ -130,11 +130,12 @@ public:
   /**
    * @brief Constructs dumper from provided parameters.
    * @param out Output stream.
-   * @param initial_positions Initial positions of network nodes.
+   * @param equilibrium_positions Initial positions of network nodes.
+   * @param equilibrium_distances Equilibrium distances between network nodes.
    * @param nodes Node numbers.
    * @param step Step value.
    */
-  trajectory_dumper(std::ostream& out, const node_positions_type& initial_positions, const node_chooser::node_numbers_type& nodes, const std::size_t step);
+  trajectory_dumper(std::ostream& out, const equilibrium_state_spec& equilibrium_state, const node_chooser::node_numbers_type& nodes, const std::size_t step);
   /**
    * @brief Implements interface of base class.
    *        Dumps trajectory info to output stream.
@@ -148,10 +149,16 @@ private:
   std::ostream& out_;
   /// Stream mutex.
   std::mutex out_mutex_;
-  /// Initial positions of network nodes.
-  node_positions_type initial_positions_;
+  /// Equilibrium state.
+  equilibrium_state_spec equilibrium_state_;
   /// Node numbers.
   node_chooser::node_numbers_type nodes_;
+  /// Equilibrium distance between nodes 0-1.
+  double equilibrium_dist1_;
+  /// Equilibrium distance between nodes 1-2.
+  double equilibrium_dist2_;
+  /// Equilibrium distance between nodes 2-0.
+  double equilibrium_dist3_;
   /// Step value.
   std::size_t step_;
 };
@@ -165,12 +172,13 @@ class stability_checker : public result_observer
 public:
   /**
    * @brief Constructs stability checker from provided parameters.
-   * @param initial_positions Initial positions of network nodes.
+   * @param equilibrium_positions Equilibrium positions of network nodes.
+   * @param equilibrium_distances Equilibrium distances between network nodes.
    * @param current_positions Current positions of network nodes.
    * @param nodes Node numbers.
    * @param stab_spec Stabilization specification.
    */
-  stability_checker(const node_positions_type& initial_positions, const node_positions_type& current_positions, const node_chooser::node_numbers_type& nodes, const stabilization_spec stab_spec);
+  stability_checker(const equilibrium_state_spec& equilibrium_state, const node_positions_t& current_positions, const node_chooser::node_numbers_type& nodes, const stabilization_spec stab_spec);
   /**
    * @brief Implements interface of base class.
    *        Checks for stability conditions during relaxation..
@@ -180,24 +188,24 @@ public:
   virtual void process(const state_type& r, const double t) override;
 
 private:
-  /// Initial positions of network nodes.
-  node_positions_type initial_positions_;
+  /// Equilibrium state.
+  equilibrium_state_spec equilibrium_state_;
   /// Current positions of network nodes.
-  node_positions_type current_positions_;
+  node_positions_t current_positions_;
   /// Node numbers.
   node_chooser::node_numbers_type nodes_;
-  /// Current number of steps of stabilization by closeness to initial positions.
+  /// Current number of steps of stabilization by closeness to equilibrium positions.
   std::size_t closeness_stabilization_steps_;
   /// Current number of steps of stabilization by order of relative changes.
   std::size_t rel_change_stabilization_steps_;
   /// Stabilization specification.
   stabilization_spec stab_spec_;
   /// Initial distance between nodes 0-1.
-  double initial_dist1_;
-  /// Initial distance between nodes 1-2.
-  double initial_dist2_;
-  /// Initial distance between nodes 2-0.
-  double initial_dist3_;
+  double equilibrium_dist1_;
+  /// Iniequilibriumstance between nodes 1-2.
+  double equilibrium_dist2_;
+  /// Iniequilibriumstance between nodes 2-0.
+  double equilibrium_dist3_;
   /// Closeness epsilon for nodes 0-1.
   double closeness_epsilon1_;
   /// Closeness epsilon for nodes 1-2.

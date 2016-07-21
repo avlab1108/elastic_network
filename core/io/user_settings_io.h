@@ -21,8 +21,6 @@ namespace usc
 {
 /// Summary magnitude of forces.
 const std::string fs = "Fs";
-/// Cutoff distance for network links.
-const std::string l0 = "L0";
 /// Nodes of network.
 const std::string nodes = "nodes";
 /// Links of network.
@@ -41,8 +39,10 @@ const std::string visualization_nodes = "visualizationNodes";
 const std::string network_file_path = "networkFile";
 /// Excitation time step.
 const std::string excitation_time_step = "excitationTimeStep";
-/// Initial state of network.
-const std::string initial_state = "initialState";
+/// Equilibrium state of network.
+const std::string equilibrium_state = "equilibriumState";
+/// Equilibrium distances between nodes of network.
+const std::string equilibrium_distances = "distances";
 
 /**
  * @namespace rtss
@@ -113,25 +113,17 @@ private:
    */
   void check_input_validity(const YAML::Node& node) const;
   /**
-   * @brief Imports network from provided external file.
-   * @param file_path Network file name.
+   * @brief Imports network from provided @ref node.
+   * @param node YAML node to read network from.
    *
-   * Based on @a file_path extension, this function delegates reading of real network to one of the read_network_from_* methods.
-   * \n Following formats are supported (with according read function):
-   * \n .yml  -> @ref read_network_from_yaml_file
-   * \n .yaml -> @ref read_network_from_yaml_file
-   * \n .csv  -> @ref read_network_from_csv_file
-   * \n .dat  -> @ref read_network_from_csv_file
-   * \n .txt  -> @ref read_network_from_csv_file
+   * Tries to read network from path, provided with usc::network_file_path key.
    */
-  void import_network_from_external_file(const std::string& file_path);
+  void import_network_from_external_file(const YAML::Node& node);
   /**
-   * @brief Imports initial state of network from provided external file.
-   * @param file_path Network file name.
-   *
-	 * Extension-based processing is the same as with @ref import_network_from_external_file
+   * @brief Imports equilibrium state specification from @ref node.
+   * @param node YAML node to read equilibrium state from.
    */
-  void import_initial_state_from_external_file(const std::string& file_path);
+  void import_equilibrium_state_spec(const YAML::Node& node);
   /**
    * @brief Reads network from provided YAML tree node.
    * @param node YAML node for network.
@@ -144,20 +136,23 @@ private:
    * @return Read network.
    */
   network read_network_from_yaml_file(const std::string& file_path);
+
   /**
-   * @brief Reads network from provided CSV (Comma Separated Values) file.
-   * @param file_path Network file name.
-   * @return Read network.
-   *
-   * @note CSV is a common name for raw textual files, where data is separated with some delimiter (not necessarily commas).
+   * @brief Reads equilibrium state specification from provided YAML tree node.
+   * @param node YAML node for equilibrium state specification.
+   * @return Read equilibrium state specification.
    */
-  network read_network_from_csv_file(const std::string& file_path);
+  equilibrium_state_spec read_equilibrium_state_from_yaml(const YAML::Node& node);
+  /**
+   * @brief Reads equilibrium state specification from provided YAML file.
+   * @param file_path Equilibrium state file name.
+   * @return Read equilibrium state specification.
+   */
+  equilibrium_state_spec read_equilibrium_state_from_yaml_file(const std::string& file_path);
 
 private:
   /// User settings.
   user_settings settings_;
   /// User settings file name.
   std::string settings_file_name_;
-  /// Network file name.
-  std::string network_file_name_;
 };

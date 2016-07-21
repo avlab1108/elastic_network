@@ -26,10 +26,10 @@ protected:
    * @brief Constructs trajectory worker for specified network with initial positions and provided dynamics.
    *
    * @param net Network.
-   * @param initial_positions Initial positions of nodes.
+   * @param equilibrium_state Equilibrium state specialization.
    * @param dynamics Dynamics of network.
    */
-  trajectory_worker(network& net, const node_positions_type& initial_positions, const std::shared_ptr<network_dynamics>& dynamics);
+  trajectory_worker(network& net, const equilibrium_state_spec& equilibrium_state, const std::shared_ptr<network_dynamics>& dynamics);
 
 public:
   /**
@@ -47,8 +47,8 @@ public:
 protected:
   /// Network.
   network& net_;
-  /// Initial node positions.
-  node_positions_type initial_positions_;
+  /// Equilibrium state specialization.
+  equilibrium_state_spec equilibrium_state_;
   /// Network dynamics.
   network_dynamics_wrapper dynamics_;
   /// Result observer.
