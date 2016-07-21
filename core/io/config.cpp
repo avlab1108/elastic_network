@@ -4,8 +4,6 @@
 
 #include <chrono>
 
-#include <boost/filesystem.hpp>
-
 config::config(const std::string& user_config, const std::string& global_config)
 {
   user_.import_settings(user_config);

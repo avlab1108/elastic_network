@@ -5,7 +5,9 @@
 #define BOOST_TEST_MODULE IO_UNIT_TEST
 #include <boost/test/unit_test.hpp>
 
+#define BOOST_NO_CXX11_SCOPED_ENUMS
 #include <boost/filesystem.hpp>
+#undef BOOST_NO_CXX11_SCOPED_ENUMS
 
 BOOST_AUTO_TEST_SUITE(io_suite)
 

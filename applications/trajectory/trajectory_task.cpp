@@ -10,7 +10,9 @@
 #include <core_application.h>
 #include <utils.h>
 
+#define BOOST_NO_CXX11_SCOPED_ENUMS
 #include <boost/filesystem.hpp>
+#undef BOOST_NO_CXX11_SCOPED_ENUMS
 
 trajectory_task::trajectory_task(const std::size_t run_id) :
   run_id_(run_id)

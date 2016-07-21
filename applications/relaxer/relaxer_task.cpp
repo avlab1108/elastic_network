@@ -9,7 +9,9 @@
 #include <result_observer.h>
 #include <core_application.h>
 
+#define BOOST_NO_CXX11_SCOPED_ENUMS
 #include <boost/filesystem.hpp>
+#undef BOOST_NO_CXX11_SCOPED_ENUMS
 
 relaxer_task::relaxer_task(const std::size_t run_id) :
   run_id_(run_id)

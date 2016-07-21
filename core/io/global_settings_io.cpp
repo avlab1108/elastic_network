@@ -3,8 +3,6 @@
 #include <logging.h>
 #include <utils.h>
 
-#include <boost/filesystem.hpp>
-
 const std::string invalid_structure = "Invalid structure of global config file.";
 
 global_settings_io::global_settings_io()
@@ -43,10 +41,8 @@ void global_settings_io::export_settings(const std::string& output_dir)
 {
   if(!settings_file_name_.empty())
   {
-    namespace fs = boost::filesystem;
     std::string config_dir = output_dir + "/config";
-    fs::path out_path(config_dir);
-    fs::create_directory(out_path);
+    utils::create_directory(config_dir);
     utils::copy_file(settings_file_name_, config_dir);
   }
 }
