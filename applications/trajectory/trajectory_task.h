@@ -39,12 +39,14 @@ private:
   void prepare_output_directory();
   /**
    * @brief Hook for pre-excitement.
+   * @param net Network.
    */
-  void pre_excitement();
+  void pre_excitement(const network& net);
   /**
    * @brief Hook for post-excitement.
+   * @param net Network.
    */
-  void post_excitement();
+  void post_excitement(const network& net);
   /**
    * @brief Hook for pre-relaxation.
    * @param net Network.

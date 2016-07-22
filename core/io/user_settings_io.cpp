@@ -156,6 +156,10 @@ void user_settings_io::export_settings(const std::string& output_dir)
     fout.close();
 
     utils::copy_file(settings_.get_network_file_path(), config_dir);
+    if(settings_.get_equilibrium_state_spec_file_path())
+    {
+      utils::copy_file(*settings_.get_equilibrium_state_spec_file_path(), config_dir);
+    }
   }
 }
 
@@ -246,6 +250,7 @@ void user_settings_io::import_equilibrium_state_spec(const YAML::Node& node)
         throw std::runtime_error(invalid_file_type);
       }
     }
+    settings_.set_equilibrium_state_spec_file_path(absolute_path);
   }
 }
 

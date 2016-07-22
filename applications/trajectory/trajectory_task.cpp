@@ -35,17 +35,19 @@ void trajectory_task::prepare_output_directory()
   generation_dir_ = out_dir;
 }
 
-void trajectory_task::pre_excitement()
+void trajectory_task::pre_excitement(const network& net)
 {
   user_settings& us = get_config()->get_user_settings();
   if(us.get_visualization_nodes().empty())
   {
-    us.set_visualization_nodes(node_chooser(us.get_network()).choose());
+    us.set_visualization_nodes(node_chooser(net).choose());
   }
 }
 
-void trajectory_task::post_excitement()
+void trajectory_task::post_excitement(const network& net)
 {
+  // dump final network to output 
+  utils::dump_yaml(net, generation_dir_ + "/excited_network.yaml");
 }
 
 void trajectory_task::pre_relaxation(const network& net)
@@ -72,7 +74,7 @@ int trajectory_task::execute()
       \tforce summary module: " + std::to_string(us.get_fs()));
   std::vector<std::size_t> force_application_nodes = us.get_force_application_nodes();
   //TODO MH: check for valid indexes
-  pre_excitement();
+  pre_excitement(net);
   forces_spec fspec(us.get_fs(), force_application_nodes, us.get_forces_dynamic());
   excitor x(net, initial_state, us.get_excitation_time_step(), us.get_excitation_time(), fspec);
   if(gs.get_dump_data())
@@ -83,7 +85,7 @@ int trajectory_task::execute()
   }
   std::clock_t begin = clock();
   x.run();
-  post_excitement();
+  post_excitement(net);
 
   const std::string& trajectory_output_file = generation_dir_ + "/" + gs.get_trajectory_file_name();
   std::ofstream tout(trajectory_output_file);

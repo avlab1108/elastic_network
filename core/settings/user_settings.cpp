@@ -118,6 +118,16 @@ const boost::optional<equilibrium_state_spec>& user_settings::get_equilibrium_st
 	return equilibrium_state_spec_;
 }
 
+void user_settings::set_equilibrium_state_spec_file_path(const std::string& path)
+{
+  equilibrium_state_spec_file_path_ = path;
+}
+
+const boost::optional<std::string>& user_settings::get_equilibrium_state_spec_file_path() const
+{
+  return equilibrium_state_spec_file_path_;
+}
+
 std::ostream& operator<<(std::ostream& out, const user_settings& s)
 {
   out << "Network size: " << s.get_network().get_size() << std::endl;

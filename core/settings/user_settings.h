@@ -149,6 +149,17 @@ public:
 	 */
 	const boost::optional<equilibrium_state_spec>& get_equilibrium_state_spec() const;
 
+  /**
+   * @brief Sets equilibrium state specification file path.
+   * @param path Equilibrium state specification file path.
+   */
+  void set_equilibrium_state_spec_file_path(const std::string& path);
+  /**
+   * @brief Returns equilibrium state specification file path.
+   * @return Equilibrium state specification file path.
+   */
+  const boost::optional<std::string>& get_equilibrium_state_spec_file_path() const;
+
 private:
   /**
    * @brief Required parameters
@@ -183,6 +194,8 @@ private:
    */
 	/// Equilibrium state specification.
 	boost::optional<equilibrium_state_spec> equilibrium_state_spec_;
+  /// Equilibrium state specification file path.
+  boost::optional<std::string> equilibrium_state_spec_file_path_;
   /**
    * @}
    */
