@@ -147,7 +147,7 @@ fi
 if $create_excitation_video && $create_relaxation_video; then
   mode='a'
 fi
-$scriptpath/../applications/video_data_preparer/obj/video_data_preparer.exe -u $user_config -g $global_config -p $path_to_generation -m $mode &> /tmp/log.txt
+$scriptpath/../applications/video_data_preparer/obj/video_data_preparer.exe -u $user_config -g $global_config -p $path_to_generation -m $mode -f $period_of_pictures&> /tmp/log.txt
 dirs_after=`eval $ls_command`
 results_dir=`diff <(echo "$dirs_before") <(echo "$dirs_after") | grep "^>" | sed -e "s/^>\s*//" | grep "results_*"`
 
@@ -164,19 +164,14 @@ echo "Finished data preparation."
 if $create_excitation_video; then
   echo "Creating images for excitation ..."
   mkdir ${results_dir}/excitation/pictures
-  input_files=(`find ${results_dir}/excitation -type f -name "*.txt"`)
+  input_files=(`find ${results_dir}/excitation/data -type f -name "*.txt"`)
   for i in ${input_files[@]};
   do
     name=$(basename "$i" .txt)
-    if (( $name % $period_of_pictures != 0 )); then
-      continue
-    fi
     output="${results_dir}/excitation/pictures/$(($name/$period_of_pictures)).png"
     setup_plotter $i $output "Возбуждение (T=$name)" &>> ${results_dir}/log.txt
   done
-  for i in "${input_files[@]}"; do
-    rm -f ${i}
-  done
+  rm -rf ${results_dir}/excitation/data
   echo "Created images for excitation."
 
   echo "Creating excitation video ..."
@@ -188,19 +183,14 @@ fi
 if $create_relaxation_video; then
   mkdir ${results_dir}/relaxation/pictures
   echo "Creating images for relaxation ..."
-  input_files=(`find ${results_dir}/relaxation -type f -name "*.txt"`)
+  input_files=(`find ${results_dir}/relaxation/data -type f -name "*.txt"`)
   for i in ${input_files[@]};
   do
     name=$(basename "$i" .txt)
-    if (( $name % $period_of_pictures != 0 )); then
-      continue
-    fi
     output="${results_dir}/relaxation/pictures/$(($name/$period_of_pictures)).png"
     setup_plotter $i $output "Релаксация (T=$name)" &>> ${results_dir}/log.txt
   done
-  for i in "${input_files[@]}"; do
-    rm -f ${i}
-  done
+  rm -rf ${results_dir}/relaxation/data
   echo "Created images for relaxation."
 
   echo "Creating relaxation video ..."

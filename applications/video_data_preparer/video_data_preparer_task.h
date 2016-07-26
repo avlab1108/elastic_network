@@ -27,7 +27,7 @@ public:
   virtual int execute() override;
   
 private:
-  int convert(std::size_t& start_time, const std::string& input_file, const std::string& output);
+  int convert(std::size_t& start_time, const std::size_t freq, const std::string& input_file, const std::string& output);
 
 private:
   std::map<std::size_t, std::set<std::size_t>> sorted_links_;

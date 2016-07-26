@@ -8,25 +8,31 @@
 
 #include <iostream>
 #include <fstream>
-
-#include <boost/lexical_cast.hpp>
+#include <string>
 
 int video_data_preparer_task::execute()
 {
   // TODO: check for emptiness
   const auto& command_line = core_application::instance()->get_command_line();
-  if(command_line.get_unrecognized_options().size() < 2)
+  const std::size_t arg_count = command_line.get_unrecognized_options().size();
+  if(arg_count < 2)
   {
     return -1;
   }
   const std::string& input = command_line.get_unrecognized_options()[1];
   bool excitation = true;
   bool relaxation = true;
-  if(command_line.get_unrecognized_options().size() > 3)
+  if(arg_count > 3)
   {
     const std::string& mode = command_line.get_unrecognized_options()[3];
     excitation = mode.empty() || mode == "e" || mode =="a";
     relaxation = mode.empty() || mode == "r" || mode =="a";
+  }
+  std::size_t freq = 1;
+  if(arg_count > 5)
+  {
+    const std::string& freq_str = command_line.get_unrecognized_options()[5];
+    freq = std::stoul(freq_str);
   }
   const std::string& output = get_work_directory();
   const links_t& links = get_config()->get_user_settings().get_network().get_links();
@@ -51,8 +57,8 @@ int video_data_preparer_task::execute()
   if(excitation)
   {
     const std::string& excitation_input{input + "/" + "excitation.txt"};
-    const std::string& excitation_output_dir{output + "/excitation"};
-    result = convert(time, excitation_input, excitation_output_dir);
+    const std::string& excitation_output_dir{output + "/excitation/data"};
+    result = convert(time, freq, excitation_input, excitation_output_dir);
   }
   if(0 != result)
   {
@@ -62,13 +68,13 @@ int video_data_preparer_task::execute()
   if(relaxation)
   {
     std::string relaxation_input{input + "/" + "relaxation.txt"};
-    const std::string& relaxation_output_dir{output + "/relaxation"};
-    result = convert(time, relaxation_input, relaxation_output_dir);
+    const std::string& relaxation_output_dir{output + "/relaxation/data"};
+    result = convert(time, freq, relaxation_input, relaxation_output_dir);
   }
   return result;
 }
 
-int video_data_preparer_task::convert(std::size_t& start_time, const std::string& input_file, const std::string& output)
+int video_data_preparer_task::convert(std::size_t& start_time, const std::size_t freq, const std::string& input_file, const std::string& output)
 {
   std::ifstream input(input_file);
   if(!input.is_open())
@@ -80,41 +86,46 @@ int video_data_preparer_task::convert(std::size_t& start_time, const std::string
   std::vector<std::string> read_lines;
   while(std::getline(input, line))
   {
-    if(line.empty())
+    if(!line.empty())
     {
-      std::string a(output + "/" + boost::lexical_cast<std::string>(start_time++) + ".txt");
-      std::ofstream out(a);
-      if(!out.is_open())
+      read_lines.push_back(line);
+    }
+    else
+    {
+      if(0 == start_time++ % freq)
       {
-        continue;
-      }
-      std::vector<std::pair<std::string, std::string>> links;
-      for(std::size_t ind = 0; ind < read_lines.size(); ++ind)
-      {
-        out << read_lines[ind] << '\n';
-        auto links_it = sorted_links_.find(ind);
-        if(sorted_links_.end() != links_it)
+        std::string a(output + "/" + std::to_string(start_time) + ".txt");
+        std::ofstream out(a);
+        if(!out.is_open())
         {
-          for(auto link_it = links_it->second.begin(); link_it != links_it->second.end(); ++link_it)
+          continue;
+        }
+        std::vector<std::pair<std::string, std::string>> links;
+        for(std::size_t ind = 0; ind < read_lines.size(); ++ind)
+        {
+          out << read_lines[ind] << '\n';
+          auto links_it = sorted_links_.find(ind);
+          if(sorted_links_.end() != links_it)
           {
-            links.emplace_back(read_lines[ind], read_lines[*link_it]);
+            for(auto link_it = links_it->second.begin(); link_it != links_it->second.end(); ++link_it)
+            {
+              links.emplace_back(read_lines[ind], read_lines[*link_it]);
+            }
           }
         }
+        out << '\n' << '\n';
+        for(std::size_t ind = 0; ind < links.size(); ++ind)
+        {
+          out << links[ind].first << '\n' << links[ind].second << '\n' << '\n' << '\n';
+        }
+        for(std::size_t i = 0; i < optimal_nodes_.size(); ++i)
+        {
+          out << read_lines[optimal_nodes_[i]] << '\n';
+        }
+        out.close();
       }
-      out << '\n' << '\n';
-      for(std::size_t ind = 0; ind < links.size(); ++ind)
-      {
-        out << links[ind].first << '\n' << links[ind].second << '\n' << '\n' << '\n';
-      }
-      for(std::size_t i = 0; i < optimal_nodes_.size(); ++i)
-      {
-        out << read_lines[optimal_nodes_[i]] << '\n';
-      }
-      out.close();
       read_lines.clear();
-      continue;
     }
-    read_lines.push_back(line); 
   }
   return 0;
 }

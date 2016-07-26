@@ -115,7 +115,7 @@ void create_directory(const std::string& dir)
   {
     LOG(logger::info, std::string("Directory \"") + dir + "\" already exists. Trying to use it.");
   }
-  else if(!boost::filesystem::create_directory(path))
+  else if(!boost::filesystem::create_directories(path))
   {
     LOG(logger::error, std::string("Failed to create directory\"") + dir + "\".");
   }
